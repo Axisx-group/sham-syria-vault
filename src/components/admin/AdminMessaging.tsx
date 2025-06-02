@@ -263,7 +263,7 @@ const AdminMessaging = () => {
                           </div>
                           <p className="text-sm text-gray-600 truncate">{conv.lastMessage}</p>
                           <div className="flex items-center gap-2 mt-1">
-                            <Badge size="sm" className={
+                            <Badge className={
                               conv.priority === 'عالي' ? 'bg-red-100 text-red-800' :
                               conv.priority === 'متوسط' ? 'bg-yellow-100 text-yellow-800' :
                               'bg-gray-100 text-gray-800'
@@ -271,7 +271,7 @@ const AdminMessaging = () => {
                               {conv.priority}
                             </Badge>
                             {conv.unreadCount > 0 && (
-                              <Badge size="sm" className="bg-blue-600 text-white">
+                              <Badge className="bg-blue-600 text-white">
                                 {conv.unreadCount}
                               </Badge>
                             )}
