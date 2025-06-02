@@ -10,7 +10,6 @@ import CurrencySelector from "./CurrencySelector";
 import CardOptionsSelector from "./CardOptionsSelector";
 import SelectedAccountSummary from "./SelectedAccountSummary";
 import IbanPreview from "./IbanPreview";
-import InitialDepositInput from "./InitialDepositInput";
 import { getAccountDialogTranslations } from "@/utils/accountDialogTranslations";
 
 interface AccountCategory {
@@ -35,7 +34,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
   const [currentStep, setCurrentStep] = useState<'category' | 'details'>('category');
   const [selectedCategory, setSelectedCategory] = useState<AccountCategory | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState('');
-  const [initialDeposit, setInitialDeposit] = useState('');
   const [requestMastercard, setRequestMastercard] = useState(false);
   const [requestVisa, setRequestVisa] = useState(false);
   const { toast } = useToast();
@@ -111,7 +109,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
     setCurrentStep('category');
     setSelectedCategory(null);
     setSelectedCurrency('');
-    setInitialDeposit('');
     setRequestMastercard(false);
     setRequestVisa(false);
   };
@@ -121,7 +118,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
     setCurrentStep('category');
     setSelectedCategory(null);
     setSelectedCurrency('');
-    setInitialDeposit('');
     setRequestMastercard(false);
     setRequestVisa(false);
   };
@@ -206,20 +202,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
                 <IbanPreview 
                   countryCode={selectedCurrencyData.countryCode}
                   title={t.ibanGenerated}
-                />
-              )}
-
-              {/* Initial Deposit */}
-              {selectedCurrencyData && (
-                <InitialDepositInput
-                  currency={selectedCurrencyData}
-                  value={initialDeposit}
-                  onChange={setInitialDeposit}
-                  translations={{
-                    initialDeposit: t.initialDeposit,
-                    optional: t.optional,
-                    minimumDeposit: t.minimumDeposit
-                  }}
                 />
               )}
             </div>
