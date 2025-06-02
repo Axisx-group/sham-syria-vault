@@ -3,13 +3,16 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, CreditCard, Eye, EyeOff, Settings } from "lucide-react";
+import { Plus, CreditCard, Eye, EyeOff, Settings, Copy } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface CardsSectionProps {
   language: 'ar' | 'en';
 }
 
 const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
+  const { toast } = useToast();
+
   const translations = {
     ar: {
       myCards: "بطاقاتي",
@@ -21,7 +24,12 @@ const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
       virtual: "افتراضية",
       physical: "فيزيائية",
       frozen: "مجمدة",
-      manageCard: "إدارة البطاقة"
+      manageCard: "إدارة البطاقة",
+      mastercard: "ماستركارد",
+      visa: "فيزا",
+      iban: "رقم IBAN",
+      copyIban: "نسخ IBAN",
+      ibanCopied: "تم نسخ رقم IBAN"
     },
     en: {
       myCards: "My Cards",
@@ -33,7 +41,12 @@ const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
       virtual: "Virtual",
       physical: "Physical", 
       frozen: "Frozen",
-      manageCard: "Manage Card"
+      manageCard: "Manage Card",
+      mastercard: "Mastercard",
+      visa: "Visa",
+      iban: "IBAN Number",
+      copyIban: "Copy IBAN",
+      ibanCopied: "IBAN copied to clipboard"
     }
   };
 
@@ -43,31 +56,48 @@ const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
     {
       id: 1,
       type: 'virtual',
-      number: '4532 •••• •••• 1234',
+      cardType: 'mastercard',
+      number: '5678 •••• •••• 1234',
       holder: 'احمد محمد',
       expiry: '12/26',
       status: 'active',
-      color: 'bg-gradient-to-r from-blue-600 to-blue-800'
+      color: 'bg-gradient-to-r from-orange-600 to-red-600',
+      iban: 'SY0000010011234567890123',
+      currency: 'USD'
     },
     {
       id: 2,
       type: 'physical',
-      number: '5678 •••• •••• 9012',
+      cardType: 'visa',
+      number: '4532 •••• •••• 9012',
       holder: 'احمد محمد',
       expiry: '08/27',
       status: 'active',
-      color: 'bg-gradient-to-r from-purple-600 to-purple-800'
+      color: 'bg-gradient-to-r from-blue-600 to-blue-800',
+      iban: 'SY0000010011234567890124',
+      currency: 'EUR'
     },
     {
       id: 3,
       type: 'virtual',
-      number: '1234 •••• •••• 5678',
+      cardType: 'mastercard',
+      number: '5432 •••• •••• 5678',
       holder: 'احمد محمد',
       expiry: '03/25',
       status: 'frozen',
-      color: 'bg-gradient-to-r from-gray-600 to-gray-800'
+      color: 'bg-gradient-to-r from-gray-600 to-gray-800',
+      iban: 'SY0000010011234567890125',
+      currency: 'SYP'
     }
   ];
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: t.ibanCopied,
+      description: text,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -83,7 +113,7 @@ const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
         {cards.map((card) => (
           <Card key={card.id} className="overflow-hidden">
             {/* Card Visual */}
-            <div className={`${card.color} p-6 text-white relative h-48`}>
+            <div className={`${card.color} p-6 text-white relative h-56`}>
               <div className="flex justify-between items-start mb-8">
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-6 w-6" />
@@ -91,12 +121,17 @@ const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
                     {card.type === 'virtual' ? t.virtual : t.physical}
                   </Badge>
                 </div>
-                <Badge 
-                  variant={card.status === 'active' ? 'default' : 'destructive'}
-                  className="text-xs"
-                >
-                  {card.status === 'active' ? t.active : t.frozen}
-                </Badge>
+                <div className="flex flex-col gap-1">
+                  <Badge 
+                    variant={card.status === 'active' ? 'default' : 'destructive'}
+                    className="text-xs"
+                  >
+                    {card.status === 'active' ? t.active : t.frozen}
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs bg-white/20 text-white">
+                    {card.cardType === 'mastercard' ? t.mastercard : t.visa}
+                  </Badge>
+                </div>
               </div>
               
               <div className="space-y-4">
@@ -115,11 +150,37 @@ const CardsSection: React.FC<CardsSectionProps> = ({ language }) => {
                     <p className="font-medium">{card.expiry}</p>
                   </div>
                 </div>
+
+                {/* Currency */}
+                <div className="absolute top-6 right-6">
+                  <Badge variant="secondary" className="bg-white/20 text-white text-xs">
+                    {card.currency}
+                  </Badge>
+                </div>
               </div>
             </div>
 
-            {/* Card Actions */}
-            <CardContent className="p-4">
+            {/* Card Details & Actions */}
+            <CardContent className="p-4 space-y-3">
+              {/* IBAN Section */}
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-gray-600">{t.iban}</p>
+                    <p className="font-mono text-sm text-gray-800">{card.iban}</p>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => copyToClipboard(card.iban)}
+                    className="ml-2"
+                  >
+                    <Copy className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="flex-1">
                   <Eye className="h-4 w-4 mr-2" />
