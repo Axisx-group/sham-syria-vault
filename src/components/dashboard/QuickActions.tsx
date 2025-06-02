@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Send, PlusCircle, CreditCard, Repeat, QrCode, Receipt } from "lucide-react";
+import { Send, PlusCircle, CreditCard, ArrowUpDown, Smartphone, Fuel } from "lucide-react";
+import NewAccountDialog from "./NewAccountDialog";
 
 interface QuickActionsProps {
   language: 'ar' | 'en';
@@ -15,68 +15,42 @@ const QuickActions: React.FC<QuickActionsProps> = ({ language }) => {
       sendMoney: "إرسال أموال",
       addMoney: "إضافة أموال",
       newCard: "بطاقة جديدة",
-      payBills: "دفع الفواتير",
-      scanQR: "مسح QR",
-      requestMoney: "طلب أموال"
+      exchange: "صرف العملات",
+      mobileTopup: "رصيد هاتف",
+      billPayment: "دفع الفواتير"
     },
     en: {
       quickActions: "Quick Actions",
       sendMoney: "Send Money",
       addMoney: "Add Money", 
       newCard: "New Card",
-      payBills: "Pay Bills",
-      scanQR: "Scan QR",
-      requestMoney: "Request Money"
+      exchange: "Currency Exchange",
+      mobileTopup: "Mobile Top-up",
+      billPayment: "Bill Payment"
     }
   };
 
   const t = translations[language];
 
   const actions = [
-    { 
-      title: t.sendMoney, 
-      icon: Send, 
-      color: "bg-blue-500 hover:bg-blue-600",
-      description: language === 'ar' ? 'تحويل فوري' : 'Instant transfer'
-    },
-    { 
-      title: t.addMoney, 
-      icon: PlusCircle, 
-      color: "bg-green-500 hover:bg-green-600",
-      description: language === 'ar' ? 'إيداع' : 'Deposit'
-    },
-    { 
-      title: t.newCard, 
-      icon: CreditCard, 
-      color: "bg-purple-500 hover:bg-purple-600",
-      description: language === 'ar' ? 'بطاقة افتراضية' : 'Virtual card'
-    },
-    { 
-      title: t.payBills, 
-      icon: Receipt, 
-      color: "bg-orange-500 hover:bg-orange-600",
-      description: language === 'ar' ? 'فواتير' : 'Utilities'
-    },
-    { 
-      title: t.scanQR, 
-      icon: QrCode, 
-      color: "bg-indigo-500 hover:bg-indigo-600",
-      description: language === 'ar' ? 'دفع سريع' : 'Quick pay'
-    },
-    { 
-      title: t.requestMoney, 
-      icon: Repeat, 
-      color: "bg-pink-500 hover:bg-pink-600",
-      description: language === 'ar' ? 'طلب دفع' : 'Payment request'
-    }
+    { icon: Send, label: t.sendMoney, color: "bg-blue-500" },
+    { icon: PlusCircle, label: t.addMoney, color: "bg-green-500" },
+    { icon: CreditCard, label: t.newCard, color: "bg-purple-500" },
+    { icon: ArrowUpDown, label: t.exchange, color: "bg-orange-500" },
+    { icon: Smartphone, label: t.mobileTopup, color: "bg-pink-500" },
+    { icon: Fuel, label: t.billPayment, color: "bg-gray-500" }
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t.quickActions}</CardTitle>
+        <CardTitle>{t.quickActions}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {/* New Account Button */}
+        <NewAccountDialog language={language} />
+        
+        {/* Other Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
           {actions.map((action, index) => {
             const Icon = action.icon;
@@ -84,16 +58,12 @@ const QuickActions: React.FC<QuickActionsProps> = ({ language }) => {
               <Button
                 key={index}
                 variant="outline"
-                className={`h-auto p-4 flex flex-col items-center gap-2 hover:scale-105 transition-all duration-200 border-2 hover:border-opacity-50`}
-                onClick={() => console.log(`${action.title} clicked`)}
+                className="h-20 flex-col gap-2 hover:shadow-md transition-all"
               >
-                <div className={`p-3 rounded-full ${action.color} text-white`}>
-                  <Icon className="h-5 w-5" />
+                <div className={`p-2 rounded-full ${action.color} text-white`}>
+                  <Icon className="h-4 w-4" />
                 </div>
-                <div className="text-center">
-                  <p className="font-medium text-xs">{action.title}</p>
-                  <p className="text-xs text-gray-500 mt-1">{action.description}</p>
-                </div>
+                <span className="text-xs font-medium">{action.label}</span>
               </Button>
             );
           })}
