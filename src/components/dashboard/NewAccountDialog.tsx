@@ -2,14 +2,16 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { DollarSign, Euro, Banknote, PlusCircle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generateIBAN } from "@/utils/ibanGenerator";
 import AccountCategorySelector from "./AccountCategorySelector";
 import CurrencySelector from "./CurrencySelector";
 import CardOptionsSelector from "./CardOptionsSelector";
+import SelectedAccountSummary from "./SelectedAccountSummary";
+import IbanPreview from "./IbanPreview";
+import InitialDepositInput from "./InitialDepositInput";
+import { getAccountDialogTranslations } from "@/utils/accountDialogTranslations";
 
 interface AccountCategory {
   id: string;
@@ -38,52 +40,7 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
   const [requestVisa, setRequestVisa] = useState(false);
   const { toast } = useToast();
 
-  const translations = {
-    ar: {
-      openNewAccount: "فتح حساب جديد",
-      chooseAccountType: "اختر نوع الحساب",
-      accountDetails: "تفاصيل الحساب",
-      currency: "العملة",
-      initialDeposit: "الإيداع الأولي",
-      minimumDeposit: "الحد الأدنى للإيداع",
-      cancel: "إلغاء",
-      back: "رجوع",
-      next: "التالي",
-      openAccount: "فتح الحساب",
-      accountCreated: "تم إنشاء الحساب بنجاح",
-      optional: "اختياري",
-      cardOptions: "خيارات البطاقات",
-      requestMastercard: "طلب بطاقة ماستركارد",
-      requestVisa: "طلب بطاقة فيزا",
-      ibanGenerated: "رقم IBAN",
-      selectedAccount: "الحساب المختار",
-      accountType: "نوع الحساب",
-      chooseAccountFirst: "يرجى اختيار نوع الحساب أولاً"
-    },
-    en: {
-      openNewAccount: "Open New Account",
-      chooseAccountType: "Choose Account Type",
-      accountDetails: "Account Details",
-      currency: "Currency",
-      initialDeposit: "Initial Deposit",
-      minimumDeposit: "Minimum Deposit",
-      cancel: "Cancel",
-      back: "Back",
-      next: "Next",
-      openAccount: "Open Account",
-      accountCreated: "Account created successfully",
-      optional: "Optional",
-      cardOptions: "Card Options",
-      requestMastercard: "Request Mastercard",
-      requestVisa: "Request Visa Card",
-      ibanGenerated: "IBAN Number",
-      selectedAccount: "Selected Account",
-      accountType: "Account Type",
-      chooseAccountFirst: "Please choose an account type first"
-    }
-  };
-
-  const t = translations[language];
+  const t = getAccountDialogTranslations(language);
 
   const currencies = [
     { 
@@ -216,18 +173,10 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
             <div className="space-y-6">
               {/* Selected Account Summary */}
               {selectedCategory && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-900 mb-2">{t.selectedAccount}</h4>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full ${selectedCategory.bgColor} flex items-center justify-center`}>
-                      <div className={`w-6 h-6 ${selectedCategory.color}`}>💳</div>
-                    </div>
-                    <div>
-                      <p className="font-medium text-blue-800">{selectedCategory.name}</p>
-                      <p className="text-sm text-blue-600">{selectedCategory.description}</p>
-                    </div>
-                  </div>
-                </div>
+                <SelectedAccountSummary 
+                  selectedAccount={selectedCategory}
+                  title={t.selectedAccount}
+                />
               )}
 
               {/* Currency Selection */}
@@ -254,37 +203,24 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
 
               {/* IBAN Preview */}
               {selectedCurrencyData && (
-                <div className="space-y-2">
-                  <Label className="text-base font-semibold">{t.ibanGenerated}</Label>
-                  <div className="p-3 bg-gray-50 rounded-lg border">
-                    <p className="font-mono text-sm text-gray-700">{generateIBAN(selectedCurrencyData.countryCode)}</p>
-                  </div>
-                </div>
+                <IbanPreview 
+                  countryCode={selectedCurrencyData.countryCode}
+                  title={t.ibanGenerated}
+                />
               )}
 
               {/* Initial Deposit */}
               {selectedCurrencyData && (
-                <div className="space-y-2">
-                  <Label htmlFor="initialDeposit">
-                    {t.initialDeposit} ({t.optional})
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="initialDeposit"
-                      type="number"
-                      placeholder={`${selectedCurrencyData.minDeposit} ${selectedCurrency}`}
-                      value={initialDeposit}
-                      onChange={(e) => setInitialDeposit(e.target.value)}
-                      className="pl-12"
-                    />
-                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                      <selectedCurrencyData.icon className="h-4 w-4 text-gray-400" />
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    {t.minimumDeposit}: {selectedCurrencyData.minDeposit.toLocaleString()} {selectedCurrency}
-                  </p>
-                </div>
+                <InitialDepositInput
+                  currency={selectedCurrencyData}
+                  value={initialDeposit}
+                  onChange={setInitialDeposit}
+                  translations={{
+                    initialDeposit: t.initialDeposit,
+                    optional: t.optional,
+                    minimumDeposit: t.minimumDeposit
+                  }}
+                />
               )}
             </div>
           )}
