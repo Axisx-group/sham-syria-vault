@@ -19,10 +19,6 @@ interface FormData {
   state: string;
   postalCode: string;
   country: string;
-  preferredCurrency: string;
-  initialDeposit: string;
-  requestDebitCard: boolean;
-  requestCreditCard: boolean;
 }
 
 interface Documents {
@@ -50,11 +46,7 @@ export const useBusinessApplication = () => {
     city: '',
     state: '',
     postalCode: '',
-    country: 'Syria',
-    preferredCurrency: 'SYP',
-    initialDeposit: '',
-    requestDebitCard: false,
-    requestCreditCard: false
+    country: 'Syria'
   });
   const [documents, setDocuments] = useState<Documents>({});
 
@@ -82,7 +74,7 @@ export const useBusinessApplication = () => {
         return;
       }
 
-      // Create application
+      // Create application with SYP as default currency
       const { data: application, error: appError } = await supabase
         .from('account_applications')
         .insert({
@@ -102,10 +94,7 @@ export const useBusinessApplication = () => {
           state: formData.state,
           postal_code: formData.postalCode,
           country: formData.country,
-          preferred_currency: formData.preferredCurrency,
-          initial_deposit: formData.initialDeposit ? parseFloat(formData.initialDeposit) : null,
-          request_debit_card: formData.requestDebitCard,
-          request_credit_card: formData.requestCreditCard
+          preferred_currency: 'SYP'
         })
         .select()
         .single();
@@ -122,7 +111,6 @@ export const useBusinessApplication = () => {
 
           if (uploadError) throw uploadError;
 
-          // Map document types correctly
           let documentType: 'national_id' | 'business_license' | 'commercial_registration' = 'national_id';
           if (docType === 'businessLicense') documentType = 'business_license';
           if (docType === 'commercialRegistration') documentType = 'commercial_registration';

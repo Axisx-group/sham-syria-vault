@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building2, MapPin, CreditCard, User } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, FileText, User } from "lucide-react";
 import ProgressSteps from './ProgressSteps';
 import PersonalInfoStep from './PersonalInfoStep';
 import BusinessInfoStep from './BusinessInfoStep';
@@ -33,7 +33,7 @@ const BusinessApplicationForm: React.FC<BusinessApplicationFormProps> = ({ onBac
       case 1: return <><User className="h-5 w-5" /> البيانات الشخصية</>;
       case 2: return <><Building2 className="h-5 w-5" /> بيانات الشركة</>;
       case 3: return <><MapPin className="h-5 w-5" /> بيانات العنوان</>;
-      case 4: return <><CreditCard className="h-5 w-5" /> تفضيلات الحساب والوثائق</>;
+      case 4: return <><FileText className="h-5 w-5" /> الوثائق المطلوبة</>;
       default: return '';
     }
   };
@@ -43,7 +43,7 @@ const BusinessApplicationForm: React.FC<BusinessApplicationFormProps> = ({ onBac
       case 1: return "أدخل بياناتك الشخصية كممثل الشركة";
       case 2: return "أدخل تفاصيل شركتك أو مؤسستك";
       case 3: return "أدخل تفاصيل عنوان الشركة";
-      case 4: return "اختر تفضيلات حسابك وارفع الوثائق المطلوبة";
+      case 4: return "ارفع الوثائق المطلوبة لفتح الحساب";
       default: return '';
     }
   };
@@ -58,9 +58,7 @@ const BusinessApplicationForm: React.FC<BusinessApplicationFormProps> = ({ onBac
         return <AddressInfoStep formData={formData} onInputChange={handleInputChange} />;
       case 4:
         return <AccountPreferencesStep 
-          formData={formData} 
           documents={documents}
-          onInputChange={handleInputChange}
           onFileChange={handleFileChange}
         />;
       default:
@@ -82,7 +80,7 @@ const BusinessApplicationForm: React.FC<BusinessApplicationFormProps> = ({ onBac
           </Button>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">تقديم طلب فتح حساب تجاري</h1>
-          <p className="text-gray-600">املأ النموذج التالي لفتح حسابك التجاري الجديد</p>
+          <p className="text-gray-600">املأ النموذج التالي لفتح حسابك التجاري الجديد (العملة الافتراضية: الليرة السورية)</p>
         </div>
 
         <ProgressSteps currentStep={step} totalSteps={4} />

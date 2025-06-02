@@ -1,81 +1,24 @@
 
 import React from 'react';
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Upload } from "lucide-react";
 
 interface AccountPreferencesStepProps {
-  formData: {
-    preferredCurrency: string;
-    initialDeposit: string;
-    requestDebitCard: boolean;
-    requestCreditCard: boolean;
-  };
   documents: {
     nationalId?: File;
     businessLicense?: File;
     commercialRegistration?: File;
   };
-  onInputChange: (field: string, value: string | boolean) => void;
   onFileChange: (documentType: 'nationalId' | 'businessLicense' | 'commercialRegistration', file: File | null) => void;
 }
 
 const AccountPreferencesStep: React.FC<AccountPreferencesStepProps> = ({ 
-  formData, 
   documents, 
-  onInputChange, 
   onFileChange 
 }) => {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="preferredCurrency">العملة المفضلة</Label>
-          <Select value={formData.preferredCurrency} onValueChange={(value) => onInputChange('preferredCurrency', value)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="SYP">ليرة سورية (SYP)</SelectItem>
-              <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
-              <SelectItem value="EUR">يورو (EUR)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="initialDeposit">الإيداع الأولي (اختياري)</Label>
-          <Input
-            id="initialDeposit"
-            type="number"
-            value={formData.initialDeposit}
-            onChange={(e) => onInputChange('initialDeposit', e.target.value)}
-            placeholder="0"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="debitCard"
-            checked={formData.requestDebitCard}
-            onCheckedChange={(checked) => onInputChange('requestDebitCard', checked)}
-          />
-          <Label htmlFor="debitCard">طلب بطاقة خصم</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="creditCard"
-            checked={formData.requestCreditCard}
-            onCheckedChange={(checked) => onInputChange('requestCreditCard', checked)}
-          />
-          <Label htmlFor="creditCard">طلب بطاقة ائتمان</Label>
-        </div>
-      </div>
-
-      <div className="border-t pt-6">
+      <div>
         <h3 className="text-lg font-semibold mb-4">الوثائق المطلوبة</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
