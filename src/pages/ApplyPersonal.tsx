@@ -6,9 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, User, MapPin, CreditCard } from "lucide-react";
+import { ArrowLeft, Upload, User, MapPin, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -29,11 +28,7 @@ const ApplyPersonal = () => {
     city: '',
     state: '',
     postalCode: '',
-    country: 'Syria',
-    preferredCurrency: 'SYP',
-    initialDeposit: '',
-    requestDebitCard: false,
-    requestCreditCard: false
+    country: 'Syria'
   });
   const [documents, setDocuments] = useState<{
     nationalId?: File;
@@ -65,7 +60,7 @@ const ApplyPersonal = () => {
         return;
       }
 
-      // Create application
+      // Create application with SYP as default currency
       const { data: application, error: appError } = await supabase
         .from('account_applications')
         .insert({
@@ -83,10 +78,7 @@ const ApplyPersonal = () => {
           state: formData.state,
           postal_code: formData.postalCode,
           country: formData.country,
-          preferred_currency: formData.preferredCurrency,
-          initial_deposit: formData.initialDeposit ? parseFloat(formData.initialDeposit) : null,
-          request_debit_card: formData.requestDebitCard,
-          request_credit_card: formData.requestCreditCard
+          preferred_currency: 'SYP'
         })
         .select()
         .single();
@@ -159,7 +151,7 @@ const ApplyPersonal = () => {
           </Button>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">تقديم طلب فتح حساب شخصي</h1>
-          <p className="text-gray-600">املأ النموذج التالي لفتح حسابك الشخصي الجديد</p>
+          <p className="text-gray-600">املأ النموذج التالي لفتح حسابك الشخصي الجديد (العملة الافتراضية: الليرة السورية)</p>
         </div>
 
         {/* Progress Steps */}
@@ -187,12 +179,12 @@ const ApplyPersonal = () => {
             <CardTitle className="flex items-center gap-2">
               {step === 1 && <><User className="h-5 w-5" /> البيانات الشخصية</>}
               {step === 2 && <><MapPin className="h-5 w-5" /> بيانات العنوان</>}
-              {step === 3 && <><CreditCard className="h-5 w-5" /> تفضيلات الحساب والوثائق</>}
+              {step === 3 && <><FileText className="h-5 w-5" /> الوثائق المطلوبة</>}
             </CardTitle>
             <CardDescription>
               {step === 1 && "أدخل بياناتك الشخصية الأساسية"}
               {step === 2 && "أدخل تفاصيل عنوان إقامتك"}
-              {step === 3 && "اختر تفضيلات حسابك وارفع الوثائق المطلوبة"}
+              {step === 3 && "ارفع الوثائق المطلوبة لفتح الحساب"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -327,52 +319,7 @@ const ApplyPersonal = () => {
 
             {step === 3 && (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="preferredCurrency">العملة المفضلة</Label>
-                    <Select value={formData.preferredCurrency} onValueChange={(value) => handleInputChange('preferredCurrency', value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="SYP">ليرة سورية (SYP)</SelectItem>
-                        <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
-                        <SelectItem value="EUR">يورو (EUR)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="initialDeposit">الإيداع الأولي (اختياري)</Label>
-                    <Input
-                      id="initialDeposit"
-                      type="number"
-                      value={formData.initialDeposit}
-                      onChange={(e) => handleInputChange('initialDeposit', e.target.value)}
-                      placeholder="0"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="debitCard"
-                      checked={formData.requestDebitCard}
-                      onCheckedChange={(checked) => handleInputChange('requestDebitCard', checked)}
-                    />
-                    <Label htmlFor="debitCard">طلب بطاقة خصم</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="creditCard"
-                      checked={formData.requestCreditCard}
-                      onCheckedChange={(checked) => handleInputChange('requestCreditCard', checked)}
-                    />
-                    <Label htmlFor="creditCard">طلب بطاقة ائتمان</Label>
-                  </div>
-                </div>
-
-                <div className="border-t pt-6">
+                <div>
                   <h3 className="text-lg font-semibold mb-4">الوثائق المطلوبة</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
