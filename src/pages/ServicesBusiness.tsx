@@ -1,123 +1,144 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Building2, Banknote, TrendingUp, Users, Globe } from "lucide-react";
+import { ArrowLeft, Building, Globe, CreditCard, TrendingUp, Users, Shield } from 'lucide-react';
 
 const ServicesBusiness = () => {
   const navigate = useNavigate();
 
-  const services = [
-    {
-      icon: Banknote,
-      title: "الحسابات التجارية",
-      description: "حسابات مصممة خصيصاً لاحتياجات الأعمال مع إدارة نقدية متقدمة",
-      features: ["حدود تحويل عالية", "بطاقات متعددة", "كشوفات تفصيلية", "إدارة الرواتب"]
-    },
-    {
-      icon: TrendingUp,
-      title: "التمويل التجاري",
-      description: "حلول تمويلية متنوعة لدعم نمو أعمالك وتوسعها",
-      features: ["قروض رأس المال العامل", "تمويل المعدات", "خطوط ائتمان مرنة", "ضمانات بنكية"]
-    },
-    {
-      icon: Globe,
-      title: "التجارة الخارجية",
-      description: "خدمات متكاملة للتجارة الدولية والتعاملات الخارجية",
-      features: ["اعتمادات مستندية", "تحصيل مستندي", "تحويلات دولية", "صرف العملات"]
-    },
-    {
-      icon: Users,
-      title: "إدارة الموظفين",
-      description: "حلول شاملة لإدارة رواتب ومزايا الموظفين",
-      features: ["تحويل الرواتب", "بطاقات الموظفين", "إدارة المزايا", "تقارير شاملة"]
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="mb-8">
-          <Button
-            variant="ghost"
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 rtl">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <button
             onClick={() => navigate('/')}
-            className="mb-4"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            العودة للصفحة الرئيسية
-          </Button>
-          
+            <ArrowLeft className="h-4 w-4" />
+            العودة للرئيسية
+          </button>
+        </div>
+        
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
-              <Building2 className="h-8 w-8 text-blue-600" />
-            </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">الخدمات المصرفية التجارية</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              حلول مصرفية متطورة لدعم نمو أعمالك وتحقيق أهدافك التجارية
+            <p className="text-xl text-gray-600">
+              حلول مصرفية متطورة لنمو وازدهار أعمالك التجارية
             </p>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Icon className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">{service.title}</CardTitle>
-                    </div>
-                  </div>
-                  <CardDescription className="text-gray-600 text-base leading-relaxed">
-                    {service.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-gray-600">
-                        <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        <div className="text-center">
-          <Card className="bg-gradient-to-r from-green-600 to-blue-700 text-white border-0">
-            <CardContent className="py-12">
-              <h2 className="text-3xl font-bold mb-4">اجعل أعمالك تنمو مع بنك الجزيرة</h2>
-              <p className="text-xl mb-8 opacity-90">
-                افتح حسابك التجاري اليوم واستفد من خدماتنا المتطورة
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg"
-                  onClick={() => navigate('/apply/business')}
-                  className="bg-white text-green-600 hover:bg-gray-100 px-8 py-4 text-lg"
-                >
-                  افتح حساب تجاري الآن
-                </Button>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  onClick={() => navigate('/contact')}
-                  className="border-white text-white hover:bg-white hover:text-green-600 px-8 py-4 text-lg"
-                >
-                  تحدث مع مستشارنا
-                </Button>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                <Building className="h-8 w-8 text-blue-600" />
               </div>
-            </CardContent>
-          </Card>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">الحسابات التجارية</h3>
+              <p className="text-gray-600 mb-6">
+                حسابات تجارية مصممة خصيصاً لاحتياجات الشركات والمؤسسات
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li>• إدارة النقد والسيولة</li>
+                <li>• تحويلات محلية ودولية</li>
+                <li>• خدمات الرواتب</li>
+                <li>• كشوف حساب تفصيلية</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                <TrendingUp className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">التمويل التجاري</h3>
+              <p className="text-gray-600 mb-6">
+                حلول تمويل مرنة لدعم نمو أعمالك وتوسيع نشاطاتك التجارية
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li>• قروض رأس المال العامل</li>
+                <li>• تمويل المعدات</li>
+                <li>• خطوط ائتمان مرنة</li>
+                <li>• تمويل المشاريع</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                <Globe className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">التجارة الدولية</h3>
+              <p className="text-gray-600 mb-6">
+                خدمات شاملة لدعم أنشطة الاستيراد والتصدير والتجارة الخارجية
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li>• اعتمادات مستندية</li>
+                <li>• كفالات مصرفية</li>
+                <li>• تحصيل مستندي</li>
+                <li>• تمويل التجارة</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mb-6">
+                <CreditCard className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">بطاقات الأعمال</h3>
+              <p className="text-gray-600 mb-6">
+                بطاقات ائتمان وخصم مصممة خصيصاً لاحتياجات الشركات
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li>• بطاقات متعددة للموظفين</li>
+                <li>• تقارير مصاريف تفصيلية</li>
+                <li>• حدود ائتمان عالية</li>
+                <li>• برامج مكافآت للشركات</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mb-6">
+                <Users className="h-8 w-8 text-orange-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">خدمات الرواتب</h3>
+              <p className="text-gray-600 mb-6">
+                حلول شاملة لإدارة رواتب الموظفين وتبسيط العمليات الإدارية
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li>• معالجة الرواتب التلقائية</li>
+                <li>• بطاقات راتب للموظفين</li>
+                <li>• تقارير شاملة</li>
+                <li>• خدمات موارد بشرية</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <Shield className="h-8 w-8 text-indigo-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">الخدمات الاستشارية</h3>
+              <p className="text-gray-600 mb-6">
+                استشارات مالية ومصرفية متخصصة لمساعدتك في اتخاذ القرارات الصحيحة
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li>• التخطيط المالي</li>
+                <li>• إدارة المخاطر</li>
+                <li>• استشارات الاستثمار</li>
+                <li>• تطوير الأعمال</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="bg-blue-600 text-white rounded-lg p-8">
+              <h3 className="text-3xl font-bold mb-4">انطلق بأعمالك إلى المستوى التالي</h3>
+              <p className="text-xl mb-6">
+                افتح حسابك التجاري اليوم واستفد من خدماتنا المصرفية المتطورة
+              </p>
+              <button
+                onClick={() => navigate('/apply/business')}
+                className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors font-semibold text-lg"
+              >
+                افتح حساب تجاري
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
