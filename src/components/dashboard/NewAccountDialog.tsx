@@ -1,42 +1,34 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Euro, Banknote, PlusCircle, ArrowLeft } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { generateIBAN } from "@/utils/ibanGenerator";
-import AccountCategorySelector from "./AccountCategorySelector";
-import CurrencySelector from "./CurrencySelector";
-import CardOptionsSelector from "./CardOptionsSelector";
-import SelectedAccountSummary from "./SelectedAccountSummary";
-import IbanPreview from "./IbanPreview";
+import { PlusCircle, ArrowLeft, DollarSign, Euro, Banknote } from "lucide-react";
+import { useAccountDialog } from "@/hooks/useAccountDialog";
 import { getAccountDialogTranslations } from "@/utils/accountDialogTranslations";
-
-interface AccountCategory {
-  id: string;
-  type: 'personal' | 'business';
-  name: string;
-  description: string;
-  benefits: string[];
-  minDeposit: number;
-  currency: string;
-  color: string;
-  bgColor: string;
-  popular?: boolean;
-}
+import AccountCategorySelector from "./AccountCategorySelector";
+import AccountDetailsForm from "./AccountDetailsForm";
 
 interface NewAccountDialogProps {
   language: 'ar' | 'en';
 }
 
 const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'category' | 'details'>('category');
-  const [selectedCategory, setSelectedCategory] = useState<AccountCategory | null>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState('');
-  const [requestMastercard, setRequestMastercard] = useState(false);
-  const [requestVisa, setRequestVisa] = useState(false);
-  const { toast } = useToast();
+  const {
+    isOpen,
+    setIsOpen,
+    currentStep,
+    selectedCategory,
+    selectedCurrency,
+    setSelectedCurrency,
+    requestMastercard,
+    setRequestMastercard,
+    requestVisa,
+    setRequestVisa,
+    handleCategorySelect,
+    handleBack,
+    handleDialogClose,
+    handleOpenAccount
+  } = useAccountDialog(language);
 
   const t = getAccountDialogTranslations(language);
 
@@ -64,66 +56,11 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
     }
   ];
 
-  const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
-
-  const handleCategorySelect = (category: AccountCategory) => {
-    setSelectedCategory(category);
-    setCurrentStep('details');
-  };
-
-  const handleBack = () => {
-    setCurrentStep('category');
-  };
-
-  const handleOpenAccount = () => {
-    if (!selectedCategory) {
-      toast({
-        title: language === 'ar' ? 'خطأ' : 'Error',
-        description: t.chooseAccountFirst,
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (!selectedCurrency) {
-      toast({
-        title: language === 'ar' ? 'خطأ' : 'Error',
-        description: language === 'ar' ? 'يرجى اختيار العملة' : 'Please select a currency',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    const iban = generateIBAN(selectedCurrencyData?.countryCode || 'SY');
-    const cards = [];
-    if (requestMastercard) cards.push('Mastercard');
-    if (requestVisa) cards.push('Visa');
-
-    toast({
-      title: t.accountCreated,
-      description: `${selectedCategory.name} - ${selectedCurrencyData?.name}\nIBAN: ${iban}${cards.length > 0 ? `\n${language === 'ar' ? 'البطاقات المطلوبة' : 'Requested Cards'}: ${cards.join(', ')}` : ''}`,
-    });
-
-    // Reset form
-    setIsOpen(false);
-    setCurrentStep('category');
-    setSelectedCategory(null);
-    setSelectedCurrency('');
-    setRequestMastercard(false);
-    setRequestVisa(false);
-  };
-
-  const handleDialogClose = () => {
-    setIsOpen(false);
-    setCurrentStep('category');
-    setSelectedCategory(null);
-    setSelectedCurrency('');
-    setRequestMastercard(false);
-    setRequestVisa(false);
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      if (!open) handleDialogClose();
+    }}>
       <DialogTrigger asChild>
         <Button className="w-full" size="lg">
           <PlusCircle className="h-5 w-5 mr-2" />
@@ -165,47 +102,18 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
               onCategorySelect={handleCategorySelect}
               language={language}
             />
-          ) : (
-            <div className="space-y-6">
-              {/* Selected Account Summary */}
-              {selectedCategory && (
-                <SelectedAccountSummary 
-                  selectedAccount={selectedCategory}
-                  title={t.selectedAccount}
-                />
-              )}
-
-              {/* Currency Selection */}
-              <CurrencySelector
-                currencies={currencies}
-                selectedCurrency={selectedCurrency}
-                onCurrencySelect={setSelectedCurrency}
-                title={t.currency}
-                minimumDepositText={t.minimumDeposit}
-              />
-
-              {/* Card Options */}
-              <CardOptionsSelector
-                requestMastercard={requestMastercard}
-                requestVisa={requestVisa}
-                onMastercardChange={setRequestMastercard}
-                onVisaChange={setRequestVisa}
-                translations={{
-                  cardOptions: t.cardOptions,
-                  requestMastercard: t.requestMastercard,
-                  requestVisa: t.requestVisa
-                }}
-              />
-
-              {/* IBAN Preview */}
-              {selectedCurrencyData && (
-                <IbanPreview 
-                  countryCode={selectedCurrencyData.countryCode}
-                  title={t.ibanGenerated}
-                />
-              )}
-            </div>
-          )}
+          ) : selectedCategory ? (
+            <AccountDetailsForm
+              language={language}
+              selectedCategory={selectedCategory}
+              selectedCurrency={selectedCurrency}
+              onCurrencySelect={setSelectedCurrency}
+              requestMastercard={requestMastercard}
+              requestVisa={requestVisa}
+              onMastercardChange={setRequestMastercard}
+              onVisaChange={setRequestVisa}
+            />
+          ) : null}
         </div>
 
         {currentStep === 'details' && (
@@ -213,7 +121,10 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
             <Button variant="outline" onClick={handleDialogClose}>
               {t.cancel}
             </Button>
-            <Button onClick={handleOpenAccount} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-800">
+            <Button 
+              onClick={() => handleOpenAccount(currencies)} 
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-800"
+            >
               {t.openAccount}
             </Button>
           </DialogFooter>
