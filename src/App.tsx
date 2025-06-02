@@ -15,6 +15,7 @@ import ServicesBusiness from "./pages/ServicesBusiness";
 import ServicesDigitalWallet from "./pages/ServicesDigitalWallet";
 import ServicesInvestment from "./pages/ServicesInvestment";
 import BankingServices from "./pages/BankingServices";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/apply/personal" element={<ApplyPersonal />} />
