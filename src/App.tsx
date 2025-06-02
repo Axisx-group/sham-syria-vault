@@ -14,6 +14,7 @@ import ServicesPersonal from "./pages/ServicesPersonal";
 import ServicesBusiness from "./pages/ServicesBusiness";
 import ServicesDigitalWallet from "./pages/ServicesDigitalWallet";
 import ServicesInvestment from "./pages/ServicesInvestment";
+import BankingServices from "./pages/BankingServices";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/services/business" element={<ServicesBusiness />} />
           <Route path="/services/digital-wallet" element={<ServicesDigitalWallet />} />
           <Route path="/services/investment" element={<ServicesInvestment />} />
+          <Route path="/banking-services" element={<BankingServices />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
