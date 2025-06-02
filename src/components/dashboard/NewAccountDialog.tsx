@@ -4,11 +4,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { DollarSign, Euro, Banknote, PlusCircle, CreditCard } from "lucide-react";
+import { DollarSign, Euro, Banknote, PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Checkbox } from "@/components/ui/checkbox";
+import { generateIBAN } from "@/utils/ibanGenerator";
+import AccountTypeSelector from "./AccountTypeSelector";
+import CurrencySelector from "./CurrencySelector";
+import CardOptionsSelector from "./CardOptionsSelector";
 
 interface NewAccountDialogProps {
   language: 'ar' | 'en';
@@ -33,22 +34,17 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
       currentAccount: "حساب جاري",
       savingsAccount: "حساب توفير",
       businessAccount: "حساب تجاري",
-      selectCurrency: "اختر العملة",
-      selectAccountType: "اختر نوع الحساب",
       cancel: "إلغاء",
       openAccount: "فتح الحساب",
       accountCreated: "تم إنشاء الحساب بنجاح",
-      pleaseSelect: "يرجى اختيار",
       optional: "اختياري",
-      benefits: "المزايا",
       currentBenefits: "تحويلات فورية، رسوم منخفضة",
       savingsBenefits: "فوائد عالية، استثمار آمن",
       businessBenefits: "خدمات تجارية، حدود عالية",
       cardOptions: "خيارات البطاقات",
       requestMastercard: "طلب بطاقة ماستركارد",
       requestVisa: "طلب بطاقة فيزا",
-      ibanGenerated: "رقم IBAN",
-      accountDetails: "تفاصيل الحساب"
+      ibanGenerated: "رقم IBAN"
     },
     en: {
       openNewAccount: "Open New Account",
@@ -59,22 +55,17 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
       currentAccount: "Current Account",
       savingsAccount: "Savings Account",
       businessAccount: "Business Account",
-      selectCurrency: "Select Currency",
-      selectAccountType: "Select Account Type",
       cancel: "Cancel",
       openAccount: "Open Account",
       accountCreated: "Account created successfully",
-      pleaseSelect: "Please select",
       optional: "Optional",
-      benefits: "Benefits",
       currentBenefits: "Instant transfers, low fees",
       savingsBenefits: "High interest, secure investment",
       businessBenefits: "Business services, high limits",
       cardOptions: "Card Options",
       requestMastercard: "Request Mastercard",
       requestVisa: "Request Visa Card",
-      ibanGenerated: "IBAN Number",
-      accountDetails: "Account Details"
+      ibanGenerated: "IBAN Number"
     }
   };
 
@@ -124,16 +115,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
 
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
 
-  // Generate IBAN number
-  const generateIBAN = () => {
-    if (!selectedCurrencyData) return '';
-    const bankCode = '0001'; // Bank Aljazira code
-    const branchCode = '001';
-    const accountNumber = Math.random().toString().substr(2, 12);
-    const checkDigits = '00'; // Simplified for demo
-    return `${selectedCurrencyData.countryCode}${checkDigits}${bankCode}${branchCode}${accountNumber}`;
-  };
-
   const handleOpenAccount = () => {
     if (!selectedCurrency || !accountType) {
       toast({
@@ -144,7 +125,7 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
       return;
     }
 
-    const iban = generateIBAN();
+    const iban = generateIBAN(selectedCurrencyData?.countryCode || 'SY');
     const cards = [];
     if (requestMastercard) cards.push('Mastercard');
     if (requestVisa) cards.push('Visa');
@@ -183,93 +164,41 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
 
         <div className="space-y-6 py-4">
           {/* Account Type Selection */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">{t.accountType}</Label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {accountTypes.map((type) => (
-                <Card 
-                  key={type.type}
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    accountType === type.type 
-                      ? 'ring-2 ring-blue-500 bg-blue-50' 
-                      : ''
-                  }`}
-                  onClick={() => setAccountType(type.type)}
-                >
-                  <CardContent className="p-4">
-                    <h4 className="font-medium mb-1">{type.name}</h4>
-                    <p className="text-xs text-gray-600">{type.benefits}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+          <AccountTypeSelector
+            accountTypes={accountTypes}
+            selectedType={accountType}
+            onTypeSelect={setAccountType}
+            title={t.accountType}
+          />
 
           {/* Currency Selection */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">{t.currency}</Label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {currencies.map((currency) => {
-                const Icon = currency.icon;
-                return (
-                  <Card 
-                    key={currency.code}
-                    className={`cursor-pointer transition-all hover:shadow-md ${
-                      selectedCurrency === currency.code 
-                        ? 'ring-2 ring-blue-500 bg-blue-50' 
-                        : ''
-                    }`}
-                    onClick={() => setSelectedCurrency(currency.code)}
-                  >
-                    <CardContent className="p-4 text-center">
-                      <Icon className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                      <h4 className="font-medium">{currency.code}</h4>
-                      <p className="text-xs text-gray-600">{currency.name}</p>
-                      <p className="text-xs text-green-600 mt-1">
-                        {t.minimumDeposit}: {currency.minDeposit.toLocaleString()} {currency.code}
-                      </p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
+          <CurrencySelector
+            currencies={currencies}
+            selectedCurrency={selectedCurrency}
+            onCurrencySelect={setSelectedCurrency}
+            title={t.currency}
+            minimumDepositText={t.minimumDeposit}
+          />
 
           {/* Card Options */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">{t.cardOptions}</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg">
-                <Checkbox 
-                  id="mastercard" 
-                  checked={requestMastercard}
-                  onCheckedChange={setRequestMastercard}
-                />
-                <div className="flex items-center space-x-2 space-x-reverse">
-                  <CreditCard className="h-5 w-5 text-orange-600" />
-                  <Label htmlFor="mastercard" className="font-medium">{t.requestMastercard}</Label>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg">
-                <Checkbox 
-                  id="visa" 
-                  checked={requestVisa}
-                  onCheckedChange={setRequestVisa}
-                />
-                <div className="flex items-center space-x-2 space-x-reverse">
-                  <CreditCard className="h-5 w-5 text-blue-600" />
-                  <Label htmlFor="visa" className="font-medium">{t.requestVisa}</Label>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CardOptionsSelector
+            requestMastercard={requestMastercard}
+            requestVisa={requestVisa}
+            onMastercardChange={setRequestMastercard}
+            onVisaChange={setRequestVisa}
+            translations={{
+              cardOptions: t.cardOptions,
+              requestMastercard: t.requestMastercard,
+              requestVisa: t.requestVisa
+            }}
+          />
 
           {/* IBAN Preview */}
           {selectedCurrencyData && (
             <div className="space-y-2">
               <Label className="text-base font-semibold">{t.ibanGenerated}</Label>
               <div className="p-3 bg-gray-50 rounded-lg border">
-                <p className="font-mono text-sm text-gray-700">{generateIBAN()}</p>
+                <p className="font-mono text-sm text-gray-700">{generateIBAN(selectedCurrencyData.countryCode)}</p>
               </div>
             </div>
           )}
