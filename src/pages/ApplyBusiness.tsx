@@ -110,7 +110,8 @@ const ApplyBusiness = () => {
 
           if (uploadError) throw uploadError;
 
-          let documentType = 'national_id';
+          // Map document types correctly
+          let documentType: 'national_id' | 'business_license' | 'commercial_registration' = 'national_id';
           if (docType === 'businessLicense') documentType = 'business_license';
           if (docType === 'commercialRegistration') documentType = 'commercial_registration';
 
