@@ -10,6 +10,18 @@ interface CardManagementProps {
   language: 'ar' | 'en';
 }
 
+type CardStatus = 'active' | 'blocked' | 'expired';
+
+interface CardType {
+  id: string;
+  type: string;
+  brand: string;
+  number: string;
+  expiry: string;
+  status: CardStatus;
+  color: string;
+}
+
 const CardManagement: React.FC<CardManagementProps> = ({ language }) => {
   const [showCardNumbers, setShowCardNumbers] = useState(false);
   const { toast } = useToast();
@@ -61,14 +73,14 @@ const CardManagement: React.FC<CardManagementProps> = ({ language }) => {
 
   const t = translations[language];
 
-  const [cards, setCards] = useState([
+  const [cards, setCards] = useState<CardType[]>([
     {
       id: '1',
       type: t.debitCard,
       brand: t.mastercard,
       number: '5432 **** **** 1234',
       expiry: '12/26',
-      status: 'active' as const,
+      status: 'active' as CardStatus,
       color: 'bg-gradient-to-r from-blue-600 to-purple-600'
     },
     {
@@ -77,7 +89,7 @@ const CardManagement: React.FC<CardManagementProps> = ({ language }) => {
       brand: t.visa,
       number: '4567 **** **** 8901',
       expiry: '08/25',
-      status: 'active' as const,
+      status: 'active' as CardStatus,
       color: 'bg-gradient-to-r from-green-600 to-teal-600'
     },
     {
@@ -86,12 +98,12 @@ const CardManagement: React.FC<CardManagementProps> = ({ language }) => {
       brand: t.visa,
       number: '4321 **** **** 5678',
       expiry: '03/24',
-      status: 'expired' as const,
+      status: 'expired' as CardStatus,
       color: 'bg-gradient-to-r from-gray-600 to-gray-700'
     }
   ]);
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: CardStatus) => {
     switch (status) {
       case 'active':
         return <Badge className="bg-green-100 text-green-800">{t.active}</Badge>;
@@ -107,12 +119,12 @@ const CardManagement: React.FC<CardManagementProps> = ({ language }) => {
   const toggleCardStatus = (cardId: string) => {
     setCards(cards.map(card => {
       if (card.id === cardId && card.status !== 'expired') {
-        const newStatus = card.status === 'active' ? 'blocked' : 'active';
+        const newStatus: CardStatus = card.status === 'active' ? 'blocked' : 'active';
         toast({
           title: newStatus === 'blocked' ? t.cardBlocked : t.cardUnblocked,
           description: `${card.brand} ${card.type} ${card.number}`,
         });
-        return { ...card, status: newStatus as 'active' | 'blocked' };
+        return { ...card, status: newStatus };
       }
       return card;
     }));
