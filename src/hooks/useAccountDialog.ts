@@ -2,26 +2,7 @@
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { generateIBAN } from "@/utils/ibanGenerator";
-
-interface AccountCategory {
-  id: string;
-  type: 'personal' | 'business';
-  name: string;
-  description: string;
-  benefits: string[];
-  minDeposit: number;
-  currency: string;
-  color: string;
-  bgColor: string;
-  popular?: boolean;
-}
-
-interface Currency {
-  code: string;
-  name: string;
-  minDeposit: number;
-  countryCode: string;
-}
+import { AccountCategory, Currency } from "@/types/account";
 
 export const useAccountDialog = (language: 'ar' | 'en') => {
   const [isOpen, setIsOpen] = useState(false);

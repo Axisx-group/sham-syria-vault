@@ -1,18 +1,6 @@
 
 import React from 'react';
-
-interface AccountCategory {
-  id: string;
-  type: 'personal' | 'business';
-  name: string;
-  description: string;
-  benefits: string[];
-  minDeposit: number;
-  currency: string;
-  color: string;
-  bgColor: string;
-  popular?: boolean;
-}
+import { AccountCategory } from "@/types/account";
 
 interface SelectedAccountSummaryProps {
   selectedAccount: AccountCategory;

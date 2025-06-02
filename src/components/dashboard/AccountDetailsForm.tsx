@@ -5,27 +5,7 @@ import SelectedAccountSummary from "./SelectedAccountSummary";
 import CurrencySelector from "./CurrencySelector";
 import CardOptionsSelector from "./CardOptionsSelector";
 import IbanPreview from "./IbanPreview";
-
-interface AccountCategory {
-  id: string;
-  type: 'personal' | 'business';
-  name: string;
-  description: string;
-  benefits: string[];
-  minDeposit: number;
-  currency: string;
-  color: string;
-  bgColor: string;
-  popular?: boolean;
-}
-
-interface Currency {
-  code: string;
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  minDeposit: number;
-  countryCode: string;
-}
+import { Currency, AccountCategory } from "@/types/account";
 
 interface AccountDetailsFormProps {
   language: 'ar' | 'en';

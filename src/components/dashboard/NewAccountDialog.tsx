@@ -7,6 +7,7 @@ import { useAccountDialog } from "@/hooks/useAccountDialog";
 import { getAccountDialogTranslations } from "@/utils/accountDialogTranslations";
 import AccountCategorySelector from "./AccountCategorySelector";
 import AccountDetailsForm from "./AccountDetailsForm";
+import { Currency } from "@/types/account";
 
 interface NewAccountDialogProps {
   language: 'ar' | 'en';
@@ -32,7 +33,7 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
 
   const t = getAccountDialogTranslations(language);
 
-  const currencies = [
+  const currencies: Currency[] = [
     { 
       code: 'SYP', 
       name: language === 'ar' ? 'الليرة السورية' : 'Syrian Pound', 

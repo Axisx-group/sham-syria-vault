@@ -2,15 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { LucideIcon } from 'lucide-react';
-
-interface Currency {
-  code: string;
-  name: string;
-  icon: LucideIcon;
-  minDeposit: number;
-  countryCode: string;
-}
+import { Currency } from "@/types/account";
 
 interface CurrencySelectorProps {
   currencies: Currency[];
