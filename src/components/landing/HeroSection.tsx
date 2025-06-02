@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
 import NewAccountDialog from '@/components/dashboard/NewAccountDialog';
-import { ArrowRight, Play, CheckCircle, Shield, Award } from "lucide-react";
+import DemoVideoDialog from './DemoVideoDialog';
+import { ArrowRight, CheckCircle, Shield, Award } from "lucide-react";
 import { translations } from '@/utils/translations';
 
 interface HeroSectionProps {
@@ -42,10 +43,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language }) => {
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           
-          <Button variant="outline" size="lg" className="px-8 py-4 text-lg hover:shadow-lg transition-all">
-            <Play className="mr-2 h-5 w-5" />
-            {t.watchDemo}
-          </Button>
+          <DemoVideoDialog language={language} />
         </div>
 
         {/* Trust indicators */}
