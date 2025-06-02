@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Eye, EyeOff, ArrowUpRight, ArrowDownRight, DollarSign, Euro, Banknote } from "lucide-react";
 
 interface AccountOverviewProps {
   language: 'ar' | 'en';
@@ -20,47 +20,85 @@ const AccountOverview: React.FC<AccountOverviewProps> = ({
       totalBalance: "الرصيد الإجمالي",
       mainAccount: "الحساب الرئيسي",
       savingsAccount: "حساب التوفير",
-      euroAccount: "الحساب باليورو",
+      usdAccount: "الحساب بالدولار",
+      eurAccount: "الحساب باليورو",
+      sypAccount: "الحساب بالليرة السورية",
       monthlyIncome: "الدخل الشهري",
-      monthlyExpenses: "المصروفات الشهرية"
+      monthlyExpenses: "المصروفات الشهرية",
+      multiCurrency: "محفظة متعددة العملات"
     },
     en: {
       totalBalance: "Total Balance",
       mainAccount: "Main Account",
       savingsAccount: "Savings Account", 
-      euroAccount: "EUR Account",
+      usdAccount: "USD Account",
+      eurAccount: "EUR Account",
+      sypAccount: "SYP Account",
       monthlyIncome: "Monthly Income",
-      monthlyExpenses: "Monthly Expenses"
+      monthlyExpenses: "Monthly Expenses",
+      multiCurrency: "Multi-Currency Wallet"
     }
   };
 
   const t = translations[language];
 
   const accounts = [
-    { name: t.mainAccount, balance: 2450000, currency: "SYP", color: "bg-blue-500" },
-    { name: t.savingsAccount, balance: 850000, currency: "SYP", color: "bg-green-500" },
-    { name: t.euroAccount, balance: 1250, currency: "EUR", color: "bg-purple-500" }
+    { 
+      name: t.sypAccount, 
+      balance: 2450000, 
+      currency: "SYP", 
+      color: "bg-blue-500",
+      icon: Banknote,
+      change: "+15.2%"
+    },
+    { 
+      name: t.usdAccount, 
+      balance: 3250, 
+      currency: "USD", 
+      color: "bg-green-500",
+      icon: DollarSign,
+      change: "+8.5%"
+    },
+    { 
+      name: t.eurAccount, 
+      balance: 2750, 
+      currency: "EUR", 
+      color: "bg-purple-500",
+      icon: Euro,
+      change: "+12.1%"
+    }
   ];
 
   const formatCurrency = (amount: number, currency: string) => {
     if (!showBalance) return "••••••";
     
-    if (currency === "SYP") {
-      return new Intl.NumberFormat('ar-SY', {
-        style: 'currency',
-        currency: 'SYP',
-        minimumFractionDigits: 0
-      }).format(amount);
+    switch (currency) {
+      case "SYP":
+        return new Intl.NumberFormat('ar-SY', {
+          style: 'currency',
+          currency: 'SYP',
+          minimumFractionDigits: 0
+        }).format(amount);
+      case "USD":
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        }).format(amount);
+      case "EUR":
+        return new Intl.NumberFormat('en-EU', {
+          style: 'currency',
+          currency: 'EUR'
+        }).format(amount);
+      default:
+        return amount.toString();
     }
-    
-    return new Intl.NumberFormat('en-EU', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(amount);
   };
 
-  const totalSYP = accounts.filter(acc => acc.currency === "SYP")
-    .reduce((sum, acc) => sum + acc.balance, 0);
+  // Calculate total in SYP equivalent (using sample exchange rates)
+  const exchangeRates = { USD: 12500, EUR: 13200, SYP: 1 };
+  const totalSYP = accounts.reduce((sum, acc) => {
+    return sum + (acc.balance * exchangeRates[acc.currency as keyof typeof exchangeRates]);
+  }, 0);
 
   return (
     <div className="space-y-4">
@@ -68,7 +106,10 @@ const AccountOverview: React.FC<AccountOverviewProps> = ({
       <Card className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">{t.totalBalance}</CardTitle>
+            <div>
+              <CardTitle className="text-lg">{t.totalBalance}</CardTitle>
+              <p className="text-blue-100 text-sm">{t.multiCurrency}</p>
+            </div>
             <Button
               variant="ghost"
               size="sm"
@@ -89,23 +130,33 @@ const AccountOverview: React.FC<AccountOverviewProps> = ({
         </CardContent>
       </Card>
 
-      {/* Account Cards Grid */}
+      {/* Currency Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {accounts.map((account, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${account.color}`}></div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-600">{account.name}</p>
-                  <p className="font-semibold text-lg">
+        {accounts.map((account, index) => {
+          const Icon = account.icon;
+          return (
+            <Card key={index} className="hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`p-2 rounded-full ${account.color} text-white`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs text-green-600 font-medium">{account.change}</span>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">{account.name}</p>
+                  <p className="font-bold text-xl">
                     {formatCurrency(account.balance, account.currency)}
                   </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {account.currency} • {language === 'ar' ? 'متاح' : 'Available'}
+                  </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Monthly Summary */}
@@ -119,6 +170,7 @@ const AccountOverview: React.FC<AccountOverviewProps> = ({
                 <p className="font-semibold text-lg text-green-800">
                   {formatCurrency(450000, "SYP")}
                 </p>
+                <p className="text-xs text-green-600">+12% من الشهر السابق</p>
               </div>
             </div>
           </CardContent>
@@ -133,6 +185,7 @@ const AccountOverview: React.FC<AccountOverviewProps> = ({
                 <p className="font-semibold text-lg text-red-800">
                   {formatCurrency(320000, "SYP")}
                 </p>
+                <p className="text-xs text-red-600">-5% من الشهر السابق</p>
               </div>
             </div>
           </CardContent>
