@@ -9,7 +9,143 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      account_applications: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          address_line1: string
+          address_line2: string | null
+          admin_notes: string | null
+          business_name: string | null
+          business_registration_number: string | null
+          business_tax_id: string | null
+          business_type: string | null
+          city: string
+          country: string
+          created_at: string | null
+          date_of_birth: string | null
+          email: string
+          first_name: string
+          id: string
+          initial_deposit: number | null
+          last_name: string
+          nationality: string | null
+          phone: string
+          postal_code: string | null
+          preferred_currency: string | null
+          request_credit_card: boolean | null
+          request_debit_card: boolean | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["application_status"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          address_line1: string
+          address_line2?: string | null
+          admin_notes?: string | null
+          business_name?: string | null
+          business_registration_number?: string | null
+          business_tax_id?: string | null
+          business_type?: string | null
+          city: string
+          country?: string
+          created_at?: string | null
+          date_of_birth?: string | null
+          email: string
+          first_name: string
+          id?: string
+          initial_deposit?: number | null
+          last_name: string
+          nationality?: string | null
+          phone: string
+          postal_code?: string | null
+          preferred_currency?: string | null
+          request_credit_card?: boolean | null
+          request_debit_card?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["application_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          address_line1?: string
+          address_line2?: string | null
+          admin_notes?: string | null
+          business_name?: string | null
+          business_registration_number?: string | null
+          business_tax_id?: string | null
+          business_type?: string | null
+          city?: string
+          country?: string
+          created_at?: string | null
+          date_of_birth?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          initial_deposit?: number | null
+          last_name?: string
+          nationality?: string | null
+          phone?: string
+          postal_code?: string | null
+          preferred_currency?: string | null
+          request_credit_card?: boolean | null
+          request_debit_card?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["application_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      application_documents: {
+        Row: {
+          application_id: string | null
+          document_type: Database["public"]["Enums"]["document_type"]
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          document_type: Database["public"]["Enums"]["document_type"]
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          uploaded_at?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          document_type?: Database["public"]["Enums"]["document_type"]
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          uploaded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "account_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +154,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      account_type: "personal" | "business"
+      application_status: "pending" | "under_review" | "approved" | "rejected"
+      document_type:
+        | "national_id"
+        | "passport"
+        | "business_license"
+        | "commercial_registration"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +275,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      account_type: ["personal", "business"],
+      application_status: ["pending", "under_review", "approved", "rejected"],
+      document_type: [
+        "national_id",
+        "passport",
+        "business_license",
+        "commercial_registration",
+      ],
+    },
   },
 } as const

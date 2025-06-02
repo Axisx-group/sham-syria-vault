@@ -3,9 +3,8 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
-import NewAccountDialog from '@/components/dashboard/NewAccountDialog';
 import DemoVideoDialog from './DemoVideoDialog';
-import { ArrowRight, CheckCircle, Shield, Award } from "lucide-react";
+import { ArrowRight, CheckCircle, Shield, Award, User, Building2 } from "lucide-react";
 import { translations } from '@/utils/translations';
 
 interface HeroSectionProps {
@@ -31,16 +30,37 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language }) => {
           {t.description}
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <NewAccountDialog language={language} />
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <Button 
+            size="lg"
+            onClick={() => navigate('/apply/personal')}
+            className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all"
+          >
+            <User className="mr-2 h-5 w-5" />
+            {language === 'ar' ? 'فتح حساب شخصي' : 'Open Personal Account'}
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
           
           <Button 
             size="lg"
-            onClick={() => navigate('/dashboard')}
-            className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all"
+            variant="outline"
+            onClick={() => navigate('/apply/business')}
+            className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-lg hover:shadow-xl"
           >
-            {t.getStarted}
+            <Building2 className="mr-2 h-5 w-5" />
+            {language === 'ar' ? 'فتح حساب تجاري' : 'Open Business Account'}
             <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <Button 
+            size="lg"
+            variant="ghost"
+            onClick={() => navigate('/dashboard')}
+            className="px-8 py-4 text-lg hover:shadow-lg transition-all"
+          >
+            {language === 'ar' ? 'دخول العملاء الحاليين' : 'Existing Customer Login'}
           </Button>
           
           <DemoVideoDialog language={language} />

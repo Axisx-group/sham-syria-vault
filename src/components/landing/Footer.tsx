@@ -39,19 +39,36 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
           
           <div>
             <h3 className="font-semibold mb-4">
+              {language === 'ar' ? 'فتح الحسابات' : 'Open Accounts'}
+            </h3>
+            <ul className="space-y-2 text-gray-400">
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/apply/personal')}>
+                {language === 'ar' ? 'حساب شخصي' : 'Personal Account'}
+              </li>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/apply/business')}>
+                {language === 'ar' ? 'حساب تجاري' : 'Business Account'}
+              </li>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/dashboard')}>
+                {language === 'ar' ? 'دخول العملاء' : 'Customer Login'}
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="font-semibold mb-4">
               {language === 'ar' ? 'الخدمات' : 'Services'}
             </h3>
             <ul className="space-y-2 text-gray-400">
-              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/dashboard')}>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/services/personal')}>
                 {t.personalBanking}
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/dashboard')}>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/services/business')}>
                 {t.businessBanking}
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/dashboard')}>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/services/digital-wallet')}>
                 {t.digitalWallet}
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/dashboard')}>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/services/investment')}>
                 {t.investment}
               </li>
             </ul>
@@ -65,26 +82,15 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
               <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/contact')}>
                 {language === 'ar' ? 'اتصل بنا' : 'Contact Us'}
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors">
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/support/faq')}>
                 {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/contact')}>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/support/technical')}>
                 {language === 'ar' ? 'الدعم الفني' : 'Technical Support'}
               </li>
               <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/demo')}>
                 {language === 'ar' ? 'العروض التوضيحية' : 'Demo Videos'}
               </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold mb-4">
-              {language === 'ar' ? 'تواصل معنا' : 'Contact'}
-            </h3>
-            <ul className="space-y-2 text-gray-400">
-              <li className="cursor-pointer hover:text-white transition-colors">+963 11 123 4567</li>
-              <li className="cursor-pointer hover:text-white transition-colors">info@bankaljazira.sy</li>
-              <li>{language === 'ar' ? 'دمشق، سوريا' : 'Damascus, Syria'}</li>
             </ul>
           </div>
         </div>

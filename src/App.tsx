@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
+import ApplyPersonal from "./pages/ApplyPersonal";
+import ApplyBusiness from "./pages/ApplyBusiness";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/demo" element={<Demo />} />
+          <Route path="/apply/personal" element={<ApplyPersonal />} />
+          <Route path="/apply/business" element={<ApplyBusiness />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
