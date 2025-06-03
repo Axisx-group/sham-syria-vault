@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useToast } from "@/hooks/use-toast";
@@ -46,6 +45,7 @@ const SecureAdminPortal = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [accessCode, setAccessCode] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isValidAdmin, setIsValidAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
@@ -65,40 +65,61 @@ const SecureAdminPortal = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (user) {
-        // التحقق من دور المدير
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, email')
-          .eq('id', user.id)
-          .single();
-
-        if (profile?.role === 'admin' && profile?.email === 'admin@souripay.com') {
-          setCurrentUser(user);
-          // التحقق من رمز الوصول المحفوظ محلياً
-          const savedCode = localStorage.getItem('secure_admin_access');
-          if (savedCode === SECURE_ACCESS_CODE) {
-            setIsAuthenticated(true);
-          }
-        } else {
-          toast({
-            title: 'وصول غير مخول',
-            description: 'ليس لديك صلاحية للوصول لهذه الصفحة',
-            variant: 'destructive'
-          });
-          window.location.href = '/';
-        }
-      } else {
+      if (!user) {
+        // لا يوجد مستخدم مسجل دخول
         toast({
           title: 'مطلوب تسجيل الدخول',
-          description: 'يجب تسجيل الدخول أولاً للوصول لهذه الصفحة',
+          description: 'يجب تسجيل الدخول أولاً للوصول لهذه البوابة',
           variant: 'destructive'
         });
-        window.location.href = '/admin';
+        // إعادة توجيه إلى صفحة تسجيل الدخول للإدارة
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 2000);
+        setIsLoading(false);
+        return;
       }
+
+      setCurrentUser(user);
+
+      // التحقق من دور المدير
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, email')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile || profile.role !== 'admin' || profile.email !== 'admin@souripay.com') {
+        toast({
+          title: 'وصول غير مخول',
+          description: 'ليس لديك صلاحية للوصول لهذه البوابة الآمنة',
+          variant: 'destructive'
+        });
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 2000);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsValidAdmin(true);
+      
+      // التحقق من رمز الوصول المحفوظ محلياً
+      const savedCode = localStorage.getItem('secure_admin_access');
+      if (savedCode === SECURE_ACCESS_CODE) {
+        setIsAuthenticated(true);
+      }
+      
     } catch (error) {
       console.error('Authentication check failed:', error);
-      window.location.href = '/';
+      toast({
+        title: 'خطأ في التحقق',
+        description: 'حدث خطأ أثناء التحقق من الصلاحيات',
+        variant: 'destructive'
+      });
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -198,6 +219,7 @@ const SecureAdminPortal = () => {
     });
   };
 
+  // ... keep existing code (sidebarItems array)
   const sidebarItems = [
     { id: 'overview', label: 'نظرة عامة شاملة', icon: Monitor },
     { id: 'system-status', label: 'مراقبة النظام', icon: Activity },
@@ -232,6 +254,7 @@ const SecureAdminPortal = () => {
     { id: 'reports', label: 'التقارير التنفيذية', icon: Activity }
   ];
 
+  // ... keep existing code (renderTabContent function)
   const renderTabContent = () => {
     switch (activeTab) {
       case 'system-status':
@@ -282,6 +305,39 @@ const SecureAdminPortal = () => {
     );
   }
 
+  // إذا لم يكن مسجل دخول أو ليس مدير صالح
+  if (!currentUser || !isValidAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="h-8 w-8 text-red-600" />
+            </div>
+            <CardTitle className="text-2xl text-red-600">وصول مرفوض</CardTitle>
+            <p className="text-gray-600">ليس لديك صلاحية للوصول لهذه البوابة</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                هذه البوابة مخصصة للمدير الأساسي فقط
+              </AlertDescription>
+            </Alert>
+            <Button 
+              onClick={() => window.location.href = '/admin'}
+              className="w-full"
+              variant="outline"
+            >
+              العودة لصفحة الإدارة
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // إذا لم يدخل رمز الوصول الآمن
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center">
