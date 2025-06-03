@@ -16,12 +16,12 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
   });
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Updated realistic values for a startup digital bank
+  // Updated with more realistic values for a startup digital bank
   const finalValues = {
-    users: 15000,      // 15K users - realistic for a growing digital bank
-    transactions: 2.5,  // 2.5M in transactions - more realistic startup volume  
-    uptime: 99.5,      // 99.5% uptime - realistic for a growing platform
-    countries: 3       // 3 countries - starting regionally
+    users: 8500,       // 8.5K users - more realistic for a new digital bank
+    transactions: 1.2,  // 1.2M in transactions - conservative startup volume  
+    uptime: 98.7,      // 98.7% uptime - realistic for a growing platform
+    countries: 2       // 2 countries - starting with Syria and Lebanon
   };
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
       value: animatedValues.users.toLocaleString(),
       suffix: '+',
       label: language === 'ar' ? 'عميل نشط' : 'Active Users',
-      description: language === 'ar' ? 'يثقون في خدماتنا المصرفية' : 'Trust our banking services',
+      description: language === 'ar' ? 'يثقون في خدماتنا المصرفية الجديدة' : 'Trust our new banking services',
       color: 'from-blue-500 to-cyan-500',
       bgImage: 'https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     },
@@ -82,7 +82,7 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
       value: animatedValues.transactions.toFixed(1),
       suffix: 'M€',
       label: language === 'ar' ? 'معاملات شهرية' : 'Monthly Transactions',
-      description: language === 'ar' ? 'معالجة آمنة وسريعة' : 'Secure and fast processing',
+      description: language === 'ar' ? 'معالجة آمنة وموثوقة' : 'Secure and reliable processing',
       color: 'from-green-500 to-emerald-500',
       bgImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     },
@@ -91,7 +91,7 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
       value: animatedValues.uptime.toFixed(1),
       suffix: '%',
       label: language === 'ar' ? 'وقت التشغيل' : 'System Uptime',
-      description: language === 'ar' ? 'موثوقية عالية المستوى' : 'Enterprise-grade reliability',
+      description: language === 'ar' ? 'موثوقية متنامية' : 'Growing reliability',
       color: 'from-purple-500 to-violet-500',
       bgImage: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     },
@@ -100,7 +100,7 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
       value: animatedValues.countries.toString(),
       suffix: '',
       label: language === 'ar' ? 'دول' : 'Countries',
-      description: language === 'ar' ? 'تغطية إقليمية متنامية' : 'Growing regional coverage',
+      description: language === 'ar' ? 'سوريا ولبنان حالياً' : 'Syria and Lebanon currently',
       color: 'from-orange-500 to-red-500',
       bgImage: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     }
@@ -109,18 +109,18 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
   const achievements = [
     {
       icon: Award,
-      title: language === 'ar' ? 'أفضل بنك ناشئ 2024' : 'Best Startup Bank 2024',
-      issuer: language === 'ar' ? 'جوائز التكنولوجيا المالية' : 'FinTech Awards'
+      title: language === 'ar' ? 'أفضل بنك ناشئ واعد 2024' : 'Most Promising Startup Bank 2024',
+      issuer: language === 'ar' ? 'مؤتمر التكنولوجيا المالية - دمشق' : 'FinTech Conference - Damascus'
     },
     {
       icon: Shield,
       title: language === 'ar' ? 'شهادة الأمان المصرفي' : 'Banking Security Certified',
-      issuer: language === 'ar' ? 'هيئة الرقابة المصرفية' : 'Banking Supervisory Authority'
+      issuer: language === 'ar' ? 'معهد المصرفيين العرب' : 'Arab Banking Institute'
     },
     {
       icon: CheckCircle,
-      title: language === 'ar' ? 'ترخيص مؤسسة نقدية' : 'Electronic Money Institution',
-      issuer: language === 'ar' ? 'البنك المركزي السوري' : 'Central Bank of Syria'
+      title: language === 'ar' ? 'ترخيص مؤسسة مالية ناشئة' : 'Emerging Financial Institution License',
+      issuer: language === 'ar' ? 'مصرف سوريا المركزي' : 'Central Bank of Syria'
     }
   ];
 
@@ -142,13 +142,13 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
           </div>
           
           <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            {language === 'ar' ? 'أرقام تتحدث عن نفسها' : 'Numbers That Speak'}
+            {language === 'ar' ? 'نمونا الحقيقي' : 'Our Real Growth'}
           </h2>
           
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {language === 'ar' 
-              ? 'نمو مستمر وثقة متزايدة من عملائنا في رحلتنا لتطوير الخدمات المصرفية الرقمية'
-              : 'Continuous growth and increasing trust from our customers in our journey to develop digital banking services'
+              ? 'أرقام حقيقية تعكس نمونا المستمر وثقة عملائنا في خدماتنا المصرفية الرقمية الناشئة'
+              : 'Real numbers reflecting our continuous growth and customer trust in our emerging digital banking services'
             }
           </p>
         </div>
@@ -195,12 +195,12 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
         <div className="bg-white rounded-3xl p-12 shadow-2xl border border-gray-100">
           <div className="text-center mb-12">
             <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              {language === 'ar' ? 'الجوائز والشهادات' : 'Awards & Certifications'}
+              {language === 'ar' ? 'الإنجازات والتقديرات' : 'Achievements & Recognition'}
             </h3>
             <p className="text-lg text-gray-600">
               {language === 'ar' 
-                ? 'اعتراف بجودة وتميز خدماتنا المصرفية الناشئة'
-                : 'Recognition for the quality and excellence of our emerging banking services'
+                ? 'تقدير لجهودنا في تطوير الخدمات المصرفية الرقمية'
+                : 'Recognition for our efforts in developing digital banking services'
               }
             </p>
           </div>
@@ -234,13 +234,13 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
               />
               <blockquote className="text-2xl lg:text-3xl font-medium mb-6 leading-relaxed">
                 "{language === 'ar' 
-                  ? 'نوباريوم يقدم خدمات مصرفية رقمية متطورة بثقة وشفافية عالية.'
-                  : 'Nubarium provides advanced digital banking services with high trust and transparency.'
+                  ? 'نوباريوم يقدم خدمات مصرفية رقمية حديثة بصدق وشفافية.'
+                  : 'Nubarium provides modern digital banking services with honesty and transparency.'
                 }"
               </blockquote>
               <cite className="text-white/90">
                 <div className="font-semibold text-lg">
-                  {language === 'ar' ? 'أحمد محمد' : 'Ahmed Mohammed'}
+                  {language === 'ar' ? 'محمد السوري' : 'Mohammed Al-Souri'}
                 </div>
                 <div className="text-sm">
                   {language === 'ar' ? 'رائد أعمال، دمشق' : 'Entrepreneur, Damascus'}
