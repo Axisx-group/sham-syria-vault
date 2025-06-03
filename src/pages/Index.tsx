@@ -20,6 +20,7 @@ const Index = () => {
   return (
     <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <NotificationBanner language={language} />
+      <Header language={language} onLanguageChange={setLanguage} />
       
       <section id="hero" className="relative">
         <RevolutStyleSlider language={language} />

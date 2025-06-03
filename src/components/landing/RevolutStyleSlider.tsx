@@ -114,43 +114,13 @@ const RevolutStyleSlider: React.FC<SliderProps> = ({ language }) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-20">
+      <div className="relative z-10 container mx-auto px-4 py-20 pt-32">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
             
             {/* Left Content */}
             <div className={`text-white space-y-8 ${language === 'ar' ? 'lg:text-right' : 'lg:text-left'}`}>
               
-              {/* Navigation */}
-              <nav className="flex items-center justify-between mb-12">
-                <div className="flex items-center space-x-8">
-                  <div className="text-2xl font-bold">Nubarium</div>
-                  <div className="hidden md:flex space-x-6 text-sm">
-                    <a href="#" className="hover:opacity-80 transition-opacity">
-                      {language === 'ar' ? 'شخصي' : 'Personal'}
-                    </a>
-                    <a href="#" className="hover:opacity-80 transition-opacity">
-                      {language === 'ar' ? 'أعمال' : 'Business'}
-                    </a>
-                    <a href="#" className="hover:opacity-80 transition-opacity">
-                      {language === 'ar' ? 'نوباريوم <18' : 'Nubarium <18'}
-                    </a>
-                    <a href="#" className="hover:opacity-80 transition-opacity">
-                      {language === 'ar' ? 'عنا' : 'About us'}
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <Button variant="ghost" className="text-white hover:bg-white/10">
-                    {language === 'ar' ? 'تسجيل الدخول' : 'Log in'}
-                  </Button>
-                  <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6">
-                    {language === 'ar' ? 'فتح حساب' : 'Open account'}
-                  </Button>
-                </div>
-              </nav>
-
               {/* Main Title with Animation */}
               <div 
                 key={currentSlide}
