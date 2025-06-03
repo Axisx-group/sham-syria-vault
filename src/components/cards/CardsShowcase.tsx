@@ -61,7 +61,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
     {
       name: t.platinum,
       description: t.platinumDesc,
-      gradient: "from-gray-900 via-black to-gray-800",
+      gradient: "from-slate-900 via-gray-900 to-black",
       accentGradient: "from-purple-400 via-pink-400 to-purple-600",
       icon: Crown,
       tier: "PLATINUM ELITE",
@@ -73,8 +73,8 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
     {
       name: t.gold,
       description: t.goldDesc,
-      gradient: "from-amber-400 via-yellow-500 to-amber-600",
-      accentGradient: "from-orange-300 via-yellow-400 to-amber-500",
+      gradient: "from-yellow-400 via-amber-500 to-orange-500",
+      accentGradient: "from-yellow-300 via-orange-400 to-red-500",
       icon: Award,
       tier: "GOLD PRESTIGE",
       number: "4567 **** **** 8901",
@@ -85,8 +85,8 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
     {
       name: t.classic,
       description: t.classicDesc,
-      gradient: "from-blue-600 via-indigo-600 to-purple-700",
-      accentGradient: "from-blue-400 via-indigo-500 to-purple-600",
+      gradient: "from-blue-500 via-indigo-600 to-purple-700",
+      accentGradient: "from-blue-400 via-cyan-500 to-indigo-600",
       icon: Star,
       tier: "CLASSIC SMART",
       number: "6789 **** **** 2345",
@@ -125,7 +125,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t.subtitle}</p>
         </div>
 
-        {/* Cards Carousel */}
+        {/* Realistic Cards Carousel */}
         <div className="max-w-7xl mx-auto mb-20">
           <Carousel className="w-full">
             <CarouselContent>
@@ -134,60 +134,80 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                 return (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                     <div className="group cursor-pointer p-4">
-                      {/* 3D Card */}
+                      {/* Realistic 3D Card */}
                       <div 
-                        className={`bg-gradient-to-br ${card.gradient} p-8 rounded-3xl shadow-2xl text-white relative overflow-hidden transform transition-all duration-700 hover:scale-105 hover:rotate-2 hover:shadow-3xl group-hover:-translate-y-4 mb-6`}
+                        className={`relative w-full aspect-[1.6/1] bg-gradient-to-br ${card.gradient} rounded-2xl shadow-2xl text-white overflow-hidden transform transition-all duration-700 hover:scale-105 hover:rotate-1 hover:shadow-3xl group-hover:-translate-y-4 mb-6`}
                         onClick={() => setSelectedCard(index)}
+                        style={{
+                          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+                        }}
                       >
-                        {/* Holographic Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                        
-                        {/* Background Pattern */}
-                        <div className="absolute inset-0 opacity-20">
-                          <div className={`absolute top-0 right-0 w-40 h-40 bg-gradient-to-br ${card.accentGradient} rounded-full -translate-y-20 translate-x-20 blur-2xl`}></div>
-                        </div>
+                        {/* Card shine and holographic effects */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-60"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
-                        {/* Card Header */}
-                        <div className="flex justify-between items-start mb-8 relative z-10">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                              <IconComponent className="w-4 h-4 text-white" />
+                        {/* Card Content */}
+                        <div className="relative z-10 h-full p-6 flex flex-col justify-between">
+                          {/* Top Row */}
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                <IconComponent className="w-3 h-3 text-white" />
+                              </div>
+                              <Badge variant="secondary" className="bg-white/20 text-white border-none backdrop-blur-sm text-xs px-2 py-1">
+                                {card.tier}
+                              </Badge>
                             </div>
-                            <Badge variant="secondary" className="bg-white/20 text-white border-none backdrop-blur-sm text-xs">
-                              {card.tier}
-                            </Badge>
+                            <div className="text-lg font-bold italic tracking-wider">VISA</div>
                           </div>
-                          <div className="text-white font-bold text-lg italic tracking-wider">VISA</div>
+
+                          {/* Chip */}
+                          <div className="w-10 h-7 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative self-start">
+                            <div className="absolute inset-0.5 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-md">
+                              <div className="w-full h-full bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-md border border-yellow-300">
+                                <div className="grid grid-cols-3 gap-px p-1 h-full">
+                                  {[...Array(9)].map((_, i) => (
+                                    <div key={i} className="bg-yellow-400 rounded-sm opacity-60"></div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Card Number */}
+                          <div className="font-mono text-lg tracking-widest font-light">
+                            {card.number}
+                          </div>
+
+                          {/* Bottom Row */}
+                          <div className="flex justify-between items-end">
+                            <div>
+                              <div className="text-xs opacity-70 tracking-widest mb-1">CARD HOLDER</div>
+                              <div className="font-semibold text-sm tracking-wide">{card.holder}</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-xs opacity-70 tracking-widest mb-1">EXPIRES</div>
+                              <div className="font-semibold text-sm">{card.expiry}</div>
+                            </div>
+                          </div>
+
+                          {/* Contactless symbol */}
+                          <div className="absolute top-6 right-16">
+                            <div className="relative w-5 h-5">
+                              <div className="absolute inset-0 border-2 border-white/40 rounded-full"></div>
+                              <div className="absolute inset-0.5 border-2 border-white/60 rounded-full"></div>
+                              <div className="absolute inset-1 border-2 border-white/80 rounded-full"></div>
+                            </div>
+                          </div>
+
+                          {/* Syria Vault branding */}
+                          <div className="absolute bottom-6 right-6 opacity-60">
+                            <div className="text-xs tracking-widest font-light">SYRIA VAULT</div>
+                          </div>
                         </div>
 
-                        {/* Chip */}
-                        <div className="w-14 h-10 bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-500 rounded-xl mb-8 relative z-10 shadow-xl">
-                          <div className="w-full h-full bg-gradient-to-br from-yellow-200 to-yellow-300 rounded-xl p-1">
-                            <div className="w-full h-full border-2 border-yellow-400 rounded-lg bg-gradient-to-br from-yellow-100 to-yellow-200"></div>
-                          </div>
-                        </div>
-
-                        {/* Card Number */}
-                        <div className="font-mono text-xl tracking-wider mb-8 relative z-10">
-                          {card.number}
-                        </div>
-
-                        {/* Card Details */}
-                        <div className="flex justify-between items-end relative z-10">
-                          <div>
-                            <p className="text-xs opacity-75 mb-1">CARD HOLDER</p>
-                            <p className="font-semibold">{card.holder}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs opacity-75 mb-1">EXPIRES</p>
-                            <p className="font-semibold">{card.expiry}</p>
-                          </div>
-                        </div>
-
-                        {/* Brand */}
-                        <div className="absolute bottom-6 right-6 opacity-60">
-                          <div className="text-xs tracking-widest font-light">SYRIA VAULT</div>
-                        </div>
+                        {/* Card edge lighting */}
+                        <div className="absolute inset-0 rounded-2xl border border-white/20"></div>
                       </div>
 
                       {/* Card Info */}
@@ -254,37 +274,67 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
               </div>
             </div>
 
-            {/* Preview Card */}
+            {/* Realistic Preview Card */}
             <div className="relative">
-              <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-8 rounded-3xl shadow-2xl text-white relative overflow-hidden transform rotate-6 hover:rotate-3 transition-transform duration-500">
-                {/* Animated Background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse"></div>
+              <div 
+                className="relative w-full aspect-[1.6/1] bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-2xl text-white overflow-hidden transform rotate-6 hover:rotate-3 transition-transform duration-500"
+                style={{
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+                }}
+              >
+                {/* Card effects */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-60"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 animate-pulse"></div>
                 
-                <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-8">
-                    <Badge className="bg-white/20 text-white border-none backdrop-blur-sm">
+                <div className="relative z-10 h-full p-6 flex flex-col justify-between">
+                  <div className="flex justify-between items-center">
+                    <Badge className="bg-white/20 text-white border-none backdrop-blur-sm text-xs px-2 py-1">
                       CUSTOM DESIGN
                     </Badge>
-                    <div className="text-white font-bold text-lg italic">VISA</div>
+                    <div className="text-lg font-bold italic">VISA</div>
                   </div>
 
-                  <div className="w-14 h-10 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-xl mb-8 shadow-xl"></div>
+                  <div className="w-10 h-7 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative">
+                    <div className="absolute inset-0.5 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-md">
+                      <div className="w-full h-full bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-md border border-yellow-300">
+                        <div className="grid grid-cols-3 gap-px p-1 h-full">
+                          {[...Array(9)].map((_, i) => (
+                            <div key={i} className="bg-yellow-400 rounded-sm opacity-60"></div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   
-                  <div className="font-mono text-xl tracking-wider mb-8">
+                  <div className="font-mono text-lg tracking-widest font-light">
                     **** **** **** 1234
                   </div>
                   
                   <div className="flex justify-between items-end">
                     <div>
-                      <p className="text-xs opacity-75 mb-1">CARD HOLDER</p>
-                      <p className="font-semibold">YOUR NAME</p>
+                      <div className="text-xs opacity-70 tracking-widest mb-1">CARD HOLDER</div>
+                      <div className="font-semibold text-sm tracking-wide">YOUR NAME</div>
                     </div>
-                    <div>
-                      <p className="text-xs opacity-75 mb-1">EXPIRES</p>
-                      <p className="font-semibold">12/28</p>
+                    <div className="text-right">
+                      <div className="text-xs opacity-70 tracking-widest mb-1">EXPIRES</div>
+                      <div className="font-semibold text-sm">12/28</div>
                     </div>
                   </div>
+
+                  <div className="absolute top-6 right-16">
+                    <div className="relative w-5 h-5">
+                      <div className="absolute inset-0 border-2 border-white/40 rounded-full"></div>
+                      <div className="absolute inset-0.5 border-2 border-white/60 rounded-full"></div>
+                      <div className="absolute inset-1 border-2 border-white/80 rounded-full"></div>
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-6 right-6 opacity-60">
+                    <div className="text-xs tracking-widest font-light">SYRIA VAULT</div>
+                  </div>
                 </div>
+
+                <div className="absolute inset-0 rounded-2xl border border-white/20"></div>
               </div>
             </div>
           </div>

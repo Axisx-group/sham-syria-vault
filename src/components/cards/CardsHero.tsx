@@ -36,25 +36,28 @@ const CardsHero: React.FC<CardsHeroProps> = ({ language }) => {
 
   const heroCards = [
     {
-      gradient: "from-gray-900 via-black to-gray-800",
+      gradient: "from-slate-900 via-gray-900 to-black",
       accentGradient: "from-purple-400 via-pink-400 to-purple-600",
       number: "5432 **** **** 1234",
       holder: "AHMED HASSAN",
-      tier: "PLATINUM ELITE"
+      tier: "PLATINUM ELITE",
+      expiry: "12/28"
     },
     {
-      gradient: "from-amber-400 via-yellow-500 to-amber-600", 
-      accentGradient: "from-orange-300 via-yellow-400 to-amber-500",
+      gradient: "from-yellow-400 via-amber-500 to-orange-500", 
+      accentGradient: "from-yellow-300 via-orange-400 to-red-500",
       number: "4567 **** **** 8901",
       holder: "SARA AHMED", 
-      tier: "GOLD PRESTIGE"
+      tier: "GOLD PRESTIGE",
+      expiry: "08/27"
     },
     {
-      gradient: "from-blue-600 via-indigo-600 to-purple-700",
-      accentGradient: "from-blue-400 via-indigo-500 to-purple-600", 
+      gradient: "from-blue-500 via-indigo-600 to-purple-700",
+      accentGradient: "from-blue-400 via-cyan-500 to-indigo-600", 
       number: "6789 **** **** 2345",
       holder: "OMAR HASSAN",
-      tier: "CLASSIC SMART"
+      tier: "CLASSIC SMART",
+      expiry: "03/29"
     }
   ];
 
@@ -131,54 +134,89 @@ const CardsHero: React.FC<CardsHeroProps> = ({ language }) => {
             </div>
           </div>
 
-          {/* Animated Cards Stack */}
-          <div className={`${isRTL ? 'lg:order-1' : 'lg:order-2'} relative`}>
-            <div className="relative w-96 h-64 mx-auto">
+          {/* Realistic 3D Cards Stack */}
+          <div className={`${isRTL ? 'lg:order-1' : 'lg:order-2'} relative perspective-1000`}>
+            <div className="relative w-[400px] h-[250px] mx-auto">
               {heroCards.map((card, index) => (
                 <div
                   key={index}
-                  className={`absolute inset-0 transition-all duration-1000 transform ${
+                  className={`absolute inset-0 transition-all duration-1000 transform-gpu ${
                     index === currentCard 
-                      ? 'rotate-0 scale-100 z-30' 
+                      ? 'rotate-0 scale-100 z-30 translate-y-0' 
                       : index === (currentCard + 1) % heroCards.length
-                      ? 'rotate-6 scale-95 z-20 translate-x-4 translate-y-4'
-                      : 'rotate-12 scale-90 z-10 translate-x-8 translate-y-8'
+                      ? 'rotate-3 scale-95 z-20 translate-x-6 translate-y-6'
+                      : 'rotate-6 scale-90 z-10 translate-x-12 translate-y-12'
                   }`}
+                  style={{
+                    boxShadow: index === currentCard 
+                      ? '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)' 
+                      : '0 20px 40px -12px rgba(0, 0, 0, 0.3)',
+                  }}
                 >
-                  <div className={`bg-gradient-to-br ${card.gradient} p-8 rounded-3xl shadow-2xl text-white relative overflow-hidden w-full h-full`}>
-                    {/* Holographic Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-shimmer"></div>
+                  {/* Realistic Card Design */}
+                  <div className={`bg-gradient-to-br ${card.gradient} rounded-2xl w-full h-full relative overflow-hidden shadow-2xl`}>
+                    {/* Card shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-60"></div>
                     
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-20">
-                      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${card.accentGradient} rounded-full -translate-y-16 translate-x-16 blur-2xl`}></div>
-                    </div>
+                    {/* Holographic pattern */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 translate-x-full animate-shimmer"></div>
 
                     {/* Card Content */}
-                    <div className="relative z-10 h-full flex flex-col justify-between">
-                      <div className="flex justify-between items-start">
-                        <div className="text-white font-bold text-lg italic tracking-wider">SYRIA VAULT</div>
-                        <div className="text-white font-bold text-lg italic tracking-wider">VISA</div>
+                    <div className="relative z-10 h-full p-6 flex flex-col justify-between text-white">
+                      {/* Top Row */}
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm font-medium tracking-wider opacity-90">SYRIA VAULT</div>
+                        <div className="text-2xl font-bold italic tracking-wider">VISA</div>
                       </div>
 
-                      <div className="space-y-4">
-                        {/* Chip */}
-                        <div className="w-12 h-8 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-lg shadow-lg"></div>
-                        
-                        <div className="font-mono text-lg tracking-wider">{card.number}</div>
-                        
-                        <div className="flex justify-between items-end">
-                          <div>
-                            <p className="text-xs opacity-75">CARD HOLDER</p>
-                            <p className="font-semibold text-sm">{card.holder}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs opacity-75">EXPIRES</p>
-                            <p className="font-semibold text-sm">12/28</p>
+                      {/* Chip */}
+                      <div className="w-12 h-9 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative">
+                        <div className="absolute inset-0.5 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-md">
+                          <div className="w-full h-full bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-md border border-yellow-300">
+                            {/* Chip contact points */}
+                            <div className="grid grid-cols-3 gap-0.5 p-1 h-full">
+                              {[...Array(9)].map((_, i) => (
+                                <div key={i} className="bg-yellow-400 rounded-sm opacity-60"></div>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
+
+                      {/* Card Number */}
+                      <div className="font-mono text-xl tracking-widest font-light">
+                        {card.number}
+                      </div>
+
+                      {/* Bottom Row */}
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <div className="text-xs opacity-70 tracking-widest mb-1">CARD HOLDER</div>
+                          <div className="font-semibold tracking-wide">{card.holder}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs opacity-70 tracking-widest mb-1">EXPIRES</div>
+                          <div className="font-semibold">{card.expiry}</div>
+                        </div>
+                      </div>
+
+                      {/* Contactless symbol */}
+                      <div className="absolute top-6 right-20">
+                        <div className="relative w-6 h-6">
+                          <div className="absolute inset-0 border-2 border-white/40 rounded-full"></div>
+                          <div className="absolute inset-1 border-2 border-white/60 rounded-full"></div>
+                          <div className="absolute inset-2 border-2 border-white/80 rounded-full"></div>
+                        </div>
+                      </div>
+
+                      {/* Card tier badge */}
+                      <div className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                        <span className="text-xs font-medium tracking-wider">{card.tier}</span>
+                      </div>
                     </div>
+
+                    {/* Card edge lighting */}
+                    <div className="absolute inset-0 rounded-2xl border border-white/20"></div>
                   </div>
                 </div>
               ))}
