@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import RevolutStyleSlider from '@/components/landing/RevolutStyleSlider';
-import AnimatedStatsSection from '@/components/landing/AnimatedStatsSection';
-import AdvancedServicesSection from '@/components/landing/AdvancedServicesSection';
+import ModernHeroSection from '@/components/landing/ModernHeroSection';
+import EnhancedStatsSection from '@/components/landing/EnhancedStatsSection';
+import RealServicesSection from '@/components/landing/RealServicesSection';
 import ModernFeaturesShowcase from '@/components/landing/ModernFeaturesShowcase';
 import ModernCardsSection from '@/components/cards/ModernCardsSection';
 import WhyChooseUsSection from '@/components/landing/WhyChooseUsSection';
@@ -21,15 +21,15 @@ const Index = () => {
       <NotificationBanner language={language} />
       
       <section id="hero" className="relative">
-        <RevolutStyleSlider language={language} onLanguageChange={setLanguage} />
+        <ModernHeroSection language={language} onLanguageChange={setLanguage} />
       </section>
       
       <section id="stats" className="stats-section">
-        <AnimatedStatsSection language={language} />
+        <EnhancedStatsSection language={language} />
       </section>
       
       <section id="services" className="light-section">
-        <AdvancedServicesSection language={language} />
+        <RealServicesSection language={language} />
       </section>
       
       <section id="features" className="light-section">
