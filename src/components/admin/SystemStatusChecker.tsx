@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,8 @@ import {
   Shield,
   CreditCard,
   DollarSign,
-  RefreshCw
+  RefreshCw,
+  Users
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -28,6 +28,7 @@ const SystemStatusChecker = () => {
   const [checks, setChecks] = useState<SystemCheck[]>([
     { name: 'قاعدة البيانات', status: 'checking', message: 'جاري الفحص...', icon: Database },
     { name: 'المصادقة', status: 'checking', message: 'جاري الفحص...', icon: Shield },
+    { name: 'حساب المدير', status: 'checking', message: 'جاري الفحص...', icon: Users },
     { name: 'خدمات البنك', status: 'checking', message: 'جاري الفحص...', icon: DollarSign },
     { name: 'إدارة البطاقات', status: 'checking', message: 'جاري الفحص...', icon: CreditCard },
     { name: 'إدارة القروض', status: 'checking', message: 'جاري الفحص...', icon: Server },
@@ -67,6 +68,23 @@ const SystemStatusChecker = () => {
         updateCheck('المصادقة', 'error', `خطأ في المصادقة: ${authError.message}`);
       } else {
         updateCheck('المصادقة', 'success', user ? 'مسجل الدخول' : 'نظام المصادقة يعمل');
+      }
+
+      // Check admin account
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('email', 'admin@souripay.com')
+          .single();
+        
+        if (profile) {
+          updateCheck('حساب المدير', 'success', `المدير: ${profile.full_name || profile.email}`);
+        } else {
+          updateCheck('حساب المدير', 'error', 'حساب المدير غير موجود');
+        }
+      } catch (error) {
+        updateCheck('حساب المدير', 'error', 'فشل في فحص حساب المدير');
       }
 
       // Check banking services API
