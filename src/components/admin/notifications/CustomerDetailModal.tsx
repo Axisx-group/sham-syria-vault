@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,6 +41,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
   const [actionNotes, setActionNotes] = useState('');
   const [documents, setDocuments] = useState<DocumentInfo[]>([]);
   const [loadingDocuments, setLoadingDocuments] = useState(true);
+  const [processing, setProcessing] = useState(false);
   const { toast } = useToast();
 
   // جلب المستندات المرفقة بالطلب
@@ -107,8 +107,40 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
     fetchDocuments();
   }, [request.id, toast]);
 
+  const sendApplicationEmail = async (applicationId: string, action: 'approve' | 'reject', customerName: string, customerEmail: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-application-emails', {
+        body: {
+          applicationToken: applicationId,
+          customerName: customerName,
+          customerEmail: customerEmail,
+          accountType: request.accountType,
+          action: action,
+          adminNotes: actionNotes
+        }
+      });
+
+      if (error) {
+        console.error('خطأ في إرسال الإيميل:', error);
+        throw error;
+      }
+
+      console.log('تم إرسال الإيميل بنجاح:', data);
+      return data;
+    } catch (error) {
+      console.error('فشل في إرسال الإيميل:', error);
+      // لا نرمي خطأ هنا لأن عدم إرسال الإيميل لا يجب أن يوقف عملية الموافقة
+      toast({
+        title: "تحذير",
+        description: "تمت الموافقة على الطلب ولكن فشل في إرسال الإيميل للعميل",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleApproval = async (requestId: string, action: 'approve' | 'reject') => {
     try {
+      setProcessing(true);
       console.log(`${action === 'approve' ? 'موافقة' : 'رفض'} طلب العميل:`, requestId);
       
       // تحديث حالة الطلب في قاعدة البيانات
@@ -125,17 +157,25 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
         throw error;
       }
 
+      // إرسال الإيميل للعميل
+      await sendApplicationEmail(requestId, action, request.name, request.email);
+
       // تسجيل العملية في سجل الوصول
-      await supabase
-        .from('admin_access_logs')
-        .insert({
-          access_type: `application_${action}`,
-          additional_data: { 
-            application_id: requestId,
-            notes: actionNotes,
-            timestamp: new Date().toISOString() 
-          }
-        });
+      try {
+        await supabase
+          .from('admin_access_logs')
+          .insert({
+            access_type: `application_${action}`,
+            additional_data: { 
+              application_id: requestId,
+              notes: actionNotes,
+              timestamp: new Date().toISOString() 
+            }
+          });
+      } catch (logError) {
+        console.error('خطأ في تسجيل العملية:', logError);
+        // نتجاهل خطأ التسجيل ولا نوقف العملية
+      }
 
       toast({
         title: action === 'approve' ? "تمت الموافقة" : "تم الرفض",
@@ -146,7 +186,9 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
       setActionNotes('');
       
       // إعادة تحميل الصفحة لإظهار التحديثات
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
       
     } catch (error) {
       console.error('خطأ في معالجة الطلب:', error);
@@ -155,6 +197,8 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
         description: "حدث خطأ أثناء معالجة الطلب",
         variant: "destructive"
       });
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -374,22 +418,25 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
               value={actionNotes}
               onChange={(e) => setActionNotes(e.target.value)}
               className="min-h-[100px]"
+              disabled={processing}
             />
             <div className="flex gap-3">
               <Button
                 onClick={() => handleApproval(request.id, 'approve')}
                 className="flex-1 bg-green-600 hover:bg-green-700"
+                disabled={processing}
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
-                الموافقة على الطلب
+                {processing ? 'جاري المعالجة...' : 'الموافقة على الطلب'}
               </Button>
               <Button
                 onClick={() => handleApproval(request.id, 'reject')}
                 variant="outline"
                 className="flex-1 border-red-500 text-red-600 hover:bg-red-50"
+                disabled={processing}
               >
                 <XCircle className="h-4 w-4 mr-2" />
-                رفض الطلب
+                {processing ? 'جاري المعالجة...' : 'رفض الطلب'}
               </Button>
             </div>
           </CardContent>

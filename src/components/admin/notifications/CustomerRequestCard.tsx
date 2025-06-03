@@ -29,6 +29,35 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
+  const sendApplicationEmail = async (applicationId: string, action: 'approve' | 'reject') => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-application-emails', {
+        body: {
+          applicationToken: applicationId,
+          customerName: request.name,
+          customerEmail: request.email,
+          accountType: request.accountType,
+          action: action
+        }
+      });
+
+      if (error) {
+        console.error('خطأ في إرسال الإيميل:', error);
+        throw error;
+      }
+
+      console.log('تم إرسال الإيميل بنجاح:', data);
+      return data;
+    } catch (error) {
+      console.error('فشل في إرسال الإيميل:', error);
+      toast({
+        title: "تحذير",
+        description: "تمت الموافقة على الطلب ولكن فشل في إرسال الإيميل للعميل",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleApproval = async (requestId: string, action: 'approve' | 'reject') => {
     try {
       setLoading(true);
@@ -48,16 +77,24 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
         throw error;
       }
 
+      // إرسال الإيميل للعميل
+      await sendApplicationEmail(requestId, action);
+
       // تسجيل العملية في سجل الوصول
-      await supabase
-        .from('admin_access_logs')
-        .insert({
-          access_type: `application_${action}`,
-          additional_data: { 
-            application_id: requestId,
-            timestamp: new Date().toISOString() 
-          }
-        });
+      try {
+        await supabase
+          .from('admin_access_logs')
+          .insert({
+            access_type: `application_${action}`,
+            additional_data: { 
+              application_id: requestId,
+              timestamp: new Date().toISOString() 
+            }
+          });
+      } catch (logError) {
+        console.error('خطأ في تسجيل العملية:', logError);
+        // نتجاهل خطأ التسجيل ولا نوقف العملية
+      }
 
       toast({
         title: action === 'approve' ? "تمت الموافقة" : "تم الرفض",
@@ -66,7 +103,9 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
       });
 
       // إعادة تحميل الصفحة لإظهار التحديثات
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
       
     } catch (error) {
       console.error('خطأ في معالجة الطلب:', error);
@@ -130,7 +169,7 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
               className="bg-green-600 hover:bg-green-700"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
-              موافقة
+              {loading ? 'معالجة...' : 'موافقة'}
             </Button>
             
             <Button
@@ -141,7 +180,7 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
               className="border-red-500 text-red-600 hover:bg-red-50"
             >
               <XCircle className="h-4 w-4 mr-2" />
-              رفض
+              {loading ? 'معالجة...' : 'رفض'}
             </Button>
           </div>
         </div>
