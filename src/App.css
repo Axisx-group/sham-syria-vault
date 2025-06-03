@@ -1,8 +1,11 @@
+
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  min-height: 100vh;
 }
 
 .logo {
@@ -35,8 +38,50 @@
 
 .card {
   padding: 2em;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .read-the-docs {
-  color: #888;
+  color: #94a3b8;
+}
+
+/* Fix text visibility issues */
+body {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+/* Ensure all text has proper contrast */
+.text-white-on-white-fix {
+  color: #1f2937 !important;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.text-dark-readable {
+  color: #374151 !important;
+  font-weight: 600;
+}
+
+/* Fix any invisible text issues */
+*[style*="color: white"], 
+*[style*="color: #ffffff"], 
+*[style*="color: #fff"] {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* Ensure proper contrast on light backgrounds */
+.bg-white *, 
+.bg-gray-50 *, 
+.bg-blue-50 * {
+  color: #374151 !important;
+}
+
+.bg-white .text-white, 
+.bg-gray-50 .text-white, 
+.bg-blue-50 .text-white {
+  color: #1f2937 !important;
 }

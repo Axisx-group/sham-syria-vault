@@ -3,3 +3,62 @@
 @import './styles/base.css';
 @import './styles/animations.css';
 @import './styles/utilities.css';
+
+/* Global text visibility fixes */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark light;
+  background: #0f172a;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: #ffffff;
+}
+
+/* Fix any potential white text on white background issues */
+.invisible-text-fix {
+  color: #1f2937 !important;
+  background: transparent !important;
+}
+
+/* Ensure readability on light sections */
+section[class*="bg-white"] *,
+section[class*="bg-gray-50"] *,
+section[class*="bg-blue-50"] * {
+  color: #374151 !important;
+}
+
+section[class*="bg-white"] .text-white,
+section[class*="bg-gray-50"] .text-white,
+section[class*="bg-blue-50"] .text-white {
+  color: #1f2937 !important;
+}
+
+/* Ensure proper text contrast in cards */
+.card * {
+  color: inherit;
+}
+
+/* Fix for any accidentally invisible text */
+[style*="color: white"],
+[style*="color: #ffffff"],
+[style*="color: #fff"] {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Better visibility for text on light backgrounds */
+.bg-white *:not(.text-gray-900):not(.text-gray-800):not(.text-gray-700):not(.text-gray-600) {
+  color: #374151 !important;
+}
