@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +6,7 @@ import { translations } from '@/utils/translations';
 import { Menu, X, Globe, Search, CreditCard } from "lucide-react";
 import SearchOverlay from '@/components/features/SearchOverlay';
 import NetBankLoginDialog from '@/components/auth/NetBankLoginDialog';
+import HoverPopup from '@/components/navigation/HoverPopup';
 
 interface HeaderProps {
   language: 'ar' | 'en';
@@ -17,6 +17,8 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNetBankDialogOpen, setIsNetBankDialogOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
 
   const t = translations[language];
@@ -35,6 +37,30 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
     setIsMenuOpen(false);
   };
 
+  const handleMouseEnter = (item: string) => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+    }
+    setHoveredItem(item);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setHoveredItem(null);
+    }, 150);
+    setHoverTimeout(timeout);
+  };
+
+  const handlePopupMouseEnter = () => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+    }
+  };
+
+  const handlePopupMouseLeave = () => {
+    setHoveredItem(null);
+  };
+
   return (
     <>
       <header className="bg-black/95 backdrop-blur-md shadow-2xl sticky top-0 z-50 border-b border-gray-800/50">
@@ -46,28 +72,94 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
             </div>
 
             {/* Navigation (Desktop) */}
-            <nav className="hidden lg:flex items-center space-x-8">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigateTo('/cards')}
-                className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+            <nav className="hidden lg:flex items-center space-x-8 relative">
+              <div
+                className="relative"
+                onMouseEnter={() => handleMouseEnter('cards')}
+                onMouseLeave={handleMouseLeave}
               >
-                البطاقات
-              </Button>
-              <Button 
-                variant="ghost" 
-                onClick={() => navigateTo('/services/personal')}
-                className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigateTo('/cards')}
+                  className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+                >
+                  البطاقات
+                </Button>
+                
+                {hoveredItem === 'cards' && (
+                  <div
+                    className="absolute top-full left-0 w-screen max-w-4xl -translate-x-1/2 left-1/2"
+                    onMouseEnter={handlePopupMouseEnter}
+                    onMouseLeave={handlePopupMouseLeave}
+                  >
+                    <HoverPopup
+                      language={language}
+                      category="cards"
+                      isVisible={hoveredItem === 'cards'}
+                      onClose={() => setHoveredItem(null)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div
+                className="relative"
+                onMouseEnter={() => handleMouseEnter('personal')}
+                onMouseLeave={handleMouseLeave}
               >
-                {t.personal}
-              </Button>
-              <Button 
-                variant="ghost" 
-                onClick={() => navigateTo('/services/business')}
-                className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigateTo('/services/personal')}
+                  className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+                >
+                  {t.personal}
+                </Button>
+                
+                {hoveredItem === 'personal' && (
+                  <div
+                    className="absolute top-full left-0 w-screen max-w-4xl -translate-x-1/2 left-1/2"
+                    onMouseEnter={handlePopupMouseEnter}
+                    onMouseLeave={handlePopupMouseLeave}
+                  >
+                    <HoverPopup
+                      language={language}
+                      category="personal"
+                      isVisible={hoveredItem === 'personal'}
+                      onClose={() => setHoveredItem(null)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div
+                className="relative"
+                onMouseEnter={() => handleMouseEnter('business')}
+                onMouseLeave={handleMouseLeave}
               >
-                {t.business}
-              </Button>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigateTo('/services/business')}
+                  className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+                >
+                  {t.business}
+                </Button>
+                
+                {hoveredItem === 'business' && (
+                  <div
+                    className="absolute top-full left-0 w-screen max-w-4xl -translate-x-1/2 left-1/2"
+                    onMouseEnter={handlePopupMouseEnter}
+                    onMouseLeave={handlePopupMouseLeave}
+                  >
+                    <HoverPopup
+                      language={language}
+                      category="business"
+                      isVisible={hoveredItem === 'business'}
+                      onClose={() => setHoveredItem(null)}
+                    />
+                  </div>
+                )}
+              </div>
+
               <Button 
                 variant="ghost" 
                 onClick={() => navigateTo('/services/nubarium')}
