@@ -6,7 +6,7 @@ import TransactionHistory from '@/components/dashboard/TransactionHistory';
 import CardsSection from '@/components/dashboard/CardsSection';
 import PaymentMethods from '@/components/banking/PaymentMethods';
 import MobilePaymentIntegration from '@/components/dashboard/MobilePaymentIntegration';
-import KYCDashboard from '@/components/dashboard/KYCDashboard';
+import KYCDashboard from '@/components/kyc/KYCDashboard';
 
 const Dashboard = () => {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
