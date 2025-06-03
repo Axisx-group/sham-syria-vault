@@ -109,7 +109,7 @@ const AdminDashboard = () => {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-background flex w-full">
+      <div className="min-h-screen bg-background flex w-full admin-dashboard">
         <ModernSidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}
