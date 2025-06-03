@@ -23,14 +23,17 @@ import CustomerDetailModal from './CustomerDetailModal';
 
 interface CustomerRequestCardProps {
   request: NewCustomerRequest;
+  onRequestUpdated?: () => void;
 }
 
-const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) => {
+const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request, onRequestUpdated }) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const sendApplicationEmail = async (applicationId: string, action: 'approve' | 'reject') => {
     try {
+      console.log('إرسال إيميل للطلب:', applicationId, 'الإجراء:', action);
+      
       const { data, error } = await supabase.functions.invoke('send-application-emails', {
         body: {
           applicationToken: applicationId,
@@ -43,16 +46,22 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
 
       if (error) {
         console.error('خطأ في إرسال الإيميل:', error);
-        throw error;
+        // لا نرمي خطأ هنا لأن فشل الإيميل لا يجب أن يوقف العملية
+        toast({
+          title: "تحذير",
+          description: "تمت معالجة الطلب ولكن فشل في إرسال الإيميل للعميل",
+          variant: "destructive"
+        });
+      } else {
+        console.log('تم إرسال الإيميل بنجاح:', data);
       }
 
-      console.log('تم إرسال الإيميل بنجاح:', data);
       return data;
     } catch (error) {
       console.error('فشل في إرسال الإيميل:', error);
       toast({
         title: "تحذير",
-        description: "تمت الموافقة على الطلب ولكن فشل في إرسال الإيميل للعميل",
+        description: "تمت معالجة الطلب ولكن فشل في إرسال الإيميل للعميل",
         variant: "destructive"
       });
     }
@@ -61,39 +70,86 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
   const handleApproval = async (requestId: string, action: 'approve' | 'reject') => {
     try {
       setLoading(true);
-      console.log(`${action === 'approve' ? 'موافقة' : 'رفض'} طلب العميل:`, requestId);
+      console.log(`بدء ${action === 'approve' ? 'موافقة' : 'رفض'} طلب العميل:`, requestId);
       
+      // فحص حالة المصادقة أولاً
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        throw new Error('غير مصرح: يجب تسجيل الدخول كمدير');
+      }
+      console.log('المستخدم المصادق:', user.id);
+
+      // فحص صلاحيات المدير
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile || profile.role !== 'admin') {
+        throw new Error('غير مصرح: يجب أن تكون مديراً للقيام بهذا الإجراء');
+      }
+      console.log('تم تأكيد صلاحيات المدير');
+
+      // البحث عن الطلب باستخدام application_token أو id
+      const { data: existingApp, error: searchError } = await supabase
+        .from('account_applications')
+        .select('*')
+        .or(`application_token.eq.${requestId},id.eq.${requestId}`)
+        .single();
+
+      if (searchError) {
+        console.error('خطأ في البحث عن الطلب:', searchError);
+        throw new Error('لم يتم العثور على الطلب');
+      }
+
+      console.log('تم العثور على الطلب:', existingApp);
+
       // تحديث حالة الطلب في قاعدة البيانات
-      const { error } = await supabase
+      const { data: updatedApp, error: updateError } = await supabase
         .from('account_applications')
         .update({ 
           status: action === 'approve' ? 'approved' : 'rejected',
           reviewed_at: new Date().toISOString(),
+          reviewed_by: user.id,
           admin_notes: action === 'approve' ? 'تمت الموافقة على الطلب' : 'تم رفض الطلب'
         })
-        .eq('application_token', requestId);
+        .eq('id', existingApp.id)
+        .select()
+        .single();
 
-      if (error) {
-        throw error;
+      if (updateError) {
+        console.error('خطأ في تحديث الطلب:', updateError);
+        throw new Error(`فشل في تحديث حالة الطلب: ${updateError.message}`);
       }
+
+      console.log('تم تحديث الطلب بنجاح:', updatedApp);
 
       // إرسال الإيميل للعميل
       await sendApplicationEmail(requestId, action);
 
       // تسجيل العملية في سجل الوصول
       try {
-        await supabase
+        const { error: logError } = await supabase
           .from('admin_access_logs')
           .insert({
+            user_id: user.id,
             access_type: `application_${action}`,
             additional_data: { 
               application_id: requestId,
+              application_token: existingApp.application_token,
               timestamp: new Date().toISOString() 
             }
           });
+
+        if (logError) {
+          console.error('خطأ في تسجيل العملية:', logError);
+          // نتجاهل خطأ التسجيل ولا نوقف العملية
+        } else {
+          console.log('تم تسجيل العملية بنجاح');
+        }
       } catch (logError) {
         console.error('خطأ في تسجيل العملية:', logError);
-        // نتجاهل خطأ التسجيل ولا نوقف العملية
       }
 
       toast({
@@ -102,16 +158,16 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
         variant: action === 'approve' ? "default" : "destructive"
       });
 
-      // إعادة تحميل الصفحة لإظهار التحديثات
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // تحديث فوري للواجهة
+      if (onRequestUpdated) {
+        onRequestUpdated();
+      }
       
     } catch (error) {
       console.error('خطأ في معالجة الطلب:', error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء معالجة الطلب",
+        description: error.message || "حدث خطأ أثناء معالجة الطلب",
         variant: "destructive"
       });
     } finally {
@@ -159,7 +215,7 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
                   مراجعة
                 </Button>
               </DialogTrigger>
-              <CustomerDetailModal request={request} />
+              <CustomerDetailModal request={request} onRequestUpdated={onRequestUpdated} />
             </Dialog>
             
             <Button

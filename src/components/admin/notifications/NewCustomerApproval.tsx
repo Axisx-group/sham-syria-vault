@@ -11,6 +11,11 @@ import EmptyCustomerRequests from './EmptyCustomerRequests';
 const NewCustomerApproval = () => {
   const { pendingRequests, loading, error, refreshRequests } = useCustomerRequests();
 
+  const handleRequestUpdated = () => {
+    console.log('تم تحديث طلب - إعادة تحميل القائمة');
+    refreshRequests();
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -86,7 +91,11 @@ const NewCustomerApproval = () => {
       ) : (
         <div className="space-y-4">
           {pendingRequests.map((request) => (
-            <CustomerRequestCard key={request.id} request={request} />
+            <CustomerRequestCard 
+              key={request.id} 
+              request={request} 
+              onRequestUpdated={handleRequestUpdated}
+            />
           ))}
         </div>
       )}
