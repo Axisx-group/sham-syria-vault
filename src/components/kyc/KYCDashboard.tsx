@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,10 +17,13 @@ import {
 } from "lucide-react";
 import KYCVerificationForm from './KYCVerificationForm';
 import KYCStatus from './KYCStatus';
+import KYCApplicationDialog from './KYCApplicationDialog';
 
 const KYCDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showForm, setShowForm] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [showApplicationDialog, setShowApplicationDialog] = useState(false);
 
   // Mock data for demonstration
   const kycStats = {
@@ -39,7 +41,10 @@ const KYCDashboard = () => {
       level: 'advanced',
       status: 'under_review',
       submittedAt: '2024-01-20 14:30',
-      progress: 85
+      progress: 85,
+      email: 'ahmed.mohamed@example.com',
+      phone: '+963 123 456 789',
+      address: 'دمشق، سوريا'
     },
     {
       id: 'KYC002',
@@ -47,7 +52,10 @@ const KYCDashboard = () => {
       level: 'intermediate',
       status: 'approved',
       submittedAt: '2024-01-19 11:15',
-      progress: 100
+      progress: 100,
+      email: 'fatima.hassan@example.com',
+      phone: '+963 987 654 321',
+      address: 'حلب، سوريا'
     },
     {
       id: 'KYC003',
@@ -55,9 +63,17 @@ const KYCDashboard = () => {
       level: 'basic',
       status: 'rejected',
       submittedAt: '2024-01-18 16:45',
-      progress: 60
+      progress: 60,
+      email: 'mohammed.saad@example.com',
+      phone: '+963 555 123 456',
+      address: 'حمص، سوريا'
     }
   ];
+
+  const handleViewApplication = (application) => {
+    setSelectedApplication(application);
+    setShowApplicationDialog(true);
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -246,7 +262,11 @@ const KYCDashboard = () => {
                         <span className="text-sm text-gray-600">{application.progress}%</span>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleViewApplication(application)}
+                    >
                       <Eye className="h-4 w-4 mr-2" />
                       عرض
                     </Button>
@@ -291,6 +311,13 @@ const KYCDashboard = () => {
           />
         </TabsContent>
       </Tabs>
+
+      {/* Application Details Dialog */}
+      <KYCApplicationDialog
+        open={showApplicationDialog}
+        onOpenChange={setShowApplicationDialog}
+        application={selectedApplication}
+      />
     </div>
   );
 };
