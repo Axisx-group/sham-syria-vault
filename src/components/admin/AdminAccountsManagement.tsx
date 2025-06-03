@@ -12,55 +12,55 @@ const AdminAccountsManagement = () => {
   const accounts = [
     {
       id: 'ACC001',
-      iban: 'SY21 CBSY 0000 1234 5678 9012',
+      accountNumber: '1234567890',
+      iban: 'SY98 0001 1234 5678 9012 3456',
       customerName: 'أحمد محمد علي',
-      accountType: 'حساب جاري شخصي',
+      accountType: 'جاري',
       currency: 'SYP',
-      balance: '2,500,000',
+      balance: '₺125,000',
       status: 'نشط',
       openDate: '2023-01-15',
-      lastTransaction: '2024-01-20',
-      monthlyTransactions: 45,
-      avgMonthlyBalance: '2,200,000'
+      lastActivity: '2024-01-20',
+      branchCode: 'BR001'
     },
     {
       id: 'ACC002',
-      iban: 'SY21 CBSY 0000 9876 5432 1098',
+      accountNumber: '2345678901',
+      iban: 'SY98 0001 2345 6789 0123 4567',
       customerName: 'فاطمة حسن محمود',
-      accountType: 'حساب توفير تجاري',
+      accountType: 'توفير',
       currency: 'USD',
-      balance: '15,000',
+      balance: '$15,750',
       status: 'نشط',
       openDate: '2022-08-22',
-      lastTransaction: '2024-01-19',
-      monthlyTransactions: 28,
-      avgMonthlyBalance: '14,500'
+      lastActivity: '2024-01-19',
+      branchCode: 'BR002'
     },
     {
       id: 'ACC003',
-      iban: 'SY21 CBSY 0000 5555 1234 5678',
+      accountNumber: '3456789012',
+      iban: 'SY98 0001 3456 7890 1234 5678',
       customerName: 'محمد سعد الدين',
-      accountType: 'حساب جاري شخصي',
+      accountType: 'استثماري',
       currency: 'EUR',
-      balance: '5,200',
+      balance: '€8,200',
       status: 'مجمد',
       openDate: '2023-03-10',
-      lastTransaction: '2024-01-10',
-      monthlyTransactions: 12,
-      avgMonthlyBalance: '5,000'
+      lastActivity: '2024-01-10',
+      branchCode: 'BR001'
     },
     {
       id: 'ACC004',
-      iban: 'SY21 CBSY 0000 7777 8888 9999',
+      accountNumber: '4567890123',
+      iban: 'SY98 0001 4567 8901 2345 6789',
       customerName: 'نور عبد الرحمن',
-      accountType: 'حساب استثماري',
+      accountType: 'جاري',
       currency: 'TRY',
-      balance: '89,200',
-      status: 'نشط',
+      balance: '₺89,500',
+      status: 'مغلق',
       openDate: '2022-11-05',
-      lastTransaction: '2024-01-20',
-      monthlyTransactions: 67,
-      avgMonthlyBalance: '85,000'
+      lastActivity: '2024-01-05',
+      branchCode: 'BR003'
     }
   ];
 
@@ -70,8 +70,8 @@ const AdminAccountsManagement = () => {
       <AccountsSummaryCards />
       <AccountsFilters searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       
-      {/* Accounts List */}
-      <div className="space-y-4">
+      {/* Accounts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {accounts.map((account) => (
           <AccountCard key={account.id} account={account} />
         ))}

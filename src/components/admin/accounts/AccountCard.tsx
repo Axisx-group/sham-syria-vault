@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -9,9 +9,10 @@ import {
   Edit,
   Lock,
   Unlock,
-  TrendingUp,
+  CreditCard,
+  DollarSign,
   Calendar,
-  CreditCard
+  User
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ import {
 
 interface Account {
   id: string;
+  accountNumber: string;
   iban: string;
   customerName: string;
   accountType: string;
@@ -29,9 +31,8 @@ interface Account {
   balance: string;
   status: string;
   openDate: string;
-  lastTransaction: string;
-  monthlyTransactions: number;
-  avgMonthlyBalance: string;
+  lastActivity: string;
+  branchCode: string;
 }
 
 interface AccountCardProps {
@@ -52,123 +53,117 @@ const AccountCard = ({ account }: AccountCardProps) => {
     }
   };
 
-  const getCurrencyColor = (currency: string) => {
-    const colors = {
-      'SYP': 'bg-blue-100 text-blue-800',
-      'USD': 'bg-green-100 text-green-800',
-      'EUR': 'bg-purple-100 text-purple-800',
-      'TRY': 'bg-red-100 text-red-800'
-    };
-    return colors[currency as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const formatBalance = (balance: string, currency: string) => {
-    const symbols = { SYP: '₺', USD: '$', EUR: '€', TRY: '₺' };
-    return `${balance} ${symbols[currency as keyof typeof symbols] || currency}`;
+  const getAccountTypeColor = (type: string) => {
+    switch (type) {
+      case 'جاري':
+        return 'bg-blue-100 text-blue-800';
+      case 'توفير':
+        return 'bg-green-100 text-green-800';
+      case 'استثماري':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          {/* Account Info */}
-          <div className="lg:col-span-4">
-            <div className="flex items-start space-x-3 space-x-reverse">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <CreditCard className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-gray-900">{account.id}</h3>
-                  <Badge className={getStatusColor(account.status)}>
-                    {account.status}
-                  </Badge>
-                </div>
-                <p className="text-sm text-gray-600 mb-1">{account.iban}</p>
-                <p className="text-sm font-medium text-gray-800">{account.customerName}</p>
-                <p className="text-xs text-gray-500">{account.accountType}</p>
-              </div>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center space-x-3 space-x-reverse">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              <CreditCard className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">{account.accountNumber}</h3>
+              <p className="text-sm text-gray-600 font-mono">{account.iban}</p>
             </div>
           </div>
-
-          {/* Balance and Currency */}
-          <div className="lg:col-span-2">
-            <div className="text-center">
-              <Badge className={getCurrencyColor(account.currency)}>
-                {account.currency}
-              </Badge>
-              <p className="text-lg font-bold text-gray-900 mt-1">
-                {formatBalance(account.balance, account.currency)}
-              </p>
-              <p className="text-xs text-gray-500">الرصيد الحالي</p>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="lg:col-span-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <p className="text-lg font-bold text-blue-600">{account.monthlyTransactions}</p>
-                <p className="text-xs text-gray-500">معاملة شهرية</p>
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-bold text-green-600">
-                  {formatBalance(account.avgMonthlyBalance, account.currency)}
-                </p>
-                <p className="text-xs text-gray-500">متوسط الرصيد</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Dates */}
-          <div className="lg:col-span-2">
-            <div className="space-y-1">
-              <div className="flex items-center text-xs text-gray-600">
-                <Calendar className="h-3 w-3 ml-1" />
-                افتتح: {account.openDate}
-              </div>
-              <div className="flex items-center text-xs text-gray-600">
-                <TrendingUp className="h-3 w-3 ml-1" />
-                آخر معاملة: {account.lastTransaction}
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="lg:col-span-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Eye className="h-4 w-4 mr-2" />
-                  عرض التفاصيل
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Eye className="h-4 w-4 mr-2" />
+                عرض التفاصيل
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Edit className="h-4 w-4 mr-2" />
+                تعديل الحساب
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <DollarSign className="h-4 w-4 mr-2" />
+                تاريخ المعاملات
+              </DropdownMenuItem>
+              {account.status === 'نشط' ? (
+                <DropdownMenuItem className="text-red-600">
+                  <Lock className="h-4 w-4 mr-2" />
+                  تجميد الحساب
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Edit className="h-4 w-4 mr-2" />
-                  تعديل الحساب
+              ) : (
+                <DropdownMenuItem className="text-green-600">
+                  <Unlock className="h-4 w-4 mr-2" />
+                  إلغاء التجميد
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  تاريخ المعاملات
-                </DropdownMenuItem>
-                {account.status === 'نشط' ? (
-                  <DropdownMenuItem className="text-yellow-600">
-                    <Lock className="h-4 w-4 mr-2" />
-                    تجميد الحساب
-                  </DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem className="text-green-600">
-                    <Unlock className="h-4 w-4 mr-2" />
-                    إلغاء التجميد
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Status and Type Badges */}
+        <div className="flex gap-2">
+          <Badge className={getStatusColor(account.status)}>
+            {account.status}
+          </Badge>
+          <Badge className={getAccountTypeColor(account.accountType)}>
+            {account.accountType}
+          </Badge>
+          <Badge variant="outline">
+            {account.currency}
+          </Badge>
+        </div>
+
+        {/* Customer Info */}
+        <div className="flex items-center text-sm text-gray-600">
+          <User className="h-4 w-4 ml-2" />
+          {account.customerName}
+        </div>
+
+        {/* Balance */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600 mb-1">الرصيد الحالي</p>
+          <p className="text-2xl font-bold text-gray-900">{account.balance}</p>
+        </div>
+
+        {/* Account Details */}
+        <div className="space-y-2">
+          <div className="flex items-center text-sm text-gray-600">
+            <Calendar className="h-4 w-4 ml-2" />
+            <span className="font-medium ml-2">تاريخ الفتح:</span>
+            {account.openDate}
           </div>
+          <div className="flex items-center text-sm text-gray-600">
+            <Calendar className="h-4 w-4 ml-2" />
+            <span className="font-medium ml-2">آخر نشاط:</span>
+            {account.lastActivity}
+          </div>
+          <div className="text-sm text-gray-600">
+            <span className="font-medium">رمز الفرع:</span> {account.branchCode}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2 pt-2">
+          <Button variant="outline" size="sm" className="flex-1">
+            عرض المعاملات
+          </Button>
+          <Button size="sm" className="flex-1">
+            إدارة الحساب
+          </Button>
         </div>
       </CardContent>
     </Card>
