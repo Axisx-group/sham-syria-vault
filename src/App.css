@@ -6,6 +6,7 @@
   text-align: center;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   min-height: 100vh;
+  color: #ffffff;
 }
 
 .logo {
@@ -46,6 +47,30 @@
 
 .read-the-docs {
   color: #94a3b8;
+}
+
+/* Landing page text visibility enhancements */
+.min-h-screen * {
+  color: #ffffff;
+}
+
+/* Hero section text improvements */
+section h1,
+section h2,
+section h3,
+section p {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Button text in landing sections */
+section button {
+  color: inherit !important;
+}
+
+/* Navigation improvements */
+header * {
+  color: #ffffff !important;
 }
 
 /* Admin panel specific fixes */
@@ -110,4 +135,25 @@
 /* Override any problematic white text */
 .admin-dashboard *[class*="text-white"] {
   color: #1f2937 !important;
+}
+
+/* Landing page specific improvements */
+.text-center h1,
+.text-center p,
+.lg\\:text-right h1,
+.lg\\:text-right p {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* Badge text visibility */
+.inline-flex span {
+  color: #ffffff !important;
+}
+
+/* Card content in landing */
+.rounded-2xl p,
+.rounded-xl div,
+.backdrop-blur-sm * {
+  color: #ffffff !important;
 }
