@@ -1,1 +1,38 @@
+
 project_id = "rnomumzambsuooclxddh"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+port = 54324
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://rnomumzambsuooclxddh.supabase.co"]
+jwt_expiry = 3600
+refresh_token_rotation_enabled = true
+refresh_token_reuse_interval = 10
+external_email_enabled = true
+external_phone_enabled = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+[edge_functions]
+enabled = true
+port = 54323
+
+[functions.banking-services]
+verify_jwt = true
+
+[functions.cards-management]
+verify_jwt = true
+
+[functions.loans-management]
+verify_jwt = true
