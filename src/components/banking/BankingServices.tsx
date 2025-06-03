@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRightLeft, Receipt, Smartphone, ArrowUpDown, PiggyBank, BarChart3, CreditCard } from "lucide-react";
+import { ArrowRightLeft, Receipt, Smartphone, ArrowUpDown, PiggyBank, BarChart3, CreditCard, Globe } from "lucide-react";
 import MoneyTransfer from './MoneyTransfer';
 import BillPayment from './BillPayment';
 import MobileTopup from './MobileTopup';
@@ -10,6 +10,7 @@ import CurrencyExchange from './CurrencyExchange';
 import LoanApplication from './LoanApplication';
 import FinancialReports from './FinancialReports';
 import CardManagement from './CardManagement';
+import SwiftTransfer from './SwiftTransfer';
 
 interface BankingServicesProps {
   language: 'ar' | 'en';
@@ -25,7 +26,8 @@ const BankingServices: React.FC<BankingServicesProps> = ({ language }) => {
       currencyExchange: "صرف العملات",
       loanApplication: "طلب قرض",
       financialReports: "التقارير المالية",
-      cardManagement: "إدارة البطاقات"
+      cardManagement: "إدارة البطاقات",
+      swiftTransfer: "سويفت دولي"
     },
     en: {
       bankingServices: "Banking Services",
@@ -35,7 +37,8 @@ const BankingServices: React.FC<BankingServicesProps> = ({ language }) => {
       currencyExchange: "Currency Exchange",
       loanApplication: "Loan Application",
       financialReports: "Financial Reports",
-      cardManagement: "Card Management"
+      cardManagement: "Card Management",
+      swiftTransfer: "International SWIFT"
     }
   };
 
@@ -48,10 +51,14 @@ const BankingServices: React.FC<BankingServicesProps> = ({ language }) => {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="transfer" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
             <TabsTrigger value="transfer" className="flex items-center gap-1">
               <ArrowRightLeft className="h-4 w-4" />
               <span className="hidden sm:inline">{t.moneyTransfer}</span>
+            </TabsTrigger>
+            <TabsTrigger value="swift" className="flex items-center gap-1">
+              <Globe className="h-4 w-4" />
+              <span className="hidden sm:inline">{t.swiftTransfer}</span>
             </TabsTrigger>
             <TabsTrigger value="bills" className="flex items-center gap-1">
               <Receipt className="h-4 w-4" />
@@ -81,6 +88,10 @@ const BankingServices: React.FC<BankingServicesProps> = ({ language }) => {
 
           <TabsContent value="transfer" className="mt-6">
             <MoneyTransfer language={language} />
+          </TabsContent>
+
+          <TabsContent value="swift" className="mt-6">
+            <SwiftTransfer language={language} />
           </TabsContent>
 
           <TabsContent value="bills" className="mt-6">
