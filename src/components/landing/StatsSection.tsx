@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Users, TrendingUp, Globe, Star } from "lucide-react";
 import { translations } from '@/utils/translations';
 
 interface StatsSectionProps {
@@ -12,74 +11,80 @@ const StatsSection: React.FC<StatsSectionProps> = ({ language }) => {
 
   const stats = [
     { 
-      icon: Users, 
-      number: "150K+", 
-      label: t.customers,
-      color: "from-blue-500 to-blue-600"
+      number: "2M+", 
+      label: language === 'ar' ? 'عميل راضٍ' : 'Happy Customers',
+      subtext: language === 'ar' ? 'في أكثر من 40 دولة' : 'Across 40+ countries'
     },
     { 
-      icon: TrendingUp, 
-      number: "85K+", 
-      label: t.transactions,
-      color: "from-green-500 to-green-600"
+      number: "€50B+", 
+      label: language === 'ar' ? 'قيمة المعاملات' : 'Transaction Volume',
+      subtext: language === 'ar' ? 'سنوياً' : 'Annually'
     },
     { 
-      icon: Globe, 
-      number: "40+", 
-      label: t.countries,
-      color: "from-purple-500 to-purple-600"
+      number: "99.9%", 
+      label: language === 'ar' ? 'وقت التشغيل' : 'Uptime',
+      subtext: language === 'ar' ? 'متاح دائماً' : 'Always Available'
     },
     { 
-      icon: Star, 
-      number: "4.9", 
-      label: t.rating,
-      color: "from-yellow-500 to-yellow-600"
+      number: "4.8", 
+      label: language === 'ar' ? 'تقييم التطبيق' : 'App Rating',
+      subtext: language === 'ar' ? 'من 5 نجوم' : 'Out of 5 stars'
     }
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
+          
           {/* Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              {language === 'ar' ? 'أرقامنا تتحدث' : 'Our Numbers Speak'}
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-black text-gray-900 mb-6">
+              {language === 'ar' ? 'الأرقام تتحدث عن نفسها' : 'Numbers That Speak Volumes'}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               {language === 'ar' 
-                ? 'إنجازات استثنائية تعكس ثقة عملائنا وتميز خدماتنا'
-                : 'Exceptional achievements reflecting our customers\' trust and service excellence'
+                ? 'ثقة الملايين من العملاء حول العالم في منصتنا المصرفية الرقمية المتطورة'
+                : 'Millions of customers worldwide trust our advanced digital banking platform'
               }
             </p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <div 
-                  key={index} 
-                  className="text-center group hover:scale-105 transition-all duration-300"
-                >
-                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
-                    {/* Icon */}
-                    <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${stat.color} rounded-xl mb-6 group-hover:scale-110 transition-transform`}>
-                      <Icon className="h-8 w-8 text-white" />
-                    </div>
-                    
-                    {/* Number */}
-                    <div className="text-4xl font-bold text-gray-900 mb-2">
-                      {stat.number}
-                    </div>
-                    
-                    {/* Label */}
-                    <div className="text-gray-600 font-medium">{stat.label}</div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div 
+                key={index} 
+                className="text-center group"
+              >
+                <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                  <div className="text-5xl font-black text-gray-900 mb-4 group-hover:scale-110 transition-transform">
+                    {stat.number}
+                  </div>
+                  <div className="text-lg font-semibold text-gray-900 mb-2">
+                    {stat.label}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {stat.subtext}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom Section */}
+          <div className="mt-20 text-center">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl p-12 text-white">
+              <h3 className="text-3xl font-bold mb-4">
+                {language === 'ar' ? 'انضم إلى ثورة المصرفية الرقمية' : 'Join the Digital Banking Revolution'}
+              </h3>
+              <p className="text-lg opacity-90 max-w-2xl mx-auto">
+                {language === 'ar' 
+                  ? 'كن جزءاً من مستقبل المصرفية مع أسرع نمو في القطاع'
+                  : 'Be part of the future of banking with the fastest growing platform in the sector'
+                }
+              </p>
+            </div>
           </div>
         </div>
       </div>
