@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Crown, Award, Star, CreditCard, Palette, Sparkles, User, Type } from "lucide-react";
+import { Crown, Award, Star, CreditCard, Palette, Sparkles, User, Type, Upload, Signature } from "lucide-react";
+import { Ball, Car, Plane } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -19,6 +20,9 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
   const [selectedCard, setSelectedCard] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
   const [customName, setCustomName] = useState('YOUR NAME');
+  const [customSignature, setCustomSignature] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isCustomizing, setIsCustomizing] = useState(false);
 
   const translations = {
@@ -37,9 +41,14 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
       customize: "تخصيص التصميم",
       chooseColor: "اختر اللون",
       addName: "أضف الاسم",
+      addSignature: "أضف التوقيع",
+      addIcon: "أضف أيقونة",
+      addImage: "أضف صورة",
       preview: "معاينة",
       cardHolderName: "اسم حامل البطاقة",
-      enterName: "ادخل اسمك"
+      signature: "التوقيع",
+      enterName: "ادخل اسمك",
+      enterSignature: "ادخل توقيعك"
     },
     en: {
       title: "Choose your perfect card",
@@ -56,9 +65,14 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
       customize: "Customize Design",
       chooseColor: "Choose Color",
       addName: "Add Name",
+      addSignature: "Add Signature",
+      addIcon: "Add Icon",
+      addImage: "Add Image",
       preview: "Preview",
       cardHolderName: "Card Holder Name",
-      enterName: "Enter your name"
+      signature: "Signature",
+      enterName: "Enter your name",
+      enterSignature: "Enter your signature"
     }
   };
 
@@ -112,16 +126,58 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
     { name: "Rose Gold", gradient: "from-pink-400 to-orange-400", bgClass: "bg-gradient-to-br from-pink-400 to-orange-400" }
   ];
 
+  const iconOptions = [
+    { name: 'ball', icon: Ball, label: 'كرة / Ball' },
+    { name: 'car', icon: Car, label: 'سيارة / Car' },
+    { name: 'plane', icon: Plane, label: 'طائرة / Plane' }
+  ];
+
   const handleCustomize = () => {
     setIsCustomizing(!isCustomizing);
+    console.log('Customize button clicked, isCustomizing:', !isCustomizing);
   };
 
   const handleColorSelect = (index: number) => {
     setSelectedColor(index);
+    console.log('Color selected:', designColors[index].name);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomName(e.target.value.toUpperCase() || 'YOUR NAME');
+    const newName = e.target.value.toUpperCase() || 'YOUR NAME';
+    setCustomName(newName);
+    console.log('Name changed to:', newName);
+  };
+
+  const handleSignatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomSignature(e.target.value);
+    console.log('Signature changed to:', e.target.value);
+  };
+
+  const handleIconSelect = (iconName: string) => {
+    setSelectedIcon(selectedIcon === iconName ? null : iconName);
+    console.log('Icon selected:', iconName);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setUploadedImage(event.target?.result as string);
+        console.log('Image uploaded successfully');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePreview = () => {
+    console.log('Preview card with:', {
+      color: designColors[selectedColor].name,
+      name: customName,
+      signature: customSignature,
+      icon: selectedIcon,
+      hasImage: !!uploadedImage
+    });
   };
 
   return (
@@ -259,9 +315,10 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
             <p className="text-xl text-gray-600">{t.designSubtitle}</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Design Options */}
             <div className="space-y-8">
+              {/* Color Selection */}
               <div>
                 <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
@@ -303,6 +360,82 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                 </div>
               </div>
 
+              {/* Signature Input */}
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <Signature className="w-5 h-5 mr-2 text-purple-600" />
+                  {t.addSignature}
+                </h4>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder={t.enterSignature}
+                    value={customSignature}
+                    onChange={handleSignatureChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none text-lg italic"
+                    maxLength={20}
+                  />
+                  <Signature className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+                </div>
+              </div>
+
+              {/* Icon Selection */}
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <Star className="w-5 h-5 mr-2 text-purple-600" />
+                  {t.addIcon}
+                </h4>
+                <div className="grid grid-cols-3 gap-4">
+                  {iconOptions.map((iconOption) => {
+                    const IconComponent = iconOption.icon;
+                    return (
+                      <button
+                        key={iconOption.name}
+                        onClick={() => handleIconSelect(iconOption.name)}
+                        className={`w-full h-16 border-2 rounded-xl flex flex-col items-center justify-center transition-all duration-300 ${
+                          selectedIcon === iconOption.name 
+                            ? 'border-purple-500 bg-purple-50 text-purple-600' 
+                            : 'border-gray-200 hover:border-purple-300 text-gray-600'
+                        }`}
+                      >
+                        <IconComponent className="w-6 h-6 mb-1" />
+                        <span className="text-xs font-medium">{iconOption.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <Upload className="w-5 h-5 mr-2 text-purple-600" />
+                  {t.addImage}
+                </h4>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all duration-300"
+                  >
+                    {uploadedImage ? (
+                      <img src={uploadedImage} alt="Uploaded" className="w-20 h-20 object-cover rounded-lg" />
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                        <span className="text-gray-600">اضغط لرفع صورة</span>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <Button 
                   onClick={handleCustomize}
@@ -312,6 +445,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                   {t.customize}
                 </Button>
                 <Button 
+                  onClick={handlePreview}
                   variant="outline" 
                   className="w-full py-4 text-lg border-2 border-gray-200 hover:border-purple-300 text-gray-700 rounded-xl"
                 >
@@ -362,12 +496,32 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                     <div>
                       <div className="text-xs opacity-70 tracking-widest mb-1">CARD HOLDER</div>
                       <div className="font-semibold tracking-wide text-lg">{customName}</div>
+                      {customSignature && (
+                        <div className="italic text-sm mt-1 opacity-80">{customSignature}</div>
+                      )}
                     </div>
                     <div className="text-right">
                       <div className="text-xs opacity-70 tracking-widest mb-1">EXPIRES</div>
                       <div className="font-semibold">12/28</div>
                     </div>
                   </div>
+
+                  {/* Icon Display */}
+                  {selectedIcon && (
+                    <div className="absolute top-6 right-6">
+                      {(() => {
+                        const IconComponent = iconOptions.find(opt => opt.name === selectedIcon)?.icon;
+                        return IconComponent ? <IconComponent className="w-6 h-6 text-white/80" /> : null;
+                      })()}
+                    </div>
+                  )}
+
+                  {/* Image Display */}
+                  {uploadedImage && (
+                    <div className="absolute bottom-6 right-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
+                      <img src={uploadedImage} alt="Custom" className="w-full h-full object-cover" />
+                    </div>
+                  )}
 
                   <div className="absolute top-6 right-20">
                     <div className="relative w-6 h-6">
