@@ -11,6 +11,11 @@ import MobilePaymentIntegration from '@/components/dashboard/MobilePaymentIntegr
 const Dashboard = () => {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
   const [activeTab, setActiveTab] = useState('overview');
+  const [showBalance, setShowBalance] = useState(true);
+
+  const toggleBalance = () => {
+    setShowBalance(!showBalance);
+  };
 
   const tabs = [
     { id: 'overview', label: 'نظرة عامة', icon: '📊' },
@@ -23,9 +28,9 @@ const Dashboard = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'transactions':
-        return <TransactionHistory />;
+        return <TransactionHistory language={language} detailed={true} />;
       case 'cards':
-        return <CardsSection />;
+        return <CardsSection language={language} />;
       case 'payments':
         return <PaymentMethods />;
       case 'mobile-pay':
@@ -33,9 +38,9 @@ const Dashboard = () => {
       default:
         return (
           <div className="space-y-8">
-            <AccountOverview />
-            <QuickActions />
-            <TransactionHistory />
+            <AccountOverview language={language} showBalance={showBalance} onToggleBalance={toggleBalance} />
+            <QuickActions language={language} />
+            <TransactionHistory language={language} />
           </div>
         );
     }
