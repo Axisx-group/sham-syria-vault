@@ -1,4 +1,3 @@
-
 /* Enhanced Interactive Elements */
 .hover-lift {
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -265,4 +264,150 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Enhanced 3D Card Effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
+}
+
+.rotate-y-12 {
+  transform: rotateY(12deg);
+}
+
+.-rotate-x-6 {
+  transform: rotateX(-6deg);
+}
+
+.card-3d-hover {
+  transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+}
+
+.card-3d-hover:hover {
+  transform: translateZ(20px) rotateY(8deg) rotateX(-4deg) scale(1.02);
+  box-shadow: 
+    0 30px 60px -12px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Realistic card material effects */
+.card-metallic {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 25%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.05) 75%,
+    rgba(0, 0, 0, 0.1) 100%);
+}
+
+.card-holographic {
+  background: linear-gradient(45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent 70%);
+  animation: holographic-shine 3s ease-in-out infinite;
+}
+
+@keyframes holographic-shine {
+  0%, 100% {
+    background-position: -200% 0;
+  }
+  50% {
+    background-position: 200% 0;
+  }
+}
+
+/* Enhanced magnetic stripe effect */
+.magnetic-stripe {
+  background: linear-gradient(90deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 20%,
+    rgba(0, 0, 0, 0.4) 40%,
+    rgba(0, 0, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0.8) 100%);
+  position: relative;
+}
+
+.magnetic-stripe::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%);
+}
+
+/* Chip effect */
+.emv-chip {
+  background: linear-gradient(135deg,
+    #f4e4a6 0%,
+    #f7e98e 25%,
+    #f4e4a6 50%,
+    #e6d067 75%,
+    #d4af37 100%);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.emv-chip-contacts {
+  background: linear-gradient(135deg,
+    rgba(212, 175, 55, 0.8) 0%,
+    rgba(244, 228, 166, 0.6) 50%,
+    rgba(212, 175, 55, 0.8) 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Security hologram effect */
+.security-hologram {
+  background: linear-gradient(45deg,
+    rgba(147, 51, 234, 0.3) 0%,
+    rgba(59, 130, 246, 0.3) 25%,
+    rgba(236, 72, 153, 0.3) 50%,
+    rgba(6, 182, 212, 0.3) 75%,
+    rgba(147, 51, 234, 0.3) 100%);
+  background-size: 200% 200%;
+  animation: hologram-shift 2s ease-in-out infinite;
+}
+
+@keyframes hologram-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Card number font effect */
+.card-number {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.4em;
+}
+
+/* Enhanced shadow for floating effect */
+.card-floating-shadow {
+  filter: blur(20px);
+  opacity: 0.3;
+  transform: translateY(10px) scale(0.95);
+  transition: all 0.7s ease-out;
+}
+
+.card-floating-shadow:hover {
+  opacity: 0.5;
+  transform: translateY(15px) scale(0.9);
 }
