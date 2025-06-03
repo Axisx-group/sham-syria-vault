@@ -15,6 +15,7 @@ export type Database = {
           address_line1: string
           address_line2: string | null
           admin_notes: string | null
+          application_token: string | null
           business_name: string | null
           business_registration_number: string | null
           business_tax_id: string | null
@@ -47,6 +48,7 @@ export type Database = {
           address_line1: string
           address_line2?: string | null
           admin_notes?: string | null
+          application_token?: string | null
           business_name?: string | null
           business_registration_number?: string | null
           business_tax_id?: string | null
@@ -79,6 +81,7 @@ export type Database = {
           address_line1?: string
           address_line2?: string | null
           admin_notes?: string | null
+          application_token?: string | null
           business_name?: string | null
           business_registration_number?: string | null
           business_tax_id?: string | null
@@ -306,6 +309,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pending_customers: {
+        Row: {
+          application_token: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+        }
+        Insert: {
+          application_token: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+        }
+        Update: {
+          application_token?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

@@ -1,10 +1,8 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { generateIBAN } from "@/utils/ibanGenerator";
 import { supabase } from "@/integrations/supabase/client";
 import { useKYCIntegration } from "@/hooks/useKYCIntegration";
 import { AccountCategory } from "@/types/account";
@@ -135,21 +133,11 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
 
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: language === 'ar' ? 'يجب تسجيل الدخول أولاً' : 'Please login first',
-          description: language === 'ar' ? 'يرجى تسجيل الدخول لفتح حساب جديد' : 'Please login to open a new account',
-          variant: 'destructive'
-        });
-        return;
-      }
-
-      // Create account application
+      // إنشاء طلب الحساب بدون الحاجة لتسجيل الدخول
       const { data: application, error: appError } = await supabase
         .from('account_applications')
         .insert({
-          user_id: user.id,
+          user_id: null, // لا نحتاج user_id الآن
           account_type: 'personal',
           first_name: personalInfo.firstName,
           last_name: personalInfo.lastName,
@@ -163,69 +151,57 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
           state: addressInfo.state,
           postal_code: addressInfo.postalCode,
           country: addressInfo.country,
-          preferred_currency: 'SYP'
+          preferred_currency: 'SYP',
+          status: 'pending'
         })
         .select()
         .single();
 
       if (appError) throw appError;
 
-      // Create KYC application
-      const kycData = {
-        personalInfo,
-        addressInfo
-      };
+      // حفظ بيانات العميل في جدول pending_customers
+      const { error: pendingError } = await supabase
+        .from('pending_customers')
+        .insert({
+          application_token: application.application_token,
+          first_name: personalInfo.firstName,
+          last_name: personalInfo.lastName,
+          email: personalInfo.email,
+          phone: personalInfo.phone
+        });
 
-      const kycApplication = await createKYCApplication(
-        application.id,
-        kycData,
-        'basic'
-      );
+      if (pendingError) throw pendingError;
 
-      // Upload documents
-      for (const [docType, file] of Object.entries(documents)) {
-        if (file) {
-          await uploadKYCDocument(
-            kycApplication.id,
-            docType === 'nationalId' ? 'national_id' : docType === 'drivingLicense' ? 'driving_license' : docType,
-            file
-          );
-        }
+      // إرسال الإيميلات
+      try {
+        await supabase.functions.invoke('send-application-emails', {
+          body: {
+            applicationToken: application.application_token,
+            customerName: `${personalInfo.firstName} ${personalInfo.lastName}`,
+            customerEmail: personalInfo.email,
+            accountType: selectedCategory.name
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending emails:', emailError);
+        // لا نوقف العملية إذا فشل الإيميل
       }
 
-      const iban = generateIBAN('SY');
-
       toast({
-        title: language === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!',
-        description: `${selectedCategory.name} - ${language === 'ar' ? 'الليرة السورية' : 'Syrian Pound'}\nIBAN: ${iban}`,
+        title: language === 'ar' ? 'تم تقديم الطلب بنجاح!' : 'Application submitted successfully!',
+        description: language === 'ar' 
+          ? `رقم الطلب: ${application.application_token}\nسيتم إرسال إيميل تأكيد قريباً`
+          : `Application ID: ${application.application_token}\nConfirmation email will be sent soon`,
       });
 
-      // Reset form
-      setCurrentStep(1);
-      setSelectedCategory(null);
-      setPersonalInfo({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        dateOfBirth: '',
-        nationality: 'Syrian'
-      });
-      setAddressInfo({
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        state: '',
-        postalCode: '',
-        country: 'Syria'
-      });
-      setDocuments({});
-      setIsOpen(false);
+      // إعادة توجيه إلى صفحة حالة الطلب
+      window.location.href = `/application-status?token=${application.application_token}`;
+
     } catch (error) {
-      console.error('Error creating account:', error);
+      console.error('Error creating account application:', error);
       toast({
-        title: language === 'ar' ? 'خطأ في إنشاء الحساب' : 'Error creating account',
-        description: language === 'ar' ? 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى' : 'An error occurred while creating the account. Please try again',
+        title: language === 'ar' ? 'خطأ في تقديم الطلب' : 'Error submitting application',
+        description: language === 'ar' ? 'حدث خطأ أثناء تقديم الطلب. يرجى المحاولة مرة أخرى' : 'An error occurred while submitting the application. Please try again',
         variant: 'destructive'
       });
     } finally {
@@ -274,8 +250,8 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
           </DialogTitle>
           <DialogDescription>
             {language === 'ar' 
-              ? 'املأ النموذج التالي لفتح حسابك الجديد. سيتم إنشاء طلب للتحقق من الهوية (KYC) تلقائياً'
-              : 'Fill out the form below to open your new account. A KYC verification request will be created automatically'
+              ? 'املأ النموذج التالي لفتح حسابك الجديد. سيتم مراجعة طلبكم والتواصل معكم قريباً'
+              : 'Fill out the form below to open your new account. Your application will be reviewed and we will contact you soon'
             }
           </DialogDescription>
         </DialogHeader>
@@ -350,8 +326,8 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-800"
               >
                 {loading 
-                  ? (language === 'ar' ? 'جاري الإنشاء...' : 'Creating...') 
-                  : (language === 'ar' ? 'إنشاء الحساب' : 'Create Account')
+                  ? (language === 'ar' ? 'جاري التقديم...' : 'Submitting...') 
+                  : (language === 'ar' ? 'تقديم الطلب' : 'Submit Application')
                 }
               </Button>
             )}

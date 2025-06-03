@@ -8,12 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, User, MapPin, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useKYCIntegration } from "@/hooks/useKYCIntegration";
 
 const ApplyPersonal = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { createKYCApplication, uploadKYCDocument } = useKYCIntegration();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -50,23 +48,11 @@ const ApplyPersonal = () => {
   const submitApplication = async () => {
     setLoading(true);
     try {
-      // Check if user is authenticated
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "يجب تسجيل الدخول أولاً",
-          description: "يرجى تسجيل الدخول لتقديم طلب فتح الحساب",
-          variant: "destructive"
-        });
-        navigate('/dashboard');
-        return;
-      }
-
-      // Create application with SYP as default currency
+      // إنشاء طلب الحساب بدون الحاجة لتسجيل الدخول
       const { data: application, error: appError } = await supabase
         .from('account_applications')
         .insert({
-          user_id: user.id,
+          user_id: null, // لا نحتاج user_id الآن
           account_type: 'personal',
           first_name: formData.firstName,
           last_name: formData.lastName,
@@ -80,56 +66,50 @@ const ApplyPersonal = () => {
           state: formData.state,
           postal_code: formData.postalCode,
           country: formData.country,
-          preferred_currency: 'SYP'
+          preferred_currency: 'SYP',
+          status: 'pending'
         })
         .select()
         .single();
 
       if (appError) throw appError;
 
-      // Create KYC application
-      const kycData = {
-        personalInfo: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+      // حفظ بيانات العميل في جدول pending_customers
+      const { error: pendingError } = await supabase
+        .from('pending_customers')
+        .insert({
+          application_token: application.application_token,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
           email: formData.email,
-          phone: formData.phone,
-          dateOfBirth: formData.dateOfBirth,
-          nationality: formData.nationality
-        },
-        addressInfo: {
-          addressLine1: formData.addressLine1,
-          addressLine2: formData.addressLine2,
-          city: formData.city,
-          state: formData.state,
-          postalCode: formData.postalCode,
-          country: formData.country
-        }
-      };
+          phone: formData.phone
+        });
 
-      const kycApplication = await createKYCApplication(
-        application.id,
-        kycData,
-        'basic' // Start with basic level for personal accounts
-      );
+      if (pendingError) throw pendingError;
 
-      // Upload documents to KYC
-      for (const [docType, file] of Object.entries(documents)) {
-        if (file) {
-          await uploadKYCDocument(
-            kycApplication.id,
-            docType === 'nationalId' ? 'national_id' : 'passport',
-            file
-          );
-        }
+      // إرسال الإيميلات
+      try {
+        await supabase.functions.invoke('send-application-emails', {
+          body: {
+            applicationToken: application.application_token,
+            customerName: `${formData.firstName} ${formData.lastName}`,
+            customerEmail: formData.email,
+            accountType: 'حساب شخصي'
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending emails:', emailError);
+        // لا نوقف العملية إذا فشل الإيميل
       }
 
       toast({
         title: "تم تقديم الطلب بنجاح!",
-        description: "سيتم مراجعة طلبكم وإجراء التحقق من الهوية. ستتلقون إشعاراً عند اكتمال المراجعة."
+        description: `رقم الطلب: ${application.application_token}`
       });
 
-      navigate('/dashboard');
+      // إعادة توجيه إلى صفحة حالة الطلب
+      navigate(`/application-status?token=${application.application_token}`);
+
     } catch (error) {
       console.error('Error submitting application:', error);
       toast({
@@ -167,7 +147,7 @@ const ApplyPersonal = () => {
           <p className="text-gray-600">املأ النموذج التالي لفتح حسابك الشخصي الجديد (الحساب الأساسي بالليرة السورية)</p>
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-blue-800 text-sm">
-              <strong>ملاحظة:</strong> سيتم إنشاء طلب للتحقق من الهوية (KYC) تلقائياً مع طلب فتح الحساب. يمكنك إضافة عملات أخرى وطلب بطاقات إضافية بعد تفعيل الحساب.
+              <strong>ملاحظة:</strong> سيتم مراجعة طلبكم من قبل فريقنا والتواصل معكم قريباً. لا تحتاجون لتسجيل الدخول لتقديم الطلب.
             </p>
           </div>
         </div>
@@ -197,12 +177,12 @@ const ApplyPersonal = () => {
             <CardTitle className="flex items-center gap-2">
               {step === 1 && <><User className="h-5 w-5" /> البيانات الشخصية</>}
               {step === 2 && <><MapPin className="h-5 w-5" /> بيانات العنوان</>}
-              {step === 3 && <><FileText className="h-5 w-5" /> الوثائق المطلوبة للتحقق من الهوية</>}
+              {step === 3 && <><FileText className="h-5 w-5" /> الوثائق المطلوبة</>}
             </CardTitle>
             <CardDescription>
               {step === 1 && "أدخل بياناتك الشخصية الأساسية"}
               {step === 2 && "أدخل تفاصيل عنوان إقامتك"}
-              {step === 3 && "ارفع الوثائق المطلوبة لفتح الحساب والتحقق من الهوية"}
+              {step === 3 && "ارفع الوثائق المطلوبة لفتح الحساب"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
