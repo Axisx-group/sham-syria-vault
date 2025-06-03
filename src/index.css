@@ -4,7 +4,7 @@
 @import './styles/animations.css';
 @import './styles/utilities.css';
 
-/* Global text visibility fixes */
+/* Global text visibility and color fixes */
 * {
   box-sizing: border-box;
 }
@@ -14,7 +14,7 @@ html {
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark light;
-  background: #0f172a;
+  background: #ffffff;
 }
 
 body {
@@ -23,11 +23,163 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-  color: #ffffff;
+  background: #ffffff;
+  color: #1f2937;
 }
 
-/* Admin panel fixes - keep existing admin styles */
+/* Light sections - white backgrounds with dark text */
+.light-section {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+.light-section h1,
+.light-section h2,
+.light-section h3,
+.light-section h4,
+.light-section h5,
+.light-section h6 {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+  font-weight: 700;
+}
+
+.light-section p,
+.light-section span,
+.light-section div {
+  color: #374151 !important;
+  text-shadow: none !important;
+}
+
+/* Dark sections - dark gradients with white text */
+.dark-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
+  color: #ffffff !important;
+}
+
+.dark-section h1,
+.dark-section h2,
+.dark-section h3,
+.dark-section h4,
+.dark-section h5,
+.dark-section h6 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+  font-weight: 700;
+}
+
+.dark-section p,
+.dark-section span,
+.dark-section div:not(.bg-white):not(.bg-gray-50):not(.bg-blue-50):not(.card) {
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Card components - force proper colors */
+.card {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #1f2937 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.card * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+.card p, .card span, .card div {
+  color: #374151 !important;
+}
+
+/* Dark section cards */
+.dark-section .card {
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark-section .card * {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Navigation improvements */
+header, nav {
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+header *, nav * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Button improvements */
+button {
+  font-weight: 600 !important;
+}
+
+/* Input and form elements */
+input, textarea, select {
+  color: #1f2937 !important;
+  background-color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+/* Table text visibility */
+table, td, th {
+  color: #374151 !important;
+  text-shadow: none !important;
+}
+
+/* Features section specific styles */
+.features-grid .card {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.features-grid .card * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* Stats section enhancements */
+.stats-section {
+  background: #ffffff !important;
+}
+
+.stats-section * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* Testimonials section */
+.testimonials-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+}
+
+.testimonials-section * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* CTA section */
+.cta-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+}
+
+.cta-section * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Admin panel fixes - maintain readability */
 .admin-dashboard,
 .admin-dashboard * {
   color: #1f2937 !important;
@@ -50,167 +202,4 @@ body {
   color: #111827 !important;
   font-weight: 600;
   text-shadow: none !important;
-}
-
-/* Input and form elements */
-input, textarea, select {
-  color: #1f2937 !important;
-  background-color: #ffffff !important;
-  text-shadow: none !important;
-}
-
-/* Table text visibility */
-table, td, th {
-  color: #374151 !important;
-  text-shadow: none !important;
-}
-
-/* Specific fixes for shadcn components */
-.card-content,
-.card-header,
-.card-title,
-.card-description {
-  color: #374151 !important;
-  text-shadow: none !important;
-}
-
-/* Dark sections styling */
-.dark-section {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-  color: #ffffff;
-}
-
-.dark-section h1,
-.dark-section h2,
-.dark-section h3,
-.dark-section h4,
-.dark-section h5,
-.dark-section h6 {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-  font-weight: 700;
-}
-
-.dark-section p,
-.dark-section span,
-.dark-section div:not(.bg-white):not(.bg-gray-50):not(.bg-blue-50) {
-  color: #ffffff !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
-}
-
-/* Light sections styling */
-.light-section {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-  color: #1f2937;
-}
-
-.light-section h1,
-.light-section h2,
-.light-section h3,
-.light-section h4,
-.light-section h5,
-.light-section h6 {
-  color: #1f2937 !important;
-  text-shadow: none !important;
-  font-weight: 700;
-}
-
-.light-section p,
-.light-section span,
-.light-section div {
-  color: #374151 !important;
-  text-shadow: none !important;
-}
-
-/* Navigation improvements */
-header, nav {
-  background: rgba(0, 0, 0, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-}
-
-header *, nav * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Button improvements */
-button {
-  font-weight: 600 !important;
-}
-
-/* Card backgrounds for better contrast */
-.card {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: #1f2937 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-.card * {
-  color: #1f2937 !important;
-  text-shadow: none !important;
-}
-
-.dark-section .card {
-  background: rgba(0, 0, 0, 0.6) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.dark-section .card * {
-  color: #ffffff !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Links and interactive elements */
-a {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* Special gradient text fixes */
-.bg-gradient-to-r {
-  background-clip: text;
-  -webkit-background-clip: text;
-  text-shadow: none !important;
-}
-
-/* Features section specific styles */
-.features-grid .card {
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-.features-grid .card * {
-  color: #1f2937 !important;
-  text-shadow: none !important;
-}
-
-/* Stats section enhancements */
-.stats-section {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-}
-
-.stats-section * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Testimonials section */
-.testimonials-section {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-}
-
-.testimonials-section * {
-  color: #1f2937 !important;
-  text-shadow: none !important;
-}
-
-/* CTA section */
-.cta-section {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-.cta-section * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
 }
