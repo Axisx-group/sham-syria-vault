@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useToast } from "@/hooks/use-toast";
@@ -50,6 +51,7 @@ const SecureAdminPortal = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const { toast } = useToast();
 
   // رمز الوصول الآمن (يمكن تغييره حسب الحاجة)
@@ -58,87 +60,111 @@ const SecureAdminPortal = () => {
 
   useEffect(() => {
     checkAuthentication();
-    logAccessAttempt();
   }, []);
 
   const checkAuthentication = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      console.log('بدء فحص المصادقة...');
       
-      if (!user) {
-        // لا يوجد مستخدم مسجل دخول
-        toast({
-          title: 'مطلوب تسجيل الدخول',
-          description: 'يجب تسجيل الدخول أولاً للوصول لهذه البوابة',
-          variant: 'destructive'
-        });
-        // إعادة توجيه إلى صفحة تسجيل الدخول للإدارة
-        setTimeout(() => {
-          window.location.href = '/admin';
-        }, 2000);
-        setIsLoading(false);
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        console.error('خطأ في الحصول على المستخدم:', userError);
+        redirectToLogin('حدث خطأ في التحقق من الهوية');
         return;
       }
 
+      if (!user) {
+        console.log('لا يوجد مستخدم مسجل دخول');
+        redirectToLogin('يجب تسجيل الدخول أولاً للوصول لهذه البوابة الآمنة');
+        return;
+      }
+
+      console.log('تم العثور على مستخدم:', user.email);
       setCurrentUser(user);
 
       // التحقق من دور المدير
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role, email')
         .eq('id', user.id)
         .single();
 
-      if (!profile || profile.role !== 'admin' || profile.email !== 'admin@souripay.com') {
-        toast({
-          title: 'وصول غير مخول',
-          description: 'ليس لديك صلاحية للوصول لهذه البوابة الآمنة',
-          variant: 'destructive'
-        });
-        setTimeout(() => {
-          window.location.href = '/admin';
-        }, 2000);
-        setIsLoading(false);
+      if (profileError) {
+        console.error('خطأ في الحصول على الملف الشخصي:', profileError);
+        redirectToLogin('حدث خطأ في التحقق من الصلاحيات');
         return;
       }
 
+      if (!profile) {
+        console.log('لا يوجد ملف شخصي للمستخدم');
+        redirectToLogin('ملف المستخدم غير موجود');
+        return;
+      }
+
+      console.log('دور المستخدم:', profile.role, 'الإيميل:', profile.email);
+
+      if (profile.role !== 'admin') {
+        console.log('المستخدم ليس مدير');
+        redirectToLogin('ليس لديك صلاحية المدير للوصول لهذه البوابة');
+        return;
+      }
+
+      if (profile.email !== 'admin@souripay.com') {
+        console.log('المستخدم ليس المدير الأساسي');
+        redirectToLogin('هذه البوابة مخصصة للمدير الأساسي فقط');
+        return;
+      }
+
+      console.log('تم التحقق من صلاحية المدير بنجاح');
       setIsValidAdmin(true);
+      setAuthChecked(true);
       
       // التحقق من رمز الوصول المحفوظ محلياً
       const savedCode = localStorage.getItem('secure_admin_access');
       if (savedCode === SECURE_ACCESS_CODE) {
+        console.log('تم العثور على رمز وصول محفوظ صحيح');
         setIsAuthenticated(true);
+      } else {
+        console.log('لا يوجد رمز وصول محفوظ أو رمز خاطئ');
       }
+
+      logAccessAttempt(user.id, 'secure_portal_attempt');
       
     } catch (error) {
-      console.error('Authentication check failed:', error);
-      toast({
-        title: 'خطأ في التحقق',
-        description: 'حدث خطأ أثناء التحقق من الصلاحيات',
-        variant: 'destructive'
-      });
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
+      console.error('خطأ في فحص المصادقة:', error);
+      redirectToLogin('حدث خطأ أثناء التحقق من الصلاحيات');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logAccessAttempt = async () => {
+  const redirectToLogin = (message: string) => {
+    toast({
+      title: 'وصول غير مخول',
+      description: message,
+      variant: 'destructive'
+    });
+    
+    setTimeout(() => {
+      window.location.href = '/admin';
+    }, 2000);
+    
+    setIsLoading(false);
+    setAuthChecked(true);
+  };
+
+  const logAccessAttempt = async (userId?: string, accessType: string = 'secure_portal_attempt') => {
     try {
-      // تسجيل محاولة الوصول
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      console.log('Access attempt logged:', {
-        user_id: user?.id,
-        access_type: 'secure_portal_attempt',
+      console.log('تسجيل محاولة الوصول:', {
+        user_id: userId,
+        access_type: accessType,
         ip_address: 'unknown',
         user_agent: navigator.userAgent,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Failed to log access attempt:', error);
+      console.error('فشل في تسجيل محاولة الوصول:', error);
     }
   };
 
@@ -157,14 +183,7 @@ const SecureAdminPortal = () => {
       localStorage.setItem('secure_admin_access', accessCode);
       setLoginAttempts(0);
       
-      // تسجيل الوصول الناجح
-      console.log('Successful access logged:', {
-        user_id: currentUser?.id,
-        access_type: 'secure_portal_success',
-        ip_address: 'unknown',
-        user_agent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      });
+      logAccessAttempt(currentUser?.id, 'secure_portal_success');
 
       toast({
         title: 'تم الوصول بنجاح',
@@ -182,14 +201,7 @@ const SecureAdminPortal = () => {
         }, 15 * 60 * 1000); // حظر لمدة 15 دقيقة
       }
 
-      // تسجيل المحاولة الفاشلة
-      console.log('Failed access attempt logged:', {
-        user_id: currentUser?.id,
-        access_type: 'secure_portal_failed',
-        ip_address: 'unknown',
-        user_agent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      });
+      logAccessAttempt(currentUser?.id, 'secure_portal_failed');
 
       toast({
         title: 'رمز وصول خاطئ',
@@ -204,14 +216,7 @@ const SecureAdminPortal = () => {
     localStorage.removeItem('secure_admin_access');
     setIsAuthenticated(false);
     
-    // تسجيل الخروج
-    console.log('Logout logged:', {
-      user_id: currentUser?.id,
-      access_type: 'secure_portal_logout',
-      ip_address: 'unknown',
-      user_agent: navigator.userAgent,
-      timestamp: new Date().toISOString()
-    });
+    logAccessAttempt(currentUser?.id, 'secure_portal_logout');
 
     toast({
       title: 'تم تسجيل الخروج',
@@ -299,14 +304,14 @@ const SecureAdminPortal = () => {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-white">جاري التحقق من الصلاحيات...</p>
+          <p className="text-white">جاري التحقق من الصلاحيات والهوية...</p>
         </div>
       </div>
     );
   }
 
-  // إذا لم يكن مسجل دخول أو ليس مدير صالح
-  if (!currentUser || !isValidAdmin) {
+  // إذا لم يكن مسجل دخول أو ليس مدير صالح أو فشل في التحقق
+  if (!authChecked || !currentUser || !isValidAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -321,7 +326,7 @@ const SecureAdminPortal = () => {
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                هذه البوابة مخصصة للمدير الأساسي فقط
+                هذه البوابة مخصصة للمدير الأساسي المصرح له فقط
               </AlertDescription>
             </Alert>
             <Button 
@@ -412,6 +417,7 @@ const SecureAdminPortal = () => {
                 <p>• جميع المحاولات مسجلة ومراقبة</p>
                 <p>• الوصول محدود للمدير الأساسي فقط</p>
                 <p>• نظام حماية متعدد الطبقات نشط</p>
+                <p>• المستخدم الحالي: {currentUser?.email}</p>
               </div>
             </div>
           </CardContent>
