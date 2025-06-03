@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Smartphone, CreditCard, Shield, Zap, Globe, TrendingUp, Users, Award } from "lucide-react";
+import { Smartphone, CreditCard, Shield, Zap, Globe, TrendingUp, Award } from "lucide-react";
 
 interface ModernFeaturesShowcaseProps {
   language: 'ar' | 'en';

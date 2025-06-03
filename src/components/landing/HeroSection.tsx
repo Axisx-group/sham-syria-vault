@@ -3,9 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
-import DemoVideoDialog from './DemoVideoDialog';
-import { ArrowRight, CheckCircle, Shield, Award, User, Building2, Sparkles, Star, Zap, TrendingUp, Smartphone, Globe } from "lucide-react";
-import { translations } from '@/utils/translations';
+import { ArrowRight, CheckCircle, Shield, Star, Zap, TrendingUp, Smartphone, Globe, Sparkles } from "lucide-react";
 
 interface HeroSectionProps {
   language: 'ar' | 'en';
@@ -13,7 +11,6 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ language }) => {
   const navigate = useNavigate();
-  const t = translations[language];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600">
