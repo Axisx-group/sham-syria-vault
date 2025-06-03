@@ -193,6 +193,254 @@ export type Database = {
           },
         ]
       }
+      bank_accounts: {
+        Row: {
+          account_number: string
+          account_type: string
+          balance: number | null
+          branch_code: string | null
+          created_at: string | null
+          currency: string
+          customer_id: string | null
+          iban: string
+          id: string
+          last_activity: string | null
+          open_date: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_number: string
+          account_type?: string
+          balance?: number | null
+          branch_code?: string | null
+          created_at?: string | null
+          currency?: string
+          customer_id?: string | null
+          iban: string
+          id?: string
+          last_activity?: string | null
+          open_date?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_number?: string
+          account_type?: string
+          balance?: number | null
+          branch_code?: string | null
+          created_at?: string | null
+          currency?: string
+          customer_id?: string | null
+          iban?: string
+          id?: string
+          last_activity?: string | null
+          open_date?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_cards: {
+        Row: {
+          account_id: string | null
+          card_brand: string
+          card_category: string
+          card_number: string
+          card_type: string
+          created_at: string | null
+          credit_limit: number | null
+          current_balance: number | null
+          customer_id: string | null
+          expiry_date: string
+          id: string
+          issue_date: string | null
+          security_level: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          card_brand?: string
+          card_category?: string
+          card_number: string
+          card_type?: string
+          created_at?: string | null
+          credit_limit?: number | null
+          current_balance?: number | null
+          customer_id?: string | null
+          expiry_date: string
+          id?: string
+          issue_date?: string | null
+          security_level?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          card_brand?: string
+          card_category?: string
+          card_number?: string
+          card_type?: string
+          created_at?: string | null
+          credit_limit?: number | null
+          current_balance?: number | null
+          customer_id?: string | null
+          expiry_date?: string
+          id?: string
+          issue_date?: string | null
+          security_level?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_cards_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_cards_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_transactions: {
+        Row: {
+          amount: number
+          channel: string | null
+          created_at: string | null
+          currency: string
+          description: string | null
+          fee: number | null
+          from_account_id: string | null
+          from_customer_name: string | null
+          id: string
+          notes: string | null
+          processed_at: string | null
+          reference_number: string
+          status: string
+          to_account_id: string | null
+          to_customer_name: string | null
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          channel?: string | null
+          created_at?: string | null
+          currency?: string
+          description?: string | null
+          fee?: number | null
+          from_account_id?: string | null
+          from_customer_name?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          reference_number: string
+          status?: string
+          to_account_id?: string | null
+          to_customer_name?: string | null
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          channel?: string | null
+          created_at?: string | null
+          currency?: string
+          description?: string | null
+          fee?: number | null
+          from_account_id?: string | null
+          from_customer_name?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          reference_number?: string
+          status?: string
+          to_account_id?: string | null
+          to_customer_name?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transactions_from_account_id_fkey"
+            columns: ["from_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_to_account_id_fkey"
+            columns: ["to_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          account_type: string
+          created_at: string | null
+          date_of_birth: string | null
+          email: string
+          first_name: string
+          id: string
+          join_date: string | null
+          last_login: string | null
+          last_name: string
+          location: string | null
+          nationality: string | null
+          phone: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_type?: string
+          created_at?: string | null
+          date_of_birth?: string | null
+          email: string
+          first_name: string
+          id?: string
+          join_date?: string | null
+          last_login?: string | null
+          last_name: string
+          location?: string | null
+          nationality?: string | null
+          phone: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_type?: string
+          created_at?: string | null
+          date_of_birth?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          join_date?: string | null
+          last_login?: string | null
+          last_name?: string
+          location?: string | null
+          nationality?: string | null
+          phone?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       kyc_applications: {
         Row: {
           account_application_id: string | null

@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import ModernSidebar from '@/components/layout/ModernSidebar';
 import AdminHeader from '@/components/admin/dashboard/AdminHeader';
 import EnhancedAdminOverview from '@/components/admin/dashboard/EnhancedAdminOverview';
 import AdminSystemStatus from "@/components/admin/AdminSystemStatus";
-import AdminCustomersList from "@/components/admin/AdminCustomersList";
+import RealCustomersList from "@/components/admin/customers/RealCustomersList";
 import AdminAccountsManagement from "@/components/admin/AdminAccountsManagement";
 import AdminCardsManagement from "@/components/admin/AdminCardsManagement";
 import AdminReportsStats from "@/components/admin/AdminReportsStats";
@@ -19,6 +20,7 @@ import AdminMobileAppControl from "@/components/admin/AdminMobileAppControl";
 import AdminATMManagement from "@/components/admin/AdminATMManagement";
 import AdminSwiftManagement from "@/components/admin/AdminSwiftManagement";
 import KYCDashboard from "@/components/kyc/KYCDashboard";
+import NewCustomerApproval from "@/components/admin/notifications/NewCustomerApproval";
 import { 
   TrendingUp, 
   Users, 
@@ -31,7 +33,8 @@ import {
   Settings,
   UserCheck,
   Activity,
-  Smartphone
+  Smartphone,
+  Bell
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -47,7 +50,8 @@ const AdminDashboard = () => {
       icon: Users,
       children: [
         { id: 'customers', label: 'قائمة العملاء', icon: Users },
-        { id: 'customer-control', label: 'التحكم بالعملاء', icon: UserCheck }
+        { id: 'customer-control', label: 'التحكم بالعملاء', icon: UserCheck },
+        { id: 'customer-approvals', label: 'موافقات العملاء الجدد', icon: Bell, badge: 3 }
       ]
     },
     { 
@@ -77,9 +81,11 @@ const AdminDashboard = () => {
       case 'system-status':
         return <AdminSystemStatus />;
       case 'customers':
-        return <AdminCustomersList />;
+        return <RealCustomersList />;
       case 'customer-control':
         return <AdminCustomerControl />;
+      case 'customer-approvals':
+        return <NewCustomerApproval />;
       case 'accounts':
         return <AdminAccountsManagement />;
       case 'cards':
