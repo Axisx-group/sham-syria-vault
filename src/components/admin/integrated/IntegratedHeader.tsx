@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useIntegratedNotifications } from '@/hooks/useIntegratedNotifications';
 import { useIntegratedStats } from '@/hooks/useIntegratedStats';
-import NotificationCenter from '@/components/notifications/NotificationCenter';
+import UnifiedNotificationCenter from '@/components/notifications/UnifiedNotificationCenter';
 import { Calendar, Download, CreditCard, Shield, RefreshCw, Activity } from "lucide-react";
 
 interface IntegratedHeaderProps {
@@ -100,7 +100,7 @@ const IntegratedHeader: React.FC<IntegratedHeaderProps> = ({
           
           <div className="flex items-center space-x-4 space-x-reverse">
             {/* مركز الإشعارات */}
-            <NotificationCenter
+            <UnifiedNotificationCenter
               notifications={notifications}
               onMarkAsRead={markAsRead}
               onMarkAllAsRead={markAllAsRead}

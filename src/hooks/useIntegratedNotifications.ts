@@ -1,27 +1,15 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-
-interface IntegratedNotification {
-  id: string;
-  title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'atm' | 'swift' | 'customer' | 'kyc';
-  section: 'atm' | 'swift' | 'customers' | 'kyc' | 'transactions' | 'security' | 'system';
-  timestamp: Date;
-  read: boolean;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  actionUrl?: string;
-  relatedId?: string;
-}
+import { UnifiedNotification } from '@/types/notifications';
 
 export const useIntegratedNotifications = () => {
   const { toast } = useToast();
-  const [notifications, setNotifications] = useState<IntegratedNotification[]>([]);
+  const [notifications, setNotifications] = useState<UnifiedNotification[]>([]);
 
   // محاكاة الإشعارات المختلفة من جميع الأقسام
   useEffect(() => {
-    const mockNotifications: IntegratedNotification[] = [
+    const mockNotifications: UnifiedNotification[] = [
       {
         id: '1',
         title: 'تنبيه أمني - جهاز ATM',
@@ -32,7 +20,8 @@ export const useIntegratedNotifications = () => {
         read: false,
         priority: 'critical',
         actionUrl: '/admin?tab=atm&device=ATM005',
-        relatedId: 'ATM005'
+        relatedId: 'ATM005',
+        category: 'atm'
       },
       {
         id: '2',
@@ -44,7 +33,8 @@ export const useIntegratedNotifications = () => {
         read: false,
         priority: 'medium',
         actionUrl: '/admin?tab=customer-approvals',
-        relatedId: 'CUST_001'
+        relatedId: 'CUST_001',
+        category: 'customer'
       },
       {
         id: '3',
@@ -56,7 +46,8 @@ export const useIntegratedNotifications = () => {
         read: false,
         priority: 'high',
         actionUrl: '/admin?tab=swift&transfer=SWIFT_001',
-        relatedId: 'SWIFT_001'
+        relatedId: 'SWIFT_001',
+        category: 'swift'
       },
       {
         id: '4',
@@ -68,15 +59,16 @@ export const useIntegratedNotifications = () => {
         read: true,
         priority: 'low',
         actionUrl: '/admin?tab=kyc&application=KYC_001',
-        relatedId: 'KYC_001'
+        relatedId: 'KYC_001',
+        category: 'kyc'
       }
     ];
 
     setNotifications(mockNotifications);
   }, []);
 
-  const addNotification = (notification: Omit<IntegratedNotification, 'id' | 'timestamp' | 'read'>) => {
-    const newNotification: IntegratedNotification = {
+  const addNotification = (notification: Omit<UnifiedNotification, 'id' | 'timestamp' | 'read'>) => {
+    const newNotification: UnifiedNotification = {
       ...notification,
       id: Math.random().toString(36).substr(2, 9),
       timestamp: new Date(),
