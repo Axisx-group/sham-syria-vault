@@ -6,6 +6,7 @@ import ATMStatsCards from './atm/ATMStatsCards';
 import ATMDevicesList from './atm/ATMDevicesList';
 import ATMWithdrawalLimits from './atm/ATMWithdrawalLimits';
 import ATMAnalytics from './atm/ATMAnalytics';
+import ATMSecurityTab from './atm/ATMSecurityTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AdminATMManagement = () => {
@@ -34,8 +35,9 @@ const AdminATMManagement = () => {
       <ATMStatsCards />
 
       <Tabs defaultValue="devices" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="devices">الأجهزة</TabsTrigger>
+          <TabsTrigger value="security">الأمان والمراقبة</TabsTrigger>
           <TabsTrigger value="limits">حدود السحب</TabsTrigger>
           <TabsTrigger value="analytics">التحليلات</TabsTrigger>
           <TabsTrigger value="maintenance">الصيانة</TabsTrigger>
@@ -43,6 +45,10 @@ const AdminATMManagement = () => {
         
         <TabsContent value="devices" className="space-y-4">
           <ATMDevicesList />
+        </TabsContent>
+        
+        <TabsContent value="security" className="space-y-4">
+          <ATMSecurityTab />
         </TabsContent>
         
         <TabsContent value="limits" className="space-y-4">
