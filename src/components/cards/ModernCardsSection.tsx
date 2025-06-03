@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
-import { Crown, Shield, Globe, Zap, TrendingUp, Lock, Award } from "lucide-react";
+import { Crown, Shield, Globe, Zap, TrendingUp, Lock, Award, Star, Sparkles } from "lucide-react";
 import BankCard from './BankCard';
 import CardFeatures from './CardFeatures';
 
@@ -12,44 +12,78 @@ interface ModernCardsSectionProps {
 const ModernCardsSection: React.FC<ModernCardsSectionProps> = ({ language }) => {
   const translations = {
     ar: {
-      title: "بطاقاتنا المصرفية",
-      subtitle: "تجربة مصرفية استثنائية مع أحدث التقنيات وأقصى درجات الأمان",
+      title: "بطاقاتك المصرفية",
+      subtitle: "اختر البطاقة التي تناسب أسلوب حياتك مع أحدث تقنيات الأمان والمزايا الحصرية",
       platinum: "بلاتينية إليت", 
       gold: "ذهبية برستيج",
       classic: "كلاسيكية سمارت",
       features: {
-        platinum: ["حد ائتماني غير محدود", "خدمات كونسيرج عالمية 24/7", "استرداد نقدي يصل إلى 5%", "تأمين سفر شامل للعائلة", "دخول مجاني لصالات المطارات VIP", "مدير حساب شخصي مخصص"],
-        gold: ["مكافآت مضاعفة 3x على جميع المشتريات", "خدمة عملاء مخصصة على مدار الساعة", "حماية مشتريات متقدمة لمدة 120 يوم", "عروض فنادق حصرية بخصم 40%", "استرداد نقدي 2% فوري", "تأمين ضد سرقة الهوية"],
-        classic: ["استخدام عالمي في 210+ دولة", "أمان بتقنية NFC المتطورة", "بدون رسوم سنوية مدى الحياة", "تطبيق ذكي بتقنية AI", "دعم فني متخصص 24/7", "إشعارات فورية للمعاملات"]
+        platinum: [
+          "حد ائتماني بلا حدود", 
+          "خدمة كونسيرج عالمية 24/7", 
+          "استرداد نقدي حتى 5%", 
+          "تأمين سفر شامل", 
+          "دخول مجاني لصالات VIP", 
+          "مدير حساب مخصص"
+        ],
+        gold: [
+          "مكافآت مضاعفة على المشتريات", 
+          "خدمة عملاء متميزة", 
+          "حماية مشتريات 120 يوم", 
+          "خصومات فنادق حصرية", 
+          "استرداد نقدي فوري 2%", 
+          "حماية من سرقة الهوية"
+        ],
+        classic: [
+          "قبول عالمي في 210+ دولة", 
+          "أمان NFC متطور", 
+          "بدون رسوم سنوية", 
+          "تطبيق ذكي متطور", 
+          "دعم فني 24/7", 
+          "إشعارات فورية"
+        ]
       },
       security: "أمان متقدم",
       worldwide: "قبول عالمي", 
-      rewards: "مكافآت استثنائية",
-      exclusive: "حصري",
-      premium: "بريميوم",
-      securityDesc: "حماية بتقنية البلوك تشين والذكاء الاصطناعي",
-      worldwideDesc: "مقبولة في أكثر من 210 دولة حول العالم",
-      rewardsDesc: "برنامج مكافآت ذكي يتطور مع احتياجاتك"
+      rewards: "مكافآت ذكية",
+      exclusive: "منتجات حصرية"
     },
     en: {
-      title: "Our Banking Cards",
-      subtitle: "Exceptional banking experience with cutting-edge technology and maximum security",
+      title: "Your Banking Cards",
+      subtitle: "Choose the card that fits your lifestyle with advanced security technology and exclusive benefits",
       platinum: "Platinum Elite",
       gold: "Gold Prestige", 
       classic: "Classic Smart",
       features: {
-        platinum: ["Unlimited Credit Limit", "24/7 Global Concierge Services", "Up to 5% Cash Back", "Comprehensive Family Travel Insurance", "Free VIP Airport Lounge Access", "Dedicated Personal Account Manager"],
-        gold: ["3x Rewards on All Purchases", "24/7 Dedicated Customer Service", "120-Day Advanced Purchase Protection", "Exclusive Hotel Offers 40% Off", "Instant 2% Cash Back", "Identity Theft Protection"],
-        classic: ["Global Acceptance in 210+ Countries", "Advanced NFC Security Technology", "No Annual Fee for Life", "AI-Powered Smart App", "24/7 Specialized Support", "Instant Transaction Notifications"]
+        platinum: [
+          "Unlimited Credit Limit", 
+          "24/7 Global Concierge", 
+          "Up to 5% Cash Back", 
+          "Comprehensive Travel Insurance", 
+          "Free VIP Lounge Access", 
+          "Dedicated Account Manager"
+        ],
+        gold: [
+          "Double Rewards on Purchases", 
+          "Premium Customer Service", 
+          "120-Day Purchase Protection", 
+          "Exclusive Hotel Discounts", 
+          "Instant 2% Cash Back", 
+          "Identity Theft Protection"
+        ],
+        classic: [
+          "Global Acceptance 210+ Countries", 
+          "Advanced NFC Security", 
+          "No Annual Fee", 
+          "Smart AI App", 
+          "24/7 Technical Support", 
+          "Instant Notifications"
+        ]
       },
       security: "Advanced Security",
       worldwide: "Global Acceptance",
-      rewards: "Exceptional Rewards", 
-      exclusive: "Exclusive",
-      premium: "Premium",
-      securityDesc: "Protection with Blockchain and AI technology",
-      worldwideDesc: "Accepted in over 210 countries worldwide",
-      rewardsDesc: "Smart rewards program that evolves with your needs"
+      rewards: "Smart Rewards", 
+      exclusive: "Exclusive Products"
     }
   };
 
@@ -62,7 +96,7 @@ const ModernCardsSection: React.FC<ModernCardsSectionProps> = ({ language }) => 
       number: "5432 •••• •••• 1234",
       holder: "JAMES ANDERSON", 
       expiry: "12/28",
-      gradient: "bg-gradient-to-br from-slate-900 via-slate-800 to-black",
+      gradient: "bg-gradient-to-br from-gray-900 via-slate-800 to-black",
       features: t.features.platinum,
       accentColor: "bg-gradient-to-r from-purple-600 to-pink-600"
     },
@@ -72,7 +106,7 @@ const ModernCardsSection: React.FC<ModernCardsSectionProps> = ({ language }) => 
       number: "4567 •••• •••• 8901",
       holder: "SOPHIA WILLIAMS",
       expiry: "08/27", 
-      gradient: "bg-gradient-to-br from-amber-500 via-yellow-500 to-orange-500",
+      gradient: "bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-600",
       features: t.features.gold,
       accentColor: "bg-gradient-to-r from-yellow-500 to-orange-500"
     },
@@ -82,85 +116,89 @@ const ModernCardsSection: React.FC<ModernCardsSectionProps> = ({ language }) => 
       number: "6789 •••• •••• 2345", 
       holder: "MICHAEL CHEN",
       expiry: "03/29",
-      gradient: "bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700",
+      gradient: "bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700",
       features: t.features.classic,
       accentColor: "bg-gradient-to-r from-blue-500 to-indigo-600"
     }
   ];
 
   return (
-    <section className="py-32 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 relative overflow-hidden">
-      {/* Enhanced Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-purple-100/40"></div>
-      <div className="absolute top-1/4 -left-64 w-96 h-96 bg-gradient-to-r from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-1/4 -right-64 w-96 h-96 bg-gradient-to-r from-purple-200/30 to-pink-200/30 rounded-full blur-3xl"></div>
+    <section className="py-20 bg-white relative overflow-hidden">
+      {/* Modern Background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-50/50 to-blue-50/30"></div>
+        <div className="absolute top-20 left-20 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-pulse animation-delay-1000"></div>
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Enhanced Header */}
-        <div className="text-center mb-24">
-          <Badge variant="secondary" className="mb-8 px-8 py-3 text-sm bg-gradient-to-r from-purple-50 to-blue-50 text-purple-700 border-purple-200/50 hover:scale-105 transition-transform shadow-lg">
-            <Crown className="w-5 h-5 mr-3" />
+        {/* Header */}
+        <div className="text-center mb-16">
+          <Badge variant="secondary" className="mb-6 px-6 py-2 text-sm bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-purple-200/50 shadow-sm">
+            <Sparkles className="w-4 h-4 mr-2" />
             {t.exclusive}
           </Badge>
-          <h1 className="text-6xl md:text-7xl font-black bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-8 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-gray-900 via-purple-900 to-blue-900 bg-clip-text text-transparent mb-6 leading-tight">
             {t.title}
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t.subtitle}
           </p>
         </div>
 
-        {/* Cards Grid with Enhanced Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 max-w-7xl mx-auto mb-32">
+        {/* Cards Showcase */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto mb-20">
           {cards.map((card, index) => (
-            <div key={index} className="flex flex-col items-center space-y-10 group">
-              <div className="transform transition-all duration-700 hover:scale-105">
-                <BankCard
-                  type={card.type}
-                  name={card.name}
-                  number={card.number}
-                  holder={card.holder}
-                  expiry={card.expiry}
-                  gradient={card.gradient}
-                  language={language}
-                />
-              </div>
-              <div className="w-full transform transition-all duration-500 group-hover:-translate-y-2">
-                <CardFeatures
-                  title={card.name}
-                  features={card.features}
-                  accentColor={card.accentColor}
-                  language={language}
-                />
-              </div>
+            <div key={index} className="space-y-8">
+              <BankCard
+                type={card.type}
+                name={card.name}
+                number={card.number}
+                holder={card.holder}
+                expiry={card.expiry}
+                gradient={card.gradient}
+                language={language}
+              />
+              <CardFeatures
+                title={card.name}
+                features={card.features}
+                accentColor={card.accentColor}
+                language={language}
+              />
             </div>
           ))}
         </div>
 
-        {/* Enhanced Bottom Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-          <div className="text-center group cursor-pointer">
-            <div className="w-24 h-24 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-2xl">
-              <Lock className="h-12 w-12 text-white" />
+        {/* Bottom Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 text-center group border border-gray-100/50">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+              <Lock className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-bold text-2xl text-gray-900 mb-4">{t.security}</h3>
-            <p className="text-gray-600 leading-relaxed text-lg">{t.securityDesc}</p>
+            <h3 className="font-bold text-xl text-gray-900 mb-3">{t.security}</h3>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'ar' ? 'حماية بتقنية البلوك تشين المتقدمة' : 'Advanced blockchain security protection'}
+            </p>
           </div>
 
-          <div className="text-center group cursor-pointer">
-            <div className="w-24 h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-2xl">
-              <Globe className="h-12 w-12 text-white" />
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 text-center group border border-gray-100/50">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+              <Globe className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-bold text-2xl text-gray-900 mb-4">{t.worldwide}</h3>
-            <p className="text-gray-600 leading-relaxed text-lg">{t.worldwideDesc}</p>
+            <h3 className="font-bold text-xl text-gray-900 mb-3">{t.worldwide}</h3>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'ar' ? 'مقبولة في أكثر من 210 دولة' : 'Accepted in over 210 countries'}
+            </p>
           </div>
 
-          <div className="text-center group cursor-pointer">
-            <div className="w-24 h-24 bg-gradient-to-br from-purple-500 via-pink-500 to-rose-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-2xl">
-              <TrendingUp className="h-12 w-12 text-white" />
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 text-center group border border-gray-100/50">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+              <TrendingUp className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-bold text-2xl text-gray-900 mb-4">{t.rewards}</h3>
-            <p className="text-gray-600 leading-relaxed text-lg">{t.rewardsDesc}</p>
+            <h3 className="font-bold text-xl text-gray-900 mb-3">{t.rewards}</h3>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'ar' ? 'نظام مكافآت ذكي يتطور معك' : 'Smart rewards system that grows with you'}
+            </p>
           </div>
         </div>
       </div>
