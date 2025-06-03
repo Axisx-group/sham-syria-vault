@@ -180,12 +180,12 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const handleDownloadDocument = async (document: DocumentInfo) => {
+  const handleDownloadDocument = async (doc: DocumentInfo) => {
     try {
       // محاولة تحميل المستند من Supabase Storage
       const { data, error } = await supabase.storage
         .from('kyc-documents')
-        .download(document.file_path);
+        .download(doc.file_path);
 
       if (error) {
         console.error('خطأ في تحميل المستند:', error);
@@ -199,17 +199,17 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ request }) =>
 
       // إنشاء رابط للتحميل
       const url = URL.createObjectURL(data);
-      const a = document.createElement('a');
+      const a = window.document.createElement('a');
       a.href = url;
-      a.download = document.file_name;
-      document.body.appendChild(a);
+      a.download = doc.file_name;
+      window.document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      window.document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       toast({
         title: "تم التحميل",
-        description: `تم تحميل ${document.file_name} بنجاح`
+        description: `تم تحميل ${doc.file_name} بنجاح`
       });
     } catch (error) {
       console.error('خطأ في تحميل المستند:', error);
