@@ -5,7 +5,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import StatsSection from '@/components/landing/StatsSection';
 import WhyChooseUsSection from '@/components/landing/WhyChooseUsSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
-import InteractiveFeatures from '@/components/landing/InteractiveFeatures';
+import ModernFeaturesShowcase from '@/components/landing/ModernFeaturesShowcase';
 import BankCardsSection from '@/components/landing/BankCardsSection';
 import ServicesSection from '@/components/landing/ServicesSection';
 import TestimonialsSection from '@/components/landing/TestimonialsSection';
@@ -19,7 +19,7 @@ const Index = () => {
     <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <Header language={language} onLanguageChange={setLanguage} />
       <HeroSection language={language} />
-      <InteractiveFeatures language={language} />
+      <ModernFeaturesShowcase language={language} />
       <StatsSection language={language} />
       <BankCardsSection language={language} />
       <WhyChooseUsSection language={language} />
