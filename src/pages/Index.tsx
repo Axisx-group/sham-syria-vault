@@ -5,6 +5,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import StatsSection from '@/components/landing/StatsSection';
 import WhyChooseUsSection from '@/components/landing/WhyChooseUsSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
+import BankCardsSection from '@/components/landing/BankCardsSection';
 import ServicesSection from '@/components/landing/ServicesSection';
 import TestimonialsSection from '@/components/landing/TestimonialsSection';
 import CTASection from '@/components/landing/CTASection';
@@ -18,6 +19,7 @@ const Index = () => {
       <Header language={language} onLanguageChange={setLanguage} />
       <HeroSection language={language} />
       <StatsSection language={language} />
+      <BankCardsSection language={language} />
       <WhyChooseUsSection language={language} />
       <FeaturesSection language={language} />
       <ServicesSection language={language} />
