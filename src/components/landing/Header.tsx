@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
 
   const handleNetBankLogin = () => {
     setIsNetBankDialogOpen(true);
-    setIsMenuOpen(false); // إغلاق القائمة المحمولة إذا كانت مفتوحة
+    setIsMenuOpen(false);
   };
 
   return (
@@ -74,6 +74,13 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
                 className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
               >
                 خدمة الاستعلام
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => navigateTo('/services/iban-swift')}
+                className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
+              >
+                IBAN والسويفت
               </Button>
               <Button 
                 variant="ghost" 
@@ -180,6 +187,13 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
                 onClick={() => navigateTo('/services/nubarium')}
               >
                 خدمة الاستعلام
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
+                onClick={() => navigateTo('/services/iban-swift')}
+              >
+                IBAN والسويفت
               </Button>
               <Button 
                 variant="ghost" 

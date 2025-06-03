@@ -74,6 +74,9 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
               <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/services/nubarium')}>
                 {language === 'ar' ? 'خدمة الاستعلام' : 'Consultation Service'}
               </li>
+              <li className="cursor-pointer hover:text-white transition-colors" onClick={() => handleNavigation('/services/iban-swift')}>
+                {language === 'ar' ? 'خدمات IBAN والسويفت' : 'IBAN & SWIFT Services'}
+              </li>
             </ul>
           </div>
           

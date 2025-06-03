@@ -21,6 +21,7 @@ import BankingServices from "./pages/BankingServices";
 import AdminDashboard from "./pages/AdminDashboard";
 import Cards from "./pages/Cards";
 import NubariumService from "./pages/NubariumService";
+import IbanSwiftServices from "./pages/IbanSwiftServices";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="/services/security" element={<ServicesSecurity />} />
           <Route path="/services/global" element={<ServicesGlobal />} />
           <Route path="/services/nubarium" element={<NubariumService />} />
+          <Route path="/services/iban-swift" element={<IbanSwiftServices />} />
           <Route path="/banking-services" element={<BankingServices />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
