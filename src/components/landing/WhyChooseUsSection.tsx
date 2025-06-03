@@ -35,7 +35,7 @@ const WhyChooseUsSection: React.FC<WhyChooseUsSectionProps> = ({ language }) => 
   ];
 
   return (
-    <section className="bg-gradient-to-r from-gray-50 to-blue-50 py-20">
+    <section className="light-section py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{t.whyChooseUs}</h2>
@@ -47,7 +47,7 @@ const WhyChooseUsSection: React.FC<WhyChooseUsSectionProps> = ({ language }) => 
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {whyChooseUs.map((reason, index) => {
             const Icon = reason.icon;
             return (
@@ -56,7 +56,7 @@ const WhyChooseUsSection: React.FC<WhyChooseUsSectionProps> = ({ language }) => 
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4 group-hover:bg-blue-100 transition-colors">
                     <Icon className="h-8 w-8 text-blue-600" />
                   </div>
-                  <CardTitle className="text-xl">{reason.title}</CardTitle>
+                  <CardTitle className="text-xl text-gray-900">{reason.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <CardDescription className="text-center text-gray-600">

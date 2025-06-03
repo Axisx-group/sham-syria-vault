@@ -6,6 +6,7 @@ import AnimatedStatsSection from '@/components/landing/AnimatedStatsSection';
 import AdvancedServicesSection from '@/components/landing/AdvancedServicesSection';
 import ModernFeaturesShowcase from '@/components/landing/ModernFeaturesShowcase';
 import ModernCardsSection from '@/components/cards/ModernCardsSection';
+import WhyChooseUsSection from '@/components/landing/WhyChooseUsSection';
 import TestimonialsSection from '@/components/landing/TestimonialsSection';
 import CTASection from '@/components/landing/CTASection';
 import Footer from '@/components/landing/Footer';
@@ -21,31 +22,35 @@ const Index = () => {
       <NotificationBanner language={language} />
       <Header language={language} onLanguageChange={setLanguage} />
       
-      <section id="hero">
+      <section id="hero" className="dark-section">
         <EnhancedHeroSection language={language} />
       </section>
       
-      <section id="stats">
+      <section id="stats" className="stats-section">
         <AnimatedStatsSection language={language} />
       </section>
       
-      <section id="services">
+      <section id="services" className="light-section">
         <AdvancedServicesSection language={language} />
       </section>
       
-      <section id="features">
+      <section id="features" className="light-section">
         <ModernFeaturesShowcase language={language} />
       </section>
+
+      <section id="why-choose-us" className="light-section">
+        <WhyChooseUsSection language={language} />
+      </section>
       
-      <section id="cards">
+      <section id="cards" className="dark-section">
         <ModernCardsSection language={language} />
       </section>
       
-      <section id="testimonials">
+      <section id="testimonials" className="testimonials-section">
         <TestimonialsSection language={language} />
       </section>
       
-      <section id="cta">
+      <section id="cta" className="cta-section">
         <CTASection language={language} />
       </section>
       

@@ -27,102 +27,6 @@ body {
   color: #ffffff;
 }
 
-/* Enhanced text visibility for all elements */
-h1, h2, h3, h4, h5, h6 {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.5px;
-}
-
-p, span, div, li, a {
-  color: #ffffff !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Stronger text shadows for better visibility */
-.text-6xl, .text-7xl {
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9) !important;
-  font-weight: 900 !important;
-}
-
-.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl {
-  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8) !important;
-  font-weight: 600 !important;
-}
-
-/* Navigation and header improvements */
-header, nav {
-  background: rgba(0, 0, 0, 0.9) !important;
-  backdrop-filter: blur(20px) !important;
-}
-
-header *, nav * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Button improvements */
-button {
-  font-weight: 600 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Card and section backgrounds for better contrast */
-.bg-white\/10, .bg-white\/5, .backdrop-blur-sm {
-  background: rgba(0, 0, 0, 0.4) !important;
-  backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.bg-white\/10 *, .bg-white\/5 *, .backdrop-blur-sm * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Badge and small text visibility */
-.text-sm, .text-xs {
-  color: #f1f5f9 !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
-  font-weight: 500 !important;
-}
-
-/* Gradient text fixes */
-.bg-gradient-to-r {
-  background-clip: text;
-  -webkit-background-clip: text;
-  text-shadow: none !important;
-}
-
-/* Stats section improvements */
-.text-5xl {
-  color: #ffffff !important;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.9) !important;
-  font-weight: 800 !important;
-}
-
-/* Features and services sections */
-section {
-  position: relative;
-}
-
-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
-  pointer-events: none;
-  z-index: 1;
-}
-
-section > * {
-  position: relative;
-  z-index: 2;
-}
-
 /* Admin panel fixes - keep existing admin styles */
 .admin-dashboard,
 .admin-dashboard * {
@@ -170,28 +74,143 @@ table, td, th {
   text-shadow: none !important;
 }
 
-/* Dark mode overrides */
-.dark .text-gray-900,
-.dark .text-gray-800,
-.dark .text-gray-700 {
-  color: #f9fafb !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+/* Dark sections styling */
+.dark-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: #ffffff;
 }
 
-/* Special emphasis for important text */
-.font-black, .font-bold, .font-semibold {
+.dark-section h1,
+.dark-section h2,
+.dark-section h3,
+.dark-section h4,
+.dark-section h5,
+.dark-section h6 {
   color: #ffffff !important;
-  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.9) !important;
-  font-weight: 700 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  font-weight: 700;
+}
+
+.dark-section p,
+.dark-section span,
+.dark-section div:not(.bg-white):not(.bg-gray-50):not(.bg-blue-50) {
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Light sections styling */
+.light-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  color: #1f2937;
+}
+
+.light-section h1,
+.light-section h2,
+.light-section h3,
+.light-section h4,
+.light-section h5,
+.light-section h6 {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+  font-weight: 700;
+}
+
+.light-section p,
+.light-section span,
+.light-section div {
+  color: #374151 !important;
+  text-shadow: none !important;
+}
+
+/* Navigation improvements */
+header, nav {
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+header *, nav * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Button improvements */
+button {
+  font-weight: 600 !important;
+}
+
+/* Card backgrounds for better contrast */
+.card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1f2937 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.card * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+.dark-section .card {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark-section .card * {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Links and interactive elements */
 a {
-  color: #93c5fd !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-a:hover {
-  color: #dbeafe !important;
+/* Special gradient text fixes */
+.bg-gradient-to-r {
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: none !important;
+}
+
+/* Features section specific styles */
+.features-grid .card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.features-grid .card * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* Stats section enhancements */
+.stats-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+}
+
+.stats-section * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Testimonials section */
+.testimonials-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.testimonials-section * {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* CTA section */
+.cta-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.cta-section * {
+  color: #ffffff !important;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
 }

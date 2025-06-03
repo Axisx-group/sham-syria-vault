@@ -15,9 +15,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -37,110 +39,8 @@
   }
 }
 
-.card {
-  padding: 2em;
-  background: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
-}
-
-.card * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
 .read-the-docs {
   color: #94a3b8;
-}
-
-/* Enhanced landing page text visibility */
-.min-h-screen * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Hero section with stronger contrast */
-section {
-  position: relative;
-}
-
-section h1,
-section h2,
-section h3,
-section p {
-  color: #ffffff !important;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.9) !important;
-  font-weight: 600 !important;
-}
-
-/* Button text improvements */
-section button {
-  color: inherit !important;
-  font-weight: 600 !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Navigation with better contrast */
-header {
-  background: rgba(0, 0, 0, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-}
-
-header * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Stats cards with enhanced visibility */
-.text-center h1,
-.text-center p,
-.lg\\:text-right h1,
-.lg\\:text-right p {
-  color: #ffffff !important;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9) !important;
-  font-weight: 700 !important;
-}
-
-/* Badge and inline elements */
-.inline-flex span {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-  font-weight: 500 !important;
-}
-
-/* Card content improvements */
-.rounded-2xl, .rounded-xl {
-  background: rgba(0, 0, 0, 0.4) !important;
-  backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.rounded-2xl p,
-.rounded-2xl div,
-.rounded-xl p,
-.rounded-xl div,
-.backdrop-blur-sm * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
-}
-
-/* Features section improvements */
-.grid > div {
-  background: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Testimonials and reviews */
-.testimonial, .review {
-  background: rgba(0, 0, 0, 0.6) !important;
-  backdrop-filter: blur(20px) !important;
-}
-
-.testimonial *, .review * {
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
 }
 
 /* Admin panel specific fixes - maintain readability */
