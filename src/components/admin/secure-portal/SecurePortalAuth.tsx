@@ -27,6 +27,7 @@ export const useSecurePortalAuth = (): UseSecurePortalAuthReturn => {
 
   const SECURE_ACCESS_CODE = 'NUBARIUM_ADMIN_2024_SECURE';
   const MAX_LOGIN_ATTEMPTS = 3;
+  const CODE_EXPIRY_HOURS = 24; // مدة صلاحية الرمز بالساعات
 
   useEffect(() => {
     checkAuthentication();
@@ -48,21 +49,40 @@ export const useSecurePortalAuth = (): UseSecurePortalAuthReturn => {
     }
   };
 
+  const isCodeExpired = () => {
+    const lastSaveTime = localStorage.getItem('secure_admin_access_time');
+    if (!lastSaveTime) return true;
+    
+    const saveTime = new Date(lastSaveTime);
+    const now = new Date();
+    const diffHours = (now.getTime() - saveTime.getTime()) / (1000 * 60 * 60);
+    
+    return diffHours > CODE_EXPIRY_HOURS;
+  };
+
+  const clearStoredCode = () => {
+    localStorage.removeItem('secure_admin_access');
+    localStorage.removeItem('secure_admin_access_time');
+  };
+
   const checkAuthentication = async () => {
     try {
-      console.log('فحص المصادقة...');
+      console.log('بدء فحص المصادقة الشامل...');
       
+      // الخطوة 1: التحقق من جلسة المستخدم الحالية
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
       if (userError || !user) {
-        console.log('لا يوجد مستخدم مسجل دخول');
+        console.log('لا يوجد مستخدم مسجل دخول - تنظيف البيانات المحفوظة');
+        clearStoredCode();
         setIsLoading(false);
         return;
       }
 
-      console.log('المستخدم:', user.email);
+      console.log('المستخدم مسجل دخول:', user.email);
       setCurrentUser(user);
 
+      // الخطوة 2: التحقق من صلاحيات المدير
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role, email')
@@ -71,28 +91,37 @@ export const useSecurePortalAuth = (): UseSecurePortalAuthReturn => {
 
       if (profileError || !profile) {
         console.log('خطأ في الحصول على الملف الشخصي');
+        clearStoredCode();
         setIsLoading(false);
         return;
       }
 
       console.log('دور المستخدم:', profile.role, 'الإيميل:', profile.email);
 
+      // الخطوة 3: التحقق من كون المستخدم مدير مصرح
       if (profile.role !== 'admin' || profile.email !== 'admin@souripay.com') {
         console.log('المستخدم ليس مدير مصرح');
+        clearStoredCode();
         setIsLoading(false);
         return;
       }
 
+      // الخطوة 4: التحقق من الرمز المحفوظ وصلاحيته
       const savedCode = localStorage.getItem('secure_admin_access');
-      if (savedCode === SECURE_ACCESS_CODE) {
-        console.log('رمز وصول صحيح محفوظ');
+      if (savedCode === SECURE_ACCESS_CODE && !isCodeExpired()) {
+        console.log('رمز وصول صحيح وساري الصلاحية');
         setIsAuthenticated(true);
+        logAccessAttempt(user.id, 'secure_portal_auto_login');
+      } else {
+        console.log('رمز الوصول منتهي الصلاحية أو غير صحيح - تنظيف البيانات');
+        clearStoredCode();
       }
 
       logAccessAttempt(user.id, 'secure_portal_check');
       
     } catch (error) {
       console.error('خطأ في فحص المصادقة:', error);
+      clearStoredCode();
     } finally {
       setIsLoading(false);
     }
@@ -108,9 +137,20 @@ export const useSecurePortalAuth = (): UseSecurePortalAuthReturn => {
       return;
     }
 
+    // التحقق مرة أخرى من صحة المستخدم قبل قبول الرمز
+    if (!currentUser) {
+      toast({
+        title: 'خطأ في المصادقة',
+        description: 'يجب تسجيل الدخول أولاً',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     if (accessCode === SECURE_ACCESS_CODE) {
       setIsAuthenticated(true);
       localStorage.setItem('secure_admin_access', accessCode);
+      localStorage.setItem('secure_admin_access_time', new Date().toISOString());
       setLoginAttempts(0);
       
       logAccessAttempt(currentUser?.id, 'secure_portal_success');
@@ -142,7 +182,7 @@ export const useSecurePortalAuth = (): UseSecurePortalAuthReturn => {
   };
 
   const handleSecureLogout = async () => {
-    localStorage.removeItem('secure_admin_access');
+    clearStoredCode();
     setIsAuthenticated(false);
     
     logAccessAttempt(currentUser?.id, 'secure_portal_logout');
@@ -154,7 +194,8 @@ export const useSecurePortalAuth = (): UseSecurePortalAuthReturn => {
   };
 
   const resetAccessCode = () => {
-    // This function can be used to reset access code if needed
+    clearStoredCode();
+    setIsAuthenticated(false);
   };
 
   return {

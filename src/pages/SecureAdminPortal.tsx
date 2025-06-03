@@ -24,17 +24,17 @@ const SecureAdminPortal = () => {
     handleSecureLogout
   } = useSecurePortalAuth();
 
-  // شاشة التحميل
+  // شاشة التحميل أثناء فحص المصادقة
   if (isLoading) {
     return <SecurePortalLoadingScreen />;
   }
 
-  // إذا لم يكن هناك مستخدم مسجل أو ليس مدير
+  // إذا لم يكن هناك مستخدم مسجل أو ليس مدير مصرح
   if (!currentUser) {
     return <SecurePortalAccessDenied />;
   }
 
-  // إذا لم يدخل رمز الوصول الآمن
+  // إذا لم يدخل رمز الوصول الآمن أو انتهت صلاحيته
   if (!isAuthenticated) {
     return (
       <SecurePortalLoginForm
@@ -46,6 +46,7 @@ const SecureAdminPortal = () => {
     );
   }
 
+  // الوصول الآمن مؤكد - عرض البوابة
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-background flex w-full admin-dashboard">
