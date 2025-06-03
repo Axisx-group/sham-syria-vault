@@ -27,38 +27,95 @@ body {
   color: #ffffff;
 }
 
-/* Fix any potential white text on white background issues */
-.invisible-text-fix {
+/* Fix for admin panel text visibility */
+.admin-panel,
+.admin-panel *,
+[class*="admin"],
+[class*="Admin"] {
   color: #1f2937 !important;
-  background: transparent !important;
 }
 
-/* Ensure readability on light sections */
-section[class*="bg-white"] *,
-section[class*="bg-gray-50"] *,
-section[class*="bg-blue-50"] * {
+/* Ensure all cards and components in admin have proper text color */
+.admin-panel .card,
+.admin-panel .card *,
+.admin-panel [class*="Card"],
+.admin-panel [class*="card"] {
   color: #374151 !important;
 }
 
-section[class*="bg-white"] .text-white,
-section[class*="bg-gray-50"] .text-white,
-section[class*="bg-blue-50"] .text-white {
+/* Fix for white backgrounds to have dark text */
+.bg-white,
+.bg-white *,
+.bg-gray-50,
+.bg-gray-50 *,
+.bg-blue-50,
+.bg-blue-50 * {
   color: #1f2937 !important;
 }
 
-/* Ensure proper text contrast in cards */
-.card * {
+/* Override any white text on light backgrounds */
+.bg-white .text-white,
+.bg-gray-50 .text-white,
+.bg-blue-50 .text-white,
+.bg-card .text-white,
+.bg-background .text-white {
+  color: #1f2937 !important;
+}
+
+/* Ensure proper contrast for specific elements */
+h1, h2, h3, h4, h5, h6,
+.text-xl, .text-2xl, .text-3xl,
+.font-bold, .font-semibold {
+  color: #111827 !important;
+}
+
+/* Button text visibility */
+button,
+.btn,
+[role="button"] {
   color: inherit;
 }
 
-/* Fix for any accidentally invisible text */
+/* Input and form elements */
+input, textarea, select {
+  color: #1f2937 !important;
+  background-color: #ffffff !important;
+}
+
+/* Table text visibility */
+table, td, th {
+  color: #374151 !important;
+}
+
+/* Navigation and sidebar text */
+nav, .sidebar, .navigation {
+  color: inherit;
+}
+
+/* Specific fixes for shadcn components */
+.card-content,
+.card-header,
+.card-title,
+.card-description {
+  color: #374151 !important;
+}
+
+/* Fix any accidentally invisible text */
 [style*="color: white"],
 [style*="color: #ffffff"],
 [style*="color: #fff"] {
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+  color: #1f2937 !important;
+  text-shadow: none !important;
 }
 
-/* Better visibility for text on light backgrounds */
-.bg-white *:not(.text-gray-900):not(.text-gray-800):not(.text-gray-700):not(.text-gray-600) {
+/* Ensure text visibility in light mode */
+.light *:not(.text-white):not([class*="text-white"]) {
   color: #374151 !important;
+}
+
+/* Dark mode text fixes */
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: #f9fafb !important;
 }

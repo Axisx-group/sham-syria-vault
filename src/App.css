@@ -48,40 +48,66 @@
   color: #94a3b8;
 }
 
-/* Fix text visibility issues */
-body {
-  background: #0f172a;
-  color: #ffffff;
-}
-
-/* Ensure all text has proper contrast */
-.text-white-on-white-fix {
+/* Admin panel specific fixes */
+.admin-dashboard,
+.admin-dashboard * {
   color: #1f2937 !important;
-  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
 }
 
-.text-dark-readable {
+/* Ensure admin cards have proper text color */
+.admin-dashboard .bg-white,
+.admin-dashboard .bg-white *,
+.admin-dashboard .card,
+.admin-dashboard .card * {
   color: #374151 !important;
+  background-color: #ffffff;
+}
+
+/* Headers and important text in admin */
+.admin-dashboard h1,
+.admin-dashboard h2,
+.admin-dashboard h3,
+.admin-dashboard h4 {
+  color: #111827 !important;
   font-weight: 600;
 }
 
-/* Fix any invisible text issues */
-*[style*="color: white"], 
-*[style*="color: #ffffff"], 
-*[style*="color: #fff"] {
-  color: #1f2937 !important;
-  text-shadow: none !important;
-}
-
-/* Ensure proper contrast on light backgrounds */
-.bg-white *, 
-.bg-gray-50 *, 
-.bg-blue-50 * {
+/* Table and data display fixes */
+.admin-dashboard table,
+.admin-dashboard td,
+.admin-dashboard th,
+.admin-dashboard .table {
   color: #374151 !important;
 }
 
-.bg-white .text-white, 
-.bg-gray-50 .text-white, 
-.bg-blue-50 .text-white {
+/* Button text in admin */
+.admin-dashboard button,
+.admin-dashboard .btn {
+  color: inherit;
+}
+
+/* Input fields in admin */
+.admin-dashboard input,
+.admin-dashboard textarea,
+.admin-dashboard select {
+  color: #1f2937 !important;
+  background: #ffffff !important;
+}
+
+/* Stats and metrics text */
+.admin-dashboard .text-2xl,
+.admin-dashboard .text-xl,
+.admin-dashboard .font-bold {
+  color: #111827 !important;
+}
+
+/* Sidebar text fixes */
+.admin-dashboard .sidebar,
+.admin-dashboard nav {
+  color: inherit;
+}
+
+/* Override any problematic white text */
+.admin-dashboard *[class*="text-white"] {
   color: #1f2937 !important;
 }
