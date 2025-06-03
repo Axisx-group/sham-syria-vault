@@ -2,11 +2,15 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Building, Info } from "lucide-react";
+import { MapPin, Users, Building, Info, CreditCard, TrendingUp } from "lucide-react";
 import { useGeography } from "@/hooks/useGeography";
+import { useEnhancedGeographyStats } from "@/hooks/useEnhancedGeographyStats";
 import { SyrianGovernorate } from "@/types/geography";
 
-const GovernorateCard: React.FC<{ governorate: SyrianGovernorate }> = ({ governorate }) => {
+const GovernorateCard: React.FC<{ 
+  governorate: SyrianGovernorate;
+  customerStats?: any;
+}> = ({ governorate, customerStats }) => {
   const formatNumber = (num?: number) => {
     if (!num) return 'غير محدد';
     return new Intl.NumberFormat('ar-SA').format(num);
@@ -49,8 +53,52 @@ const GovernorateCard: React.FC<{ governorate: SyrianGovernorate }> = ({ governo
           </div>
         </div>
 
+        {/* Customer Statistics Section */}
+        {customerStats && (
+          <div className="border-t pt-4 space-y-3">
+            <h4 className="font-semibold text-sm text-gray-700 flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              إحصائيات العملاء
+            </h4>
+            
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-500">العملاء:</span>
+                <Badge variant="secondary">{customerStats.customerCount}</Badge>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">شخصية:</span>
+                <Badge variant="outline">{customerStats.personalAccounts}</Badge>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">تجارية:</span>
+                <Badge variant="outline">{customerStats.businessAccounts}</Badge>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">البطاقات:</span>
+                <Badge variant="outline">{customerStats.debitCards + customerStats.creditCards}</Badge>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-indigo-600" />
+              <div className="flex-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500">متوسط الرصيد:</span>
+                  <span className="font-medium">
+                    {customerStats.averageBalance > 0 ? 
+                      `${formatNumber(Math.round(customerStats.averageBalance))} ل.س` : 
+                      'غير محدد'
+                    }
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {governorate.description_ar && (
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2 border-t pt-4">
             <Info className="h-4 w-4 text-gray-500 mt-0.5" />
             <div>
               <p className="text-xs text-gray-500">معلومات إضافية</p>
@@ -65,8 +113,9 @@ const GovernorateCard: React.FC<{ governorate: SyrianGovernorate }> = ({ governo
 
 const SyrianGovernorates: React.FC = () => {
   const { governorates, loading, stats } = useGeography();
+  const { analytics, loading: analyticsLoading } = useEnhancedGeographyStats();
 
-  if (loading) {
+  if (loading || analyticsLoading) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -89,16 +138,29 @@ const SyrianGovernorates: React.FC = () => {
     );
   }
 
+  // Create a map of customer stats by location
+  const customerStatsByLocation = analytics?.customersByLocation.reduce((acc, stat) => {
+    acc[stat.location] = stat;
+    return acc;
+  }, {} as Record<string, any>) || {};
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">المحافظات السورية</h1>
-        <Badge className="bg-blue-100 text-blue-800">
-          {stats?.totalGovernorates || 0} محافظة
-        </Badge>
+        <div className="flex items-center gap-4">
+          <Badge className="bg-blue-100 text-blue-800">
+            {stats?.totalGovernorates || 0} محافظة
+          </Badge>
+          {analytics && (
+            <Badge className="bg-green-100 text-green-800">
+              {analytics.totalCustomers} عميل
+            </Badge>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -149,9 +211,23 @@ const SyrianGovernorates: React.FC = () => {
               <Users className="h-8 w-8 text-orange-600" />
               <div>
                 <p className="text-2xl font-bold">
-                  {stats?.customersDistribution?.reduce((sum, dist) => sum + dist.count, 0) || 0}
+                  {analytics?.totalCustomers || 0}
                 </p>
                 <p className="text-sm text-gray-600">العملاء المسجلين</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <CreditCard className="h-8 w-8 text-indigo-600" />
+              <div>
+                <p className="text-2xl font-bold">
+                  {analytics?.totalAccounts || 0}
+                </p>
+                <p className="text-sm text-gray-600">إجمالي الحسابات</p>
               </div>
             </div>
           </CardContent>
@@ -160,7 +236,11 @@ const SyrianGovernorates: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {governorates.map((governorate) => (
-          <GovernorateCard key={governorate.id} governorate={governorate} />
+          <GovernorateCard 
+            key={governorate.id} 
+            governorate={governorate}
+            customerStats={customerStatsByLocation[governorate.name_ar]}
+          />
         ))}
       </div>
     </div>
