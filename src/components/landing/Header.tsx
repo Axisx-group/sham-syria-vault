@@ -6,6 +6,7 @@ import BankLogo from './BankLogo';
 import { translations } from '@/utils/translations';
 import { Menu, X, Globe, Search, CreditCard } from "lucide-react";
 import SearchOverlay from '@/components/features/SearchOverlay';
+import NetBankLoginDialog from '@/components/auth/NetBankLoginDialog';
 
 interface HeaderProps {
   language: 'ar' | 'en';
@@ -15,6 +16,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNetBankDialogOpen, setIsNetBankDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const t = translations[language];
@@ -29,9 +31,8 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
   };
 
   const handleNetBankLogin = () => {
-    // يمكن إضافة منطق تسجيل الدخول هنا
-    console.log('تسجيل الدخول عبر نت بنك');
-    navigate('/dashboard'); // توجيه إلى لوحة التحكم
+    setIsNetBankDialogOpen(true);
+    setIsMenuOpen(false); // إغلاق القائمة المحمولة إذا كانت مفتوحة
   };
 
   return (
@@ -206,6 +207,12 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
         language={language} 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
+      />
+
+      {/* NetBank Login Dialog */}
+      <NetBankLoginDialog
+        isOpen={isNetBankDialogOpen}
+        onClose={() => setIsNetBankDialogOpen(false)}
       />
     </>
   );
