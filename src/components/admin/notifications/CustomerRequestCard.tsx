@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { NewCustomerRequest } from "@/types/customerRequest";
 import CustomerDetailModal from './CustomerDetailModal';
 
@@ -26,22 +27,56 @@ interface CustomerRequestCardProps {
 
 const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) => {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const handleApproval = async (requestId: string, action: 'approve' | 'reject') => {
     try {
+      setLoading(true);
       console.log(`${action === 'approve' ? 'موافقة' : 'رفض'} طلب العميل:`, requestId);
       
+      // تحديث حالة الطلب في قاعدة البيانات
+      const { error } = await supabase
+        .from('account_applications')
+        .update({ 
+          status: action === 'approve' ? 'approved' : 'rejected',
+          reviewed_at: new Date().toISOString(),
+          admin_notes: action === 'approve' ? 'تمت الموافقة على الطلب' : 'تم رفض الطلب'
+        })
+        .eq('application_token', requestId);
+
+      if (error) {
+        throw error;
+      }
+
+      // تسجيل العملية في سجل الوصول
+      await supabase
+        .from('admin_access_logs')
+        .insert({
+          access_type: `application_${action}`,
+          additional_data: { 
+            application_id: requestId,
+            timestamp: new Date().toISOString() 
+          }
+        });
+
       toast({
         title: action === 'approve' ? "تمت الموافقة" : "تم الرفض",
         description: `تم ${action === 'approve' ? 'الموافقة على' : 'رفض'} طلب العميل بنجاح`,
         variant: action === 'approve' ? "default" : "destructive"
       });
+
+      // إعادة تحميل الصفحة لإظهار التحديثات
+      window.location.reload();
+      
     } catch (error) {
+      console.error('خطأ في معالجة الطلب:', error);
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء معالجة الطلب",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,7 +115,7 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
           <div className="flex gap-2">
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" disabled={loading}>
                   <Eye className="h-4 w-4 mr-2" />
                   مراجعة
                 </Button>
@@ -91,6 +126,7 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
             <Button
               size="sm"
               onClick={() => handleApproval(request.id, 'approve')}
+              disabled={loading}
               className="bg-green-600 hover:bg-green-700"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
@@ -101,6 +137,7 @@ const CustomerRequestCard: React.FC<CustomerRequestCardProps> = ({ request }) =>
               size="sm"
               variant="outline"
               onClick={() => handleApproval(request.id, 'reject')}
+              disabled={loading}
               className="border-red-500 text-red-600 hover:bg-red-50"
             >
               <XCircle className="h-4 w-4 mr-2" />
