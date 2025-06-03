@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import ModernSidebar from '@/components/layout/ModernSidebar';
@@ -18,6 +17,7 @@ import AdminAdvancedAnalytics from "@/components/admin/AdminAdvancedAnalytics";
 import AdminRoleManagement from "@/components/admin/AdminRoleManagement";
 import AdminMobileAppControl from "@/components/admin/AdminMobileAppControl";
 import AdminATMManagement from "@/components/admin/AdminATMManagement";
+import AdminSwiftManagement from "@/components/admin/AdminSwiftManagement";
 import KYCDashboard from "@/components/kyc/KYCDashboard";
 import { 
   TrendingUp, 
@@ -60,6 +60,7 @@ const AdminDashboard = () => {
       ]
     },
     { id: 'transactions', label: 'المعاملات', icon: DollarSign },
+    { id: 'swift', label: 'تحويلات SWIFT', icon: Globe, badge: 2 },
     { id: 'atm', label: 'أجهزة الصراف الآلي', icon: Smartphone, badge: 3 },
     { id: 'kyc', label: 'التحقق من الهوية', icon: Shield, badge: 3 },
     { id: 'app-control', label: 'التحكم بالتطبيق', icon: Smartphone, badge: 2 },
@@ -85,6 +86,8 @@ const AdminDashboard = () => {
         return <AdminCardsManagement />;
       case 'transactions':
         return <AdminTransactions />;
+      case 'swift':
+        return <AdminSwiftManagement />;
       case 'atm':
         return <AdminATMManagement />;
       case 'kyc':

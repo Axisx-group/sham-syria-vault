@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/landing/Header';
 import AccountOverview from '@/components/dashboard/AccountOverview';
@@ -9,6 +8,7 @@ import PaymentMethods from '@/components/banking/PaymentMethods';
 import MobilePaymentIntegration from '@/components/dashboard/MobilePaymentIntegration';
 import KYCDashboard from '@/components/kyc/KYCDashboard';
 import KYCApplicationStatus from '@/components/kyc/KYCApplicationStatus';
+import SwiftTransferSection from '@/components/dashboard/SwiftTransferSection';
 
 const Dashboard = () => {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -56,7 +56,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'rtl' : 'ltr'}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <Header language={language} onLanguageChange={setLanguage} />
       
       {/* Dashboard Navigation */}
@@ -82,8 +82,20 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {renderTabContent()}
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-8">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">مرحباً!</h1>
+            <button onClick={() => setActiveTab('kyc')} className="bg-blue-500 text-white px-4 py-2 rounded">التحقق من الهوية</button>
+          </div>
+          <AccountOverview language={language} showBalance={showBalance} onToggleBalance={toggleBalance} />
+          <QuickActions language={language} />
+          <TransactionHistory language={language} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <SwiftTransferSection />
+        </div>
       </div>
     </div>
   );
