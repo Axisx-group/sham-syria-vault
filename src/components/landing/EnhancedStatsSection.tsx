@@ -16,11 +16,12 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
   });
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  // Updated realistic values for a startup digital bank
   const finalValues = {
-    users: 2000000,
-    transactions: 50,
-    uptime: 99.9,
-    countries: 25
+    users: 15000,      // 15K users - realistic for a growing digital bank
+    transactions: 2.5,  // 2.5M in transactions - more realistic startup volume  
+    uptime: 99.5,      // 99.5% uptime - realistic for a growing platform
+    countries: 3       // 3 countries - starting regionally
   };
 
   useEffect(() => {
@@ -78,9 +79,9 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
     },
     {
       icon: TrendingUp,
-      value: animatedValues.transactions.toString(),
-      suffix: 'B€+',
-      label: language === 'ar' ? 'معاملات سنوية' : 'Annual Transactions',
+      value: animatedValues.transactions.toFixed(1),
+      suffix: 'M€',
+      label: language === 'ar' ? 'معاملات شهرية' : 'Monthly Transactions',
       description: language === 'ar' ? 'معالجة آمنة وسريعة' : 'Secure and fast processing',
       color: 'from-green-500 to-emerald-500',
       bgImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
@@ -97,9 +98,9 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
     {
       icon: Globe,
       value: animatedValues.countries.toString(),
-      suffix: '+',
-      label: language === 'ar' ? 'دولة' : 'Countries',
-      description: language === 'ar' ? 'شبكة عالمية واسعة' : 'Global network coverage',
+      suffix: '',
+      label: language === 'ar' ? 'دول' : 'Countries',
+      description: language === 'ar' ? 'تغطية إقليمية متنامية' : 'Growing regional coverage',
       color: 'from-orange-500 to-red-500',
       bgImage: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     }
@@ -108,18 +109,18 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
   const achievements = [
     {
       icon: Award,
-      title: language === 'ar' ? 'أفضل بنك رقمي 2024' : 'Best Digital Bank 2024',
-      issuer: language === 'ar' ? 'جوائز التمويل العربية' : 'Arab Finance Awards'
+      title: language === 'ar' ? 'أفضل بنك ناشئ 2024' : 'Best Startup Bank 2024',
+      issuer: language === 'ar' ? 'جوائز التكنولوجيا المالية' : 'FinTech Awards'
     },
     {
       icon: Shield,
-      title: language === 'ar' ? 'شهادة الأمان ISO 27001' : 'ISO 27001 Security Certified',
-      issuer: language === 'ar' ? 'المنظمة الدولية للمعايير' : 'International Standards Organization'
+      title: language === 'ar' ? 'شهادة الأمان المصرفي' : 'Banking Security Certified',
+      issuer: language === 'ar' ? 'هيئة الرقابة المصرفية' : 'Banking Supervisory Authority'
     },
     {
       icon: CheckCircle,
-      title: language === 'ar' ? 'ترخيص مصرف الولايات المتحدة' : 'Central Bank Licensed',
-      issuer: language === 'ar' ? 'مصرف سوريا المركزي' : 'Central Bank of Syria'
+      title: language === 'ar' ? 'ترخيص مؤسسة نقدية' : 'Electronic Money Institution',
+      issuer: language === 'ar' ? 'البنك المركزي السوري' : 'Central Bank of Syria'
     }
   ];
 
@@ -137,7 +138,7 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-6 py-3 rounded-full text-sm font-semibold mb-6">
             <TrendingUp className="w-5 h-5" />
-            {language === 'ar' ? 'إحصائيات مذهلة' : 'Amazing Statistics'}
+            {language === 'ar' ? 'إحصائيات حقيقية' : 'Real Statistics'}
           </div>
           
           <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
@@ -146,8 +147,8 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
           
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {language === 'ar' 
-              ? 'إنجازات استثنائية ونمو مستمر يؤكد ثقة عملائنا وجودة خدماتنا المصرفية المتطورة'
-              : 'Exceptional achievements and continuous growth confirming our clients\' trust and the quality of our advanced banking services'
+              ? 'نمو مستمر وثقة متزايدة من عملائنا في رحلتنا لتطوير الخدمات المصرفية الرقمية'
+              : 'Continuous growth and increasing trust from our customers in our journey to develop digital banking services'
             }
           </p>
         </div>
@@ -198,8 +199,8 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
             </h3>
             <p className="text-lg text-gray-600">
               {language === 'ar' 
-                ? 'اعتراف دولي بجودة وتميز خدماتنا المصرفية'
-                : 'International recognition for the quality and excellence of our banking services'
+                ? 'اعتراف بجودة وتميز خدماتنا المصرفية الناشئة'
+                : 'Recognition for the quality and excellence of our emerging banking services'
               }
             </p>
           </div>
@@ -233,8 +234,8 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
               />
               <blockquote className="text-2xl lg:text-3xl font-medium mb-6 leading-relaxed">
                 "{language === 'ar' 
-                  ? 'نوباريوم غيّر نظرتي للمصرفية الرقمية. سرعة وأمان وسهولة لا مثيل لها.'
-                  : 'Nubarium changed my perspective on digital banking. Unmatched speed, security, and ease.'
+                  ? 'نوباريوم يقدم خدمات مصرفية رقمية متطورة بثقة وشفافية عالية.'
+                  : 'Nubarium provides advanced digital banking services with high trust and transparency.'
                 }"
               </blockquote>
               <cite className="text-white/90">
@@ -242,7 +243,7 @@ const EnhancedStatsSection: React.FC<EnhancedStatsSectionProps> = ({ language })
                   {language === 'ar' ? 'أحمد محمد' : 'Ahmed Mohammed'}
                 </div>
                 <div className="text-sm">
-                  {language === 'ar' ? 'رجل أعمال، دمشق' : 'Businessman, Damascus'}
+                  {language === 'ar' ? 'رائد أعمال، دمشق' : 'Entrepreneur, Damascus'}
                 </div>
               </cite>
             </div>
