@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Crown, Award, Star, CreditCard, Palette, Sparkles, User, Type, Upload, Signature } from "lucide-react";
-import { Ball, Car, Plane } from "lucide-react";
+import { Circle, Car, Send } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -127,9 +126,9 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
   ];
 
   const iconOptions = [
-    { name: 'ball', icon: Ball, label: 'كرة / Ball' },
+    { name: 'circle', icon: Circle, label: 'دائرة / Circle' },
     { name: 'car', icon: Car, label: 'سيارة / Car' },
-    { name: 'plane', icon: Plane, label: 'طائرة / Plane' }
+    { name: 'send', icon: Send, label: 'طائرة / Plane' }
   ];
 
   const handleCustomize = () => {
