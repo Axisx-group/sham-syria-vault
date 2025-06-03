@@ -27,84 +27,107 @@ body {
   color: #ffffff;
 }
 
-/* Main page text visibility fixes */
-.min-h-screen {
-  color: #ffffff !important;
-}
-
-/* Ensure all text elements are visible on dark backgrounds */
+/* Enhanced text visibility for all elements */
 h1, h2, h3, h4, h5, h6 {
   color: #ffffff !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px;
 }
 
-p, span, div {
+p, span, div, li, a {
   color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
 }
 
-/* Button text visibility */
+/* Stronger text shadows for better visibility */
+.text-6xl, .text-7xl {
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9) !important;
+  font-weight: 900 !important;
+}
+
+.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl {
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8) !important;
+  font-weight: 600 !important;
+}
+
+/* Navigation and header improvements */
+header, nav {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+header *, nav * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Button improvements */
 button {
-  color: inherit !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
 }
 
-/* Specific fixes for landing page */
-.text-white {
+/* Card and section backgrounds for better contrast */
+.bg-white\/10, .bg-white\/5, .backdrop-blur-sm {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.bg-white\/10 *, .bg-white\/5 *, .backdrop-blur-sm * {
   color: #ffffff !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
 }
 
-.text-gray-300 {
-  color: #d1d5db !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+/* Badge and small text visibility */
+.text-sm, .text-xs {
+  color: #f1f5f9 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  font-weight: 500 !important;
 }
 
-.text-gray-400 {
-  color: #9ca3af !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+/* Gradient text fixes */
+.bg-gradient-to-r {
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: none !important;
 }
 
-/* Navigation text */
-nav a, nav button {
+/* Stats section improvements */
+.text-5xl {
   color: #ffffff !important;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.9) !important;
+  font-weight: 800 !important;
 }
 
-/* Cards and sections text */
-.bg-white\/10 *,
-.bg-white\/5 *,
-.backdrop-blur-sm * {
-  color: #ffffff !important;
+/* Features and services sections */
+section {
+  position: relative;
 }
 
-/* Fix for admin panel text visibility */
-.admin-panel,
-.admin-panel *,
-[class*="admin"],
-[class*="Admin"] {
-  color: #1f2937 !important;
+section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Ensure all cards and components in admin have proper text color */
-.admin-panel .card,
-.admin-panel .card *,
-.admin-panel [class*="Card"],
-.admin-panel [class*="card"] {
-  color: #374151 !important;
+section > * {
+  position: relative;
+  z-index: 2;
 }
 
-/* Fix for white backgrounds to have dark text */
-.bg-white,
-.bg-white *,
-.bg-gray-50,
-.bg-gray-50 *,
-.bg-blue-50,
-.bg-blue-50 * {
-  color: #1f2937 !important;
-}
-
-/* Admin dashboard specific overrides */
+/* Admin panel fixes - keep existing admin styles */
 .admin-dashboard,
 .admin-dashboard * {
   color: #1f2937 !important;
+  text-shadow: none !important;
 }
 
 .admin-dashboard .bg-white,
@@ -113,6 +136,7 @@ nav a, nav button {
 .admin-dashboard .card * {
   color: #374151 !important;
   background-color: #ffffff;
+  text-shadow: none !important;
 }
 
 .admin-dashboard h1,
@@ -121,17 +145,20 @@ nav a, nav button {
 .admin-dashboard h4 {
   color: #111827 !important;
   font-weight: 600;
+  text-shadow: none !important;
 }
 
 /* Input and form elements */
 input, textarea, select {
   color: #1f2937 !important;
   background-color: #ffffff !important;
+  text-shadow: none !important;
 }
 
 /* Table text visibility */
 table, td, th {
   color: #374151 !important;
+  text-shadow: none !important;
 }
 
 /* Specific fixes for shadcn components */
@@ -140,17 +167,7 @@ table, td, th {
 .card-title,
 .card-description {
   color: #374151 !important;
-}
-
-/* Enhanced text visibility for landing sections */
-section * {
-  color: inherit;
-}
-
-/* Gradient text elements should remain visible */
-.bg-gradient-to-r {
-  background-clip: text;
-  -webkit-background-clip: text;
+  text-shadow: none !important;
 }
 
 /* Dark mode overrides */
@@ -158,24 +175,23 @@ section * {
 .dark .text-gray-800,
 .dark .text-gray-700 {
   color: #f9fafb !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Force visibility for critical text elements */
-.text-6xl,
-.text-7xl,
-.text-xl,
-.text-2xl,
-.text-3xl,
-.font-black,
-.font-bold,
-.font-semibold {
+/* Special emphasis for important text */
+.font-black, .font-bold, .font-semibold {
   color: #ffffff !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.9) !important;
+  font-weight: 700 !important;
 }
 
-/* Badge and small text elements */
-.text-sm,
-.text-xs {
-  color: #e5e7eb !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+/* Links and interactive elements */
+a {
+  color: #93c5fd !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+}
+
+a:hover {
+  color: #dbeafe !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
 }
