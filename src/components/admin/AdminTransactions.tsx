@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,12 +27,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminTransactions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-
-  const transactions = [
+  const [transactions, setTransactions] = useState([
     {
       id: 'TXN001',
       type: 'تحويل صادر',
@@ -114,7 +113,68 @@ const AdminTransactions = () => {
       fee: '2,000',
       channel: 'SWIFT'
     }
-  ];
+  ]);
+
+  const { toast } = useToast();
+
+  const handleViewDetails = (transactionId: string) => {
+    console.log('Viewing details for transaction:', transactionId);
+    toast({
+      title: "عرض التفاصيل",
+      description: `عرض تفاصيل المعاملة ${transactionId}`,
+    });
+  };
+
+  const handleDownloadReceipt = (transactionId: string) => {
+    console.log('Downloading receipt for transaction:', transactionId);
+    toast({
+      title: "تحميل الإيصال",
+      description: `تم بدء تحميل إيصال المعاملة ${transactionId}`,
+    });
+  };
+
+  const handleApproveTransaction = (transactionId: string) => {
+    console.log('Approving transaction:', transactionId);
+    setTransactions(prevTransactions =>
+      prevTransactions.map(tx =>
+        tx.id === transactionId ? { ...tx, status: 'مكتمل' } : tx
+      )
+    );
+    toast({
+      title: "تمت الموافقة",
+      description: `تمت الموافقة على المعاملة ${transactionId}`,
+    });
+  };
+
+  const handleRejectTransaction = (transactionId: string) => {
+    console.log('Rejecting transaction:', transactionId);
+    setTransactions(prevTransactions =>
+      prevTransactions.map(tx =>
+        tx.id === transactionId ? { ...tx, status: 'مرفوض' } : tx
+      )
+    );
+    toast({
+      title: "تم الرفض",
+      description: `تم رفض المعاملة ${transactionId}`,
+      variant: "destructive"
+    });
+  };
+
+  const handleRefresh = () => {
+    console.log('Refreshing transactions');
+    toast({
+      title: "تم التحديث",
+      description: "تم تحديث قائمة المعاملات",
+    });
+  };
+
+  const handleExport = () => {
+    console.log('Exporting transactions');
+    toast({
+      title: "جاري التصدير",
+      description: "سيتم تصدير البيانات قريباً",
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -125,6 +185,7 @@ const AdminTransactions = () => {
       case 'قيد المراجعة':
         return 'bg-yellow-100 text-yellow-800';
       case 'فشل':
+      case 'مرفوض':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -140,6 +201,7 @@ const AdminTransactions = () => {
       case 'قيد المراجعة':
         return <AlertCircle className="h-4 w-4 text-yellow-600" />;
       case 'فشل':
+      case 'مرفوض':
         return <XCircle className="h-4 w-4 text-red-600" />;
       default:
         return <Clock className="h-4 w-4 text-gray-600" />;
@@ -168,11 +230,11 @@ const AdminTransactions = () => {
           <p className="text-gray-600">مراقبة ومراجعة جميع المعاملات المصرفية</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleRefresh}>
             <RefreshCw className="h-4 w-4 mr-2" />
             تحديث
           </Button>
-          <Button>
+          <Button onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             تصدير
           </Button>
@@ -358,21 +420,27 @@ const AdminTransactions = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewDetails(transaction.id)}>
                         <Eye className="h-4 w-4 mr-2" />
                         عرض التفاصيل
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDownloadReceipt(transaction.id)}>
                         <Download className="h-4 w-4 mr-2" />
                         تحميل الإيصال
                       </DropdownMenuItem>
                       {transaction.status === 'قيد المراجعة' && (
                         <>
-                          <DropdownMenuItem className="text-green-600">
+                          <DropdownMenuItem 
+                            className="text-green-600"
+                            onClick={() => handleApproveTransaction(transaction.id)}
+                          >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             الموافقة
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem 
+                            className="text-red-600"
+                            onClick={() => handleRejectTransaction(transaction.id)}
+                          >
                             <XCircle className="h-4 w-4 mr-2" />
                             الرفض
                           </DropdownMenuItem>
