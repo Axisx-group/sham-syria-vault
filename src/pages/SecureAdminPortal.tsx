@@ -1,401 +1,48 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Shield, 
-  Lock, 
-  Eye, 
-  AlertTriangle, 
-  CheckCircle,
-  Monitor,
-  Activity,
-  Users,
-  Database,
-  Settings,
-  LogOut
-} from "lucide-react";
 import ModernSidebar from '@/components/layout/ModernSidebar';
-import AdminHeader from '@/components/admin/dashboard/AdminHeader';
-import EnhancedAdminOverview from '@/components/admin/dashboard/EnhancedAdminOverview';
-import AdminSystemStatus from "@/components/admin/AdminSystemStatus";
-import AdminCustomersList from "@/components/admin/AdminCustomersList";
-import AdminAccountsManagement from "@/components/admin/AdminAccountsManagement";
-import AdminCardsManagement from "@/components/admin/AdminCardsManagement";
-import AdminReportsStats from "@/components/admin/AdminReportsStats";
-import AdminTransactions from "@/components/admin/AdminTransactions";
-import AdminCustomerControl from "@/components/admin/AdminCustomerControl";
-import AdminMessaging from "@/components/admin/AdminMessaging";
-import AdminModeration from "@/components/admin/AdminModeration";
-import AdminPageManagement from "@/components/admin/AdminPageManagement";
-import AdminAdvancedAnalytics from "@/components/admin/AdminAdvancedAnalytics";
-import AdminRoleManagement from "@/components/admin/AdminRoleManagement";
-import AdminMobileAppControl from "@/components/admin/AdminMobileAppControl";
-import AdminATMManagement from "@/components/admin/AdminATMManagement";
-import AdminSwiftManagement from "@/components/admin/AdminSwiftManagement";
-import KYCDashboard from "@/components/kyc/KYCDashboard";
+import { useSecurePortalAuth } from '@/components/admin/secure-portal/SecurePortalAuth';
+import SecurePortalLoadingScreen from '@/components/admin/secure-portal/SecurePortalLoadingScreen';
+import SecurePortalAccessDenied from '@/components/admin/secure-portal/SecurePortalAccessDenied';
+import SecurePortalLoginForm from '@/components/admin/secure-portal/SecurePortalLoginForm';
+import SecurePortalHeader from '@/components/admin/secure-portal/SecurePortalHeader';
+import SecurePortalTabContent from '@/components/admin/secure-portal/SecurePortalTabContent';
+import { sidebarItems } from '@/components/admin/secure-portal/SecurePortalSidebarConfig';
 
 const SecureAdminPortal = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [accessCode, setAccessCode] = useState('');
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [isBlocked, setIsBlocked] = useState(false);
-  const { toast } = useToast();
-
-  // رمز الوصول الآمن
-  const SECURE_ACCESS_CODE = 'NUBARIUM_ADMIN_2024_SECURE';
-  const MAX_LOGIN_ATTEMPTS = 3;
-
-  useEffect(() => {
-    checkAuthentication();
-  }, []);
-
-  const checkAuthentication = async () => {
-    try {
-      console.log('فحص المصادقة...');
-      
-      // التحقق من المستخدم المسجل
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !user) {
-        console.log('لا يوجد مستخدم مسجل دخول');
-        setIsLoading(false);
-        return;
-      }
-
-      console.log('المستخدم:', user.email);
-      setCurrentUser(user);
-
-      // التحقق من الملف الشخصي والدور
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role, email')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError || !profile) {
-        console.log('خطأ في الحصول على الملف الشخصي');
-        setIsLoading(false);
-        return;
-      }
-
-      console.log('دور المستخدم:', profile.role, 'الإيميل:', profile.email);
-
-      // التحقق من أن المستخدم مدير وله الإيميل الصحيح
-      if (profile.role !== 'admin' || profile.email !== 'admin@souripay.com') {
-        console.log('المستخدم ليس مدير مصرح');
-        setIsLoading(false);
-        return;
-      }
-
-      // التحقق من رمز الوصول المحفوظ
-      const savedCode = localStorage.getItem('secure_admin_access');
-      if (savedCode === SECURE_ACCESS_CODE) {
-        console.log('رمز وصول صحيح محفوظ');
-        setIsAuthenticated(true);
-      }
-
-      logAccessAttempt(user.id, 'secure_portal_check');
-      
-    } catch (error) {
-      console.error('خطأ في فحص المصادقة:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const logAccessAttempt = async (userId?: string, accessType: string = 'secure_portal_attempt') => {
-    try {
-      await supabase
-        .from('admin_access_logs')
-        .insert({
-          user_id: userId,
-          access_type: accessType,
-          ip_address: 'unknown',
-          user_agent: navigator.userAgent,
-          additional_data: { timestamp: new Date().toISOString() }
-        });
-    } catch (error) {
-      console.error('فشل في تسجيل محاولة الوصول:', error);
-    }
-  };
-
-  const handleAccessCodeSubmit = async () => {
-    if (isBlocked) {
-      toast({
-        title: 'تم حظر الوصول',
-        description: 'تم تجاوز الحد الأقصى لمحاولات الدخول. يرجى المحاولة لاحقاً',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (accessCode === SECURE_ACCESS_CODE) {
-      setIsAuthenticated(true);
-      localStorage.setItem('secure_admin_access', accessCode);
-      setLoginAttempts(0);
-      
-      logAccessAttempt(currentUser?.id, 'secure_portal_success');
-
-      toast({
-        title: 'تم الوصول بنجاح',
-        description: 'مرحباً بك في البوابة الآمنة للإدارة',
-      });
-    } else {
-      const newAttempts = loginAttempts + 1;
-      setLoginAttempts(newAttempts);
-      
-      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        setIsBlocked(true);
-        setTimeout(() => {
-          setIsBlocked(false);
-          setLoginAttempts(0);
-        }, 15 * 60 * 1000);
-      }
-
-      logAccessAttempt(currentUser?.id, 'secure_portal_failed');
-
-      toast({
-        title: 'رمز وصول خاطئ',
-        description: `محاولة ${newAttempts} من ${MAX_LOGIN_ATTEMPTS}`,
-        variant: 'destructive'
-      });
-    }
-    setAccessCode('');
-  };
-
-  const handleSecureLogout = async () => {
-    localStorage.removeItem('secure_admin_access');
-    setIsAuthenticated(false);
-    
-    logAccessAttempt(currentUser?.id, 'secure_portal_logout');
-
-    toast({
-      title: 'تم تسجيل الخروج',
-      description: 'تم الخروج من البوابة الآمنة بنجاح',
-    });
-  };
-
-  const handleLoginRedirect = () => {
-    window.location.href = '/admin';
-  };
-
-  const sidebarItems = [
-    { id: 'overview', label: 'نظرة عامة شاملة', icon: Monitor },
-    { id: 'system-status', label: 'مراقبة النظام', icon: Activity },
-    { 
-      id: 'customers', 
-      label: 'إدارة العملاء المتقدمة', 
-      icon: Users,
-      children: [
-        { id: 'customers', label: 'قاعدة بيانات العملاء', icon: Users },
-        { id: 'customer-control', label: 'التحكم المتقدم', icon: Shield }
-      ]
-    },
-    { 
-      id: 'accounts', 
-      label: 'النظام المصرفي', 
-      icon: Database,
-      children: [
-        { id: 'accounts', label: 'إدارة الحسابات', icon: Database },
-        { id: 'cards', label: 'نظام البطاقات', icon: Shield }
-      ]
-    },
-    { id: 'transactions', label: 'مراقبة المعاملات', icon: Activity },
-    { id: 'swift', label: 'تحويلات SWIFT الدولية', icon: Shield, badge: 2 },
-    { id: 'atm', label: 'شبكة الصرافات الآلية', icon: Monitor, badge: 3 },
-    { id: 'kyc', label: 'نظام التحقق المتقدم', icon: Shield, badge: 3 },
-    { id: 'app-control', label: 'التطبيق المحمول', icon: Monitor, badge: 2 },
-    { id: 'messaging', label: 'نظام المراسلة المؤسسي', icon: Shield, badge: 5 },
-    { id: 'moderation', label: 'الأمان والإشراف', icon: Shield },
-    { id: 'page-management', label: 'إدارة المحتوى', icon: Settings },
-    { id: 'analytics', label: 'التحليلات الذكية', icon: Activity },
-    { id: 'role-management', label: 'إدارة الصلاحيات', icon: Settings },
-    { id: 'reports', label: 'التقارير التنفيذية', icon: Activity }
-  ];
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'system-status':
-        return <AdminSystemStatus />;
-      case 'customers':
-        return <AdminCustomersList />;
-      case 'customer-control':
-        return <AdminCustomerControl />;
-      case 'accounts':
-        return <AdminAccountsManagement />;
-      case 'cards':
-        return <AdminCardsManagement />;
-      case 'transactions':
-        return <AdminTransactions />;
-      case 'swift':
-        return <AdminSwiftManagement />;
-      case 'atm':
-        return <AdminATMManagement />;
-      case 'kyc':
-        return <KYCDashboard />;
-      case 'app-control':
-        return <AdminMobileAppControl />;
-      case 'messaging':
-        return <AdminMessaging />;
-      case 'moderation':
-        return <AdminModeration />;
-      case 'page-management':
-        return <AdminPageManagement />;
-      case 'analytics':
-        return <AdminAdvancedAnalytics />;
-      case 'role-management':
-        return <AdminRoleManagement />;
-      case 'reports':
-        return <AdminReportsStats />;
-      default:
-        return <EnhancedAdminOverview />;
-    }
-  };
+  
+  const {
+    isAuthenticated,
+    currentUser,
+    isLoading,
+    loginAttempts,
+    isBlocked,
+    handleAccessCodeSubmit,
+    handleSecureLogout
+  } = useSecurePortalAuth();
 
   // شاشة التحميل
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-white">جاري التحقق من الصلاحيات والهوية...</p>
-        </div>
-      </div>
-    );
+    return <SecurePortalLoadingScreen />;
   }
 
   // إذا لم يكن هناك مستخدم مسجل أو ليس مدير
   if (!currentUser) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="h-8 w-8 text-red-600" />
-            </div>
-            <CardTitle className="text-2xl text-red-600">وصول مرفوض</CardTitle>
-            <p className="text-gray-600">يتطلب تسجيل دخول كمدير مصرح</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Alert className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                هذه البوابة مخصصة للمدير الأساسي (admin@souripay.com) فقط
-              </AlertDescription>
-            </Alert>
-            
-            <div className="space-y-3">
-              <Button 
-                onClick={handleLoginRedirect}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-              >
-                <Lock className="h-4 w-4 mr-2" />
-                تسجيل الدخول كمدير
-              </Button>
-              
-              <Button 
-                onClick={() => window.location.href = '/'}
-                variant="outline"
-                className="w-full"
-              >
-                العودة للصفحة الرئيسية
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <SecurePortalAccessDenied />;
   }
 
   // إذا لم يدخل رمز الوصول الآمن
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="h-8 w-8 text-red-600" />
-            </div>
-            <CardTitle className="text-2xl">البوابة الآمنة للإدارة</CardTitle>
-            <p className="text-gray-600">نظام الحماية المتقدم - المستوى الأعلى</p>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <Alert className="border-yellow-200 bg-yellow-50">
-              <AlertTriangle className="h-4 w-4 text-yellow-600" />
-              <AlertDescription className="text-yellow-800">
-                منطقة محظورة - يتطلب رمز وصول خاص
-              </AlertDescription>
-            </Alert>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  رمز الوصول الآمن
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    type="password"
-                    value={accessCode}
-                    onChange={(e) => setAccessCode(e.target.value)}
-                    placeholder="أدخل رمز الوصول الخاص"
-                    className="pl-10"
-                    disabled={isBlocked}
-                    onKeyPress={(e) => e.key === 'Enter' && handleAccessCodeSubmit()}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">
-                  المحاولات: {loginAttempts}/{MAX_LOGIN_ATTEMPTS}
-                </span>
-                <Badge className="bg-green-100 text-green-800">
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  مدير مصرح
-                </Badge>
-              </div>
-
-              <Button 
-                onClick={handleAccessCodeSubmit}
-                disabled={!accessCode || isBlocked}
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                {isBlocked ? 'محظور مؤقتاً' : 'دخول آمن'}
-              </Button>
-
-              {isBlocked && (
-                <Alert className="border-red-200 bg-red-50">
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
-                  <AlertDescription className="text-red-800">
-                    تم حظر الوصول لمدة 15 دقيقة بسبب المحاولات المتكررة
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
-
-            <div className="pt-4 border-t">
-              <div className="text-xs text-gray-500 space-y-1">
-                <p>• جميع المحاولات مسجلة ومراقبة</p>
-                <p>• الوصول محدود للمدير الأساسي فقط</p>
-                <p>• نظام حماية متعدد الطبقات نشط</p>
-                <p>• المستخدم الحالي: {currentUser?.email}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <SecurePortalLoginForm
+        currentUser={currentUser}
+        loginAttempts={loginAttempts}
+        isBlocked={isBlocked}
+        onAccessCodeSubmit={handleAccessCodeSubmit}
+      />
     );
   }
 
@@ -411,38 +58,8 @@ const SecureAdminPortal = () => {
         />
         
         <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="bg-gradient-to-r from-red-600 to-red-700 text-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center py-3">
-                <div className="flex items-center space-x-4 space-x-reverse">
-                  <Shield className="h-6 w-6" />
-                  <div>
-                    <h1 className="text-lg font-bold">البوابة الآمنة للإدارة الشاملة</h1>
-                    <p className="text-red-100 text-sm">النظام المتقدم - حماية المستوى الأعلى</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4 space-x-reverse">
-                  <Badge className="bg-red-800 text-red-100">
-                    <Activity className="h-3 w-3 mr-1" />
-                    نشط وآمن
-                  </Badge>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleSecureLogout}
-                    className="border-red-300 text-red-100 hover:bg-red-800"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    خروج آمن
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-8">
-            {renderTabContent()}
-          </div>
+          <SecurePortalHeader onSecureLogout={handleSecureLogout} />
+          <SecurePortalTabContent activeTab={activeTab} />
         </div>
       </div>
     </ThemeProvider>
