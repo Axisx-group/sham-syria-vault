@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import BankLogo from './BankLogo';
 import { translations } from '@/utils/translations';
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 
 interface HeaderProps {
   language: 'ar' | 'en';
@@ -80,9 +80,16 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
               variant="outline" 
               size="sm" 
               onClick={toggleLanguage}
-              className="border-purple-400/50 text-white hover:bg-purple-600/20 hover:border-purple-400 px-4 py-2 rounded-xl backdrop-blur-sm"
+              className="group relative overflow-hidden border-purple-400/50 text-white hover:bg-purple-600/20 hover:border-purple-400 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
             >
-              {language === 'ar' ? 'English' : 'العربية'}
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <Globe className="h-4 w-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                <span className="font-medium text-sm">
+                  {language === 'ar' ? 'English' : 'العربية'}
+                </span>
+              </div>
+              {/* Hover glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
             </Button>
             
             {/* Mobile Menu Button */}
@@ -137,6 +144,22 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
             >
               {t.support}
             </Button>
+
+            {/* Mobile Language Toggle */}
+            <div className="pt-4 border-t border-gray-800/50">
+              <Button 
+                variant="outline" 
+                onClick={toggleLanguage}
+                className="w-full group relative overflow-hidden border-purple-400/50 text-white hover:bg-purple-600/20 hover:border-purple-400 py-3 rounded-xl backdrop-blur-sm transition-all duration-300"
+              >
+                <div className="flex items-center justify-center space-x-2 space-x-reverse">
+                  <Globe className="h-4 w-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                  <span className="font-medium">
+                    {language === 'ar' ? 'English' : 'العربية'}
+                  </span>
+                </div>
+              </Button>
+            </div>
           </div>
         </div>
       )}
