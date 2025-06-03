@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import ModernSidebar from '@/components/layout/ModernSidebar';
+import AdminHeader from '@/components/admin/dashboard/AdminHeader';
 import EnhancedAdminOverview from '@/components/admin/dashboard/EnhancedAdminOverview';
 import AdminSystemStatus from "@/components/admin/AdminSystemStatus";
 import AdminCustomersList from "@/components/admin/AdminCustomersList";
@@ -118,8 +119,9 @@ const AdminDashboard = () => {
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
         
-        <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto p-8">
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <AdminHeader />
+          <div className="flex-1 overflow-y-auto p-8">
             {renderTabContent()}
           </div>
         </div>
