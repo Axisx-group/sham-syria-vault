@@ -25,6 +25,27 @@ serve(async (req) => {
 
     console.log('معالجة طلب إرسال إيميل:', { applicationToken, customerName, customerEmail, accountType, action })
 
+    // فحص وجود مفتاح API
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    console.log('فحص مفتاح RESEND_API_KEY:', resendApiKey ? 'موجود' : 'غير موجود');
+    
+    if (!resendApiKey) {
+      console.error('RESEND_API_KEY غير متوفر في متغيرات البيئة');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Email service not configured - RESEND_API_KEY is missing',
+          success: false,
+          customerEmailSent: false,
+          adminEmailSent: false,
+          details: 'يرجى التأكد من إضافة مفتاح RESEND_API_KEY في إعدادات المشروع'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        },
+      )
+    }
+
     // تحديد نوع الرسالة بناءً على الإجراء
     let subject = '';
     let customerMessage = '';
@@ -92,30 +113,13 @@ serve(async (req) => {
       adminMessage = `طلب فتح حساب جديد من العميل ${customerName}`;
     }
 
-    // محاولة إرسال الإيميل للعميل
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    
-    if (!resendApiKey) {
-      console.error('RESEND_API_KEY غير متوفر');
-      return new Response(
-        JSON.stringify({ 
-          error: 'Email service not configured',
-          success: false,
-          customerEmailSent: false,
-          adminEmailSent: false 
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 500,
-        },
-      )
-    }
-
     let customerEmailSent = false;
     let adminEmailSent = false;
 
     // إرسال إيميل للعميل
     try {
+      console.log('محاولة إرسال إيميل للعميل:', customerEmail);
+      
       const customerEmailResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -123,21 +127,33 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'نظام البنك <noreply@bank.com>',
+          from: 'البنك الرقمي <noreply@resend.dev>',
           to: [customerEmail],
           subject: subject,
           html: customerMessage,
         }),
-      })
+      });
 
+      const customerEmailResult = await customerEmailResponse.text();
       customerEmailSent = customerEmailResponse.ok;
-      console.log('حالة إرسال إيميل العميل:', customerEmailSent);
+      
+      console.log('نتيجة إرسال إيميل العميل:', {
+        status: customerEmailResponse.status,
+        ok: customerEmailSent,
+        result: customerEmailResult
+      });
+
+      if (!customerEmailSent) {
+        console.error('فشل إرسال إيميل العميل:', customerEmailResult);
+      }
     } catch (error) {
       console.error('خطأ في إرسال إيميل العميل:', error);
     }
 
     // إرسال إيميل للإدارة
     try {
+      console.log('محاولة إرسال إيميل للإدارة');
+      
       const adminEmailResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -145,8 +161,8 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'نظام البنك <noreply@bank.com>',
-          to: ['admin@bank.com'],
+          from: 'البنك الرقمي <noreply@resend.dev>',
+          to: ['admin@resend.dev'],
           subject: action ? `${action === 'approve' ? 'قبول' : 'رفض'} طلب فتح حساب` : 'طلب فتح حساب جديد',
           html: `
             <div dir="rtl" style="font-family: Arial, sans-serif; line-height: 1.6;">
@@ -160,21 +176,40 @@ serve(async (req) => {
             </div>
           `,
         }),
-      })
+      });
 
+      const adminEmailResult = await adminEmailResponse.text();
       adminEmailSent = adminEmailResponse.ok;
-      console.log('حالة إرسال إيميل الإدارة:', adminEmailSent);
+      
+      console.log('نتيجة إرسال إيميل الإدارة:', {
+        status: adminEmailResponse.status,
+        ok: adminEmailSent,
+        result: adminEmailResult
+      });
+
+      if (!adminEmailSent) {
+        console.error('فشل إرسال إيميل الإدارة:', adminEmailResult);
+      }
     } catch (error) {
       console.error('خطأ في إرسال إيميل الإدارة:', error);
     }
 
+    const result = { 
+      success: true, 
+      customerEmailSent,
+      adminEmailSent,
+      message: 'تم معالجة طلب الإيميل',
+      details: {
+        applicationToken,
+        customerName,
+        action: action || 'initial'
+      }
+    };
+
+    console.log('النتيجة النهائية:', result);
+
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        customerEmailSent,
-        adminEmailSent,
-        message: 'تم معالجة طلب الإيميل'
-      }),
+      JSON.stringify(result),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -188,7 +223,8 @@ serve(async (req) => {
         error: error.message,
         success: false,
         customerEmailSent: false,
-        adminEmailSent: false 
+        adminEmailSent: false,
+        stack: error.stack
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
