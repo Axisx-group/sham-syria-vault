@@ -120,7 +120,7 @@ const SecurityAdvancedTab = ({
             <div key={key} className="flex items-center justify-between">
               <span className="text-sm">{getSettingLabel(key)}</span>
               <Switch
-                checked={value}
+                checked={value as boolean}
                 onCheckedChange={(checked) => onSettingChange(key, checked)}
               />
             </div>

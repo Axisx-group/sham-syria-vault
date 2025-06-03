@@ -24,7 +24,7 @@ const SettingsTab = ({ appSettings, onSettingChange, getSettingLabel }: Settings
       encryptionEnabled: 'تشفير البيانات الحساسة',
       vpnRequired: 'إجبار استخدام VPN للوصول'
     };
-    return descriptions[key] || '';
+    return descriptions[key as keyof typeof descriptions] || '';
   };
 
   return (
@@ -45,7 +45,7 @@ const SettingsTab = ({ appSettings, onSettingChange, getSettingLabel }: Settings
               </p>
             </div>
             <Switch
-              checked={value}
+              checked={value as boolean}
               onCheckedChange={(checked) => onSettingChange(key, checked)}
             />
           </div>
