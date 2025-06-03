@@ -33,13 +33,15 @@ const ApplyPersonal = () => {
   const [documents, setDocuments] = useState<{
     nationalId?: File;
     passport?: File;
+    drivingLicense?: File;
+    europeanResidence?: File;
   }>({});
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleFileChange = (documentType: 'nationalId' | 'passport', file: File | null) => {
+  const handleFileChange = (documentType: 'nationalId' | 'passport' | 'drivingLicense' | 'europeanResidence', file: File | null) => {
     if (file) {
       setDocuments(prev => ({ ...prev, [documentType]: file }));
     }
@@ -162,10 +164,10 @@ const ApplyPersonal = () => {
           </Button>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">تقديم طلب فتح حساب شخصي</h1>
-          <p className="text-gray-600">املأ النموذج التالي لفتح حسابك الشخصي الجديد (العملة الافتراضية: الليرة السورية)</p>
+          <p className="text-gray-600">املأ النموذج التالي لفتح حسابك الشخصي الجديد (الحساب الأساسي بالليرة السورية)</p>
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-blue-800 text-sm">
-              <strong>ملاحظة:</strong> سيتم إنشاء طلب للتحقق من الهوية (KYC) تلقائياً مع طلب فتح الحساب لضمان أمان حسابك.
+              <strong>ملاحظة:</strong> سيتم إنشاء طلب للتحقق من الهوية (KYC) تلقائياً مع طلب فتح الحساب. يمكنك إضافة عملات أخرى وطلب بطاقات إضافية بعد تفعيل الحساب.
             </p>
           </div>
         </div>
@@ -336,16 +338,16 @@ const ApplyPersonal = () => {
             {step === 3 && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">الوثائق المطلوبة</h3>
+                  <h3 className="text-lg font-semibold mb-4">الوثائق المطلوبة (يرجى تحميل واحدة على الأقل)</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <Label htmlFor="nationalId">الهوية الشخصية *</Label>
+                      <Label htmlFor="nationalId">بطاقة الهوية الشخصية</Label>
                       <div className="mt-2 flex items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
                         <div className="space-y-1 text-center">
                           <Upload className="mx-auto h-8 w-8 text-gray-400" />
                           <div className="text-sm text-gray-600">
                             <label htmlFor="nationalId" className="cursor-pointer">
-                              <span>ارفع صورة الهوية</span>
+                              <span>ارفع صورة بطاقة الهوية</span>
                               <input
                                 id="nationalId"
                                 name="nationalId"
@@ -364,7 +366,7 @@ const ApplyPersonal = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="passport">جواز السفر (اختياري)</Label>
+                      <Label htmlFor="passport">جواز السفر</Label>
                       <div className="mt-2 flex items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
                         <div className="space-y-1 text-center">
                           <Upload className="mx-auto h-8 w-8 text-gray-400" />
@@ -387,6 +389,62 @@ const ApplyPersonal = () => {
                         <p className="text-sm text-green-600 mt-2">✓ {documents.passport.name}</p>
                       )}
                     </div>
+
+                    <div>
+                      <Label htmlFor="drivingLicense">رخصة القيادة</Label>
+                      <div className="mt-2 flex items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+                        <div className="space-y-1 text-center">
+                          <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                          <div className="text-sm text-gray-600">
+                            <label htmlFor="drivingLicense" className="cursor-pointer">
+                              <span>ارفع صورة رخصة القيادة</span>
+                              <input
+                                id="drivingLicense"
+                                name="drivingLicense"
+                                type="file"
+                                className="sr-only"
+                                accept="image/*,.pdf"
+                                onChange={(e) => handleFileChange('drivingLicense', e.target.files?.[0] || null)}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      {documents.drivingLicense && (
+                        <p className="text-sm text-green-600 mt-2">✓ {documents.drivingLicense.name}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="europeanResidence">الإقامة الأوروبية</Label>
+                      <div className="mt-2 flex items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+                        <div className="space-y-1 text-center">
+                          <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                          <div className="text-sm text-gray-600">
+                            <label htmlFor="europeanResidence" className="cursor-pointer">
+                              <span>ارفع صورة الإقامة الأوروبية</span>
+                              <input
+                                id="europeanResidence"
+                                name="europeanResidence"
+                                type="file"
+                                className="sr-only"
+                                accept="image/*,.pdf"
+                                onChange={(e) => handleFileChange('europeanResidence', e.target.files?.[0] || null)}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      {documents.europeanResidence && (
+                        <p className="text-sm text-green-600 mt-2">✓ {documents.europeanResidence.name}</p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>تنبيه:</strong> يرجى تحميل واحدة على الأقل من الوثائق المطلوبة أعلاه للمتابعة
+                    </p>
                   </div>
                 </div>
               </div>
@@ -408,9 +466,9 @@ const ApplyPersonal = () => {
               ) : (
                 <Button 
                   onClick={submitApplication}
-                  disabled={loading || !formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.addressLine1 || !formData.city || !documents.nationalId}
+                  disabled={loading || !formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.addressLine1 || !formData.city || (!documents.nationalId && !documents.passport && !documents.drivingLicense && !documents.europeanResidence)}
                 >
-                  {loading ? 'جاري التقديم...' : 'تقديم الطلب مع التحقق من الهوية'}
+                  {loading ? 'جاري التقديم...' : 'تقديم الطلب'}
                 </Button>
               )}
             </div>

@@ -2,15 +2,12 @@
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { generateIBAN } from "@/utils/ibanGenerator";
-import { AccountCategory, Currency } from "@/types/account";
+import { AccountCategory } from "@/types/account";
 
 export const useAccountDialog = (language: 'ar' | 'en') => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<'category' | 'details'>('category');
   const [selectedCategory, setSelectedCategory] = useState<AccountCategory | null>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState('');
-  const [requestMastercard, setRequestMastercard] = useState(false);
-  const [requestVisa, setRequestVisa] = useState(false);
   const { toast } = useToast();
 
   const handleCategorySelect = (category: AccountCategory) => {
@@ -25,9 +22,6 @@ export const useAccountDialog = (language: 'ar' | 'en') => {
   const resetForm = () => {
     setCurrentStep('category');
     setSelectedCategory(null);
-    setSelectedCurrency('');
-    setRequestMastercard(false);
-    setRequestVisa(false);
   };
 
   const handleDialogClose = () => {
@@ -35,10 +29,11 @@ export const useAccountDialog = (language: 'ar' | 'en') => {
     resetForm();
   };
 
-  const handleOpenAccount = (currencies: Currency[]) => {
+  const handleOpenAccount = () => {
     const t = {
       chooseAccountFirst: language === 'ar' ? 'يرجى اختيار نوع الحساب أولاً' : 'Please choose account type first',
-      accountCreated: language === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!'
+      accountCreated: language === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!',
+      defaultCurrency: language === 'ar' ? 'الليرة السورية' : 'Syrian Pound'
     };
 
     if (!selectedCategory) {
@@ -50,24 +45,11 @@ export const useAccountDialog = (language: 'ar' | 'en') => {
       return;
     }
 
-    if (!selectedCurrency) {
-      toast({
-        title: language === 'ar' ? 'خطأ' : 'Error',
-        description: language === 'ar' ? 'يرجى اختيار العملة' : 'Please select a currency',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
-    const iban = generateIBAN(selectedCurrencyData?.countryCode || 'SY');
-    const cards = [];
-    if (requestMastercard) cards.push('Mastercard');
-    if (requestVisa) cards.push('Visa');
+    const iban = generateIBAN('SY');
 
     toast({
       title: t.accountCreated,
-      description: `${selectedCategory.name} - ${selectedCurrencyData?.name}\nIBAN: ${iban}${cards.length > 0 ? `\n${language === 'ar' ? 'البطاقات المطلوبة' : 'Requested Cards'}: ${cards.join(', ')}` : ''}`,
+      description: `${selectedCategory.name} - ${t.defaultCurrency}\nIBAN: ${iban}`,
     });
 
     setIsOpen(false);
@@ -79,12 +61,6 @@ export const useAccountDialog = (language: 'ar' | 'en') => {
     setIsOpen,
     currentStep,
     selectedCategory,
-    selectedCurrency,
-    setSelectedCurrency,
-    requestMastercard,
-    setRequestMastercard,
-    requestVisa,
-    setRequestVisa,
     handleCategorySelect,
     handleBack,
     handleDialogClose,

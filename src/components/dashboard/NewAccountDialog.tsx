@@ -2,12 +2,11 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ArrowLeft, DollarSign, Euro, Banknote } from "lucide-react";
+import { PlusCircle, ArrowLeft } from "lucide-react";
 import { useAccountDialog } from "@/hooks/useAccountDialog";
 import { getAccountDialogTranslations } from "@/utils/accountDialogTranslations";
 import AccountCategorySelector from "./AccountCategorySelector";
-import AccountDetailsForm from "./AccountDetailsForm";
-import { Currency } from "@/types/account";
+import BasicAccountForm from "./BasicAccountForm";
 
 interface NewAccountDialogProps {
   language: 'ar' | 'en';
@@ -19,12 +18,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
     setIsOpen,
     currentStep,
     selectedCategory,
-    selectedCurrency,
-    setSelectedCurrency,
-    requestMastercard,
-    setRequestMastercard,
-    requestVisa,
-    setRequestVisa,
     handleCategorySelect,
     handleBack,
     handleDialogClose,
@@ -32,30 +25,6 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
   } = useAccountDialog(language);
 
   const t = getAccountDialogTranslations(language);
-
-  const currencies: Currency[] = [
-    { 
-      code: 'SYP', 
-      name: language === 'ar' ? 'الليرة السورية' : 'Syrian Pound', 
-      icon: Banknote,
-      minDeposit: 50000,
-      countryCode: 'SY'
-    },
-    { 
-      code: 'USD', 
-      name: language === 'ar' ? 'الدولار الأمريكي' : 'US Dollar', 
-      icon: DollarSign,
-      minDeposit: 100,
-      countryCode: 'SY'
-    },
-    { 
-      code: 'EUR', 
-      name: language === 'ar' ? 'اليورو' : 'Euro', 
-      icon: Euro,
-      minDeposit: 100,
-      countryCode: 'SY'
-    }
-  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
@@ -68,7 +37,7 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
           {t.openNewAccount}
         </Button>
       </DialogTrigger>
-      <DialogContent className={`max-w-6xl max-h-[90vh] overflow-y-auto ${language === 'ar' ? 'rtl' : 'ltr'}`}>
+      <DialogContent className={`max-w-4xl max-h-[90vh] overflow-y-auto ${language === 'ar' ? 'rtl' : 'ltr'}`}>
         <DialogHeader>
           <DialogTitle className="text-xl flex items-center gap-3">
             {currentStep === 'details' && (
@@ -90,8 +59,8 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
                   : 'Choose the account type that suits your financial needs'
                 )
               : (language === 'ar' 
-                  ? 'أكمل تفاصيل حسابك الجديد'
-                  : 'Complete your new account details'
+                  ? 'الحساب الأساسي بالليرة السورية - يمكنك إضافة عملات أخرى لاحقاً'
+                  : 'Basic account in Syrian Pounds - you can add other currencies later'
                 )
             }
           </DialogDescription>
@@ -104,15 +73,9 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
               language={language}
             />
           ) : selectedCategory ? (
-            <AccountDetailsForm
+            <BasicAccountForm
               language={language}
               selectedCategory={selectedCategory}
-              selectedCurrency={selectedCurrency}
-              onCurrencySelect={setSelectedCurrency}
-              requestMastercard={requestMastercard}
-              requestVisa={requestVisa}
-              onMastercardChange={setRequestMastercard}
-              onVisaChange={setRequestVisa}
             />
           ) : null}
         </div>
@@ -123,7 +86,7 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
               {t.cancel}
             </Button>
             <Button 
-              onClick={() => handleOpenAccount(currencies)} 
+              onClick={() => handleOpenAccount([])} 
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-800"
             >
               {t.openAccount}
