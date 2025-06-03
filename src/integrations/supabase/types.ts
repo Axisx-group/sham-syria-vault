@@ -27,6 +27,7 @@ export type Database = {
           first_name: string
           id: string
           initial_deposit: number | null
+          kyc_application_id: string | null
           last_name: string
           nationality: string | null
           phone: string
@@ -58,6 +59,7 @@ export type Database = {
           first_name: string
           id?: string
           initial_deposit?: number | null
+          kyc_application_id?: string | null
           last_name: string
           nationality?: string | null
           phone: string
@@ -89,6 +91,7 @@ export type Database = {
           first_name?: string
           id?: string
           initial_deposit?: number | null
+          kyc_application_id?: string | null
           last_name?: string
           nationality?: string | null
           phone?: string
@@ -103,7 +106,15 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "account_applications_kyc_application_id_fkey"
+            columns: ["kyc_application_id"]
+            isOneToOne: false
+            referencedRelation: "kyc_applications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       application_documents: {
         Row: {
@@ -146,6 +157,156 @@ export type Database = {
           },
         ]
       }
+      kyc_applications: {
+        Row: {
+          account_application_id: string | null
+          address_info: Json | null
+          created_at: string
+          employment_info: Json | null
+          id: string
+          income_info: Json | null
+          level: Database["public"]["Enums"]["kyc_level"]
+          personal_info: Json | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_assessment: Json | null
+          status: Database["public"]["Enums"]["kyc_status"]
+          updated_at: string
+          user_id: string
+          verification_notes: string | null
+        }
+        Insert: {
+          account_application_id?: string | null
+          address_info?: Json | null
+          created_at?: string
+          employment_info?: Json | null
+          id?: string
+          income_info?: Json | null
+          level?: Database["public"]["Enums"]["kyc_level"]
+          personal_info?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_assessment?: Json | null
+          status?: Database["public"]["Enums"]["kyc_status"]
+          updated_at?: string
+          user_id: string
+          verification_notes?: string | null
+        }
+        Update: {
+          account_application_id?: string | null
+          address_info?: Json | null
+          created_at?: string
+          employment_info?: Json | null
+          id?: string
+          income_info?: Json | null
+          level?: Database["public"]["Enums"]["kyc_level"]
+          personal_info?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_assessment?: Json | null
+          status?: Database["public"]["Enums"]["kyc_status"]
+          updated_at?: string
+          user_id?: string
+          verification_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_applications_account_application_id_fkey"
+            columns: ["account_application_id"]
+            isOneToOne: false
+            referencedRelation: "account_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kyc_documents: {
+        Row: {
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          kyc_application_id: string
+          mime_type: string | null
+          uploaded_at: string
+          verification_notes: string | null
+          verification_status: Database["public"]["Enums"]["kyc_status"] | null
+        }
+        Insert: {
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          kyc_application_id: string
+          mime_type?: string | null
+          uploaded_at?: string
+          verification_notes?: string | null
+          verification_status?: Database["public"]["Enums"]["kyc_status"] | null
+        }
+        Update: {
+          document_type?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          kyc_application_id?: string
+          mime_type?: string | null
+          uploaded_at?: string
+          verification_notes?: string | null
+          verification_status?: Database["public"]["Enums"]["kyc_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_documents_kyc_application_id_fkey"
+            columns: ["kyc_application_id"]
+            isOneToOne: false
+            referencedRelation: "kyc_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kyc_verification_steps: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          data: Json | null
+          id: string
+          kyc_application_id: string
+          status: Database["public"]["Enums"]["kyc_status"]
+          step_name: string
+          step_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json | null
+          id?: string
+          kyc_application_id: string
+          status?: Database["public"]["Enums"]["kyc_status"]
+          step_name: string
+          step_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json | null
+          id?: string
+          kyc_application_id?: string
+          status?: Database["public"]["Enums"]["kyc_status"]
+          step_name?: string
+          step_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_verification_steps_kyc_application_id_fkey"
+            columns: ["kyc_application_id"]
+            isOneToOne: false
+            referencedRelation: "kyc_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -161,6 +322,13 @@ export type Database = {
         | "passport"
         | "business_license"
         | "commercial_registration"
+      kyc_level: "basic" | "intermediate" | "advanced"
+      kyc_status:
+        | "pending"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "incomplete"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -283,6 +451,14 @@ export const Constants = {
         "passport",
         "business_license",
         "commercial_registration",
+      ],
+      kyc_level: ["basic", "intermediate", "advanced"],
+      kyc_status: [
+        "pending",
+        "under_review",
+        "approved",
+        "rejected",
+        "incomplete",
       ],
     },
   },

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/landing/Header';
 import AccountOverview from '@/components/dashboard/AccountOverview';
@@ -7,6 +8,7 @@ import CardsSection from '@/components/dashboard/CardsSection';
 import PaymentMethods from '@/components/banking/PaymentMethods';
 import MobilePaymentIntegration from '@/components/dashboard/MobilePaymentIntegration';
 import KYCDashboard from '@/components/kyc/KYCDashboard';
+import KYCApplicationStatus from '@/components/kyc/KYCApplicationStatus';
 
 const Dashboard = () => {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -39,7 +41,7 @@ const Dashboard = () => {
       case 'kyc':
         return (
           <div className="max-w-4xl mx-auto">
-            <KYCDashboard />
+            <KYCApplicationStatus />
           </div>
         );
       default:

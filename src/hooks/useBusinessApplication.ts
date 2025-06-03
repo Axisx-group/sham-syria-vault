@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useKYCIntegration } from "./useKYCIntegration";
 
 interface FormData {
   firstName: string;
@@ -30,6 +31,7 @@ interface Documents {
 export const useBusinessApplication = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createKYCApplication, uploadKYCDocument } = useKYCIntegration();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
@@ -101,38 +103,61 @@ export const useBusinessApplication = () => {
 
       if (appError) throw appError;
 
-      // Upload documents
+      // Create KYC application for business account
+      const kycData = {
+        personalInfo: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone
+        },
+        addressInfo: {
+          addressLine1: formData.addressLine1,
+          addressLine2: formData.addressLine2,
+          city: formData.city,
+          state: formData.state,
+          postalCode: formData.postalCode,
+          country: formData.country
+        },
+        businessInfo: {
+          businessName: formData.businessName,
+          businessType: formData.businessType,
+          registrationNumber: formData.businessRegistrationNumber,
+          taxId: formData.businessTaxId
+        }
+      };
+
+      const kycApplication = await createKYCApplication(
+        application.id,
+        kycData,
+        'intermediate' // Business accounts require intermediate level
+      );
+
+      // Upload documents to KYC
       for (const [docType, file] of Object.entries(documents)) {
         if (file) {
-          const fileName = `${user.id}/${application.id}/${docType}_${Date.now()}.${file.name.split('.').pop()}`;
-          const { error: uploadError } = await supabase.storage
-            .from('application-documents')
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          let documentType: 'national_id' | 'business_license' | 'commercial_registration' = 'national_id';
-          if (docType === 'businessLicense') documentType = 'business_license';
-          if (docType === 'commercialRegistration') documentType = 'commercial_registration';
-
-          const { error: docError } = await supabase
-            .from('application_documents')
-            .insert({
-              application_id: application.id,
-              document_type: documentType,
-              file_name: file.name,
-              file_path: fileName,
-              file_size: file.size,
-              mime_type: file.type
-            });
-
-          if (docError) throw docError;
+          let documentType: string;
+          switch (docType) {
+            case 'nationalId':
+              documentType = 'national_id';
+              break;
+            case 'businessLicense':
+              documentType = 'business_license';
+              break;
+            case 'commercialRegistration':
+              documentType = 'commercial_registration';
+              break;
+            default:
+              documentType = docType;
+          }
+          
+          await uploadKYCDocument(kycApplication.id, documentType, file);
         }
       }
 
       toast({
         title: "تم تقديم الطلب بنجاح!",
-        description: "سيتم مراجعة طلبكم والرد عليكم في أقرب وقت ممكن"
+        description: "سيتم مراجعة طلبكم وإجراء التحقق من الهوية للحساب التجاري. قد تستغرق العملية وقتاً أطول للحسابات التجارية."
       });
 
       navigate('/dashboard');

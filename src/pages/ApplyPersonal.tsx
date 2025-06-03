@@ -1,19 +1,19 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, User, MapPin, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useKYCIntegration } from "@/hooks/useKYCIntegration";
 
 const ApplyPersonal = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createKYCApplication, uploadKYCDocument } = useKYCIntegration();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -85,35 +85,46 @@ const ApplyPersonal = () => {
 
       if (appError) throw appError;
 
-      // Upload documents
+      // Create KYC application
+      const kycData = {
+        personalInfo: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          dateOfBirth: formData.dateOfBirth,
+          nationality: formData.nationality
+        },
+        addressInfo: {
+          addressLine1: formData.addressLine1,
+          addressLine2: formData.addressLine2,
+          city: formData.city,
+          state: formData.state,
+          postalCode: formData.postalCode,
+          country: formData.country
+        }
+      };
+
+      const kycApplication = await createKYCApplication(
+        application.id,
+        kycData,
+        'basic' // Start with basic level for personal accounts
+      );
+
+      // Upload documents to KYC
       for (const [docType, file] of Object.entries(documents)) {
         if (file) {
-          const fileName = `${user.id}/${application.id}/${docType}_${Date.now()}.${file.name.split('.').pop()}`;
-          const { error: uploadError } = await supabase.storage
-            .from('application-documents')
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          // Record document in database
-          const { error: docError } = await supabase
-            .from('application_documents')
-            .insert({
-              application_id: application.id,
-              document_type: docType === 'nationalId' ? 'national_id' : 'passport',
-              file_name: file.name,
-              file_path: fileName,
-              file_size: file.size,
-              mime_type: file.type
-            });
-
-          if (docError) throw docError;
+          await uploadKYCDocument(
+            kycApplication.id,
+            docType === 'nationalId' ? 'national_id' : 'passport',
+            file
+          );
         }
       }
 
       toast({
         title: "تم تقديم الطلب بنجاح!",
-        description: "سيتم مراجعة طلبكم والرد عليكم في أقرب وقت ممكن"
+        description: "سيتم مراجعة طلبكم وإجراء التحقق من الهوية. ستتلقون إشعاراً عند اكتمال المراجعة."
       });
 
       navigate('/dashboard');
@@ -152,6 +163,11 @@ const ApplyPersonal = () => {
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">تقديم طلب فتح حساب شخصي</h1>
           <p className="text-gray-600">املأ النموذج التالي لفتح حسابك الشخصي الجديد (العملة الافتراضية: الليرة السورية)</p>
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-blue-800 text-sm">
+              <strong>ملاحظة:</strong> سيتم إنشاء طلب للتحقق من الهوية (KYC) تلقائياً مع طلب فتح الحساب لضمان أمان حسابك.
+            </p>
+          </div>
         </div>
 
         {/* Progress Steps */}
@@ -179,12 +195,12 @@ const ApplyPersonal = () => {
             <CardTitle className="flex items-center gap-2">
               {step === 1 && <><User className="h-5 w-5" /> البيانات الشخصية</>}
               {step === 2 && <><MapPin className="h-5 w-5" /> بيانات العنوان</>}
-              {step === 3 && <><FileText className="h-5 w-5" /> الوثائق المطلوبة</>}
+              {step === 3 && <><FileText className="h-5 w-5" /> الوثائق المطلوبة للتحقق من الهوية</>}
             </CardTitle>
             <CardDescription>
               {step === 1 && "أدخل بياناتك الشخصية الأساسية"}
               {step === 2 && "أدخل تفاصيل عنوان إقامتك"}
-              {step === 3 && "ارفع الوثائق المطلوبة لفتح الحساب"}
+              {step === 3 && "ارفع الوثائق المطلوبة لفتح الحساب والتحقق من الهوية"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -379,14 +395,14 @@ const ApplyPersonal = () => {
             <div className="flex justify-between pt-6">
               <Button
                 variant="outline"
-                onClick={prevStep}
+                onClick={() => setStep(step - 1)}
                 disabled={step === 1}
               >
                 السابق
               </Button>
               
               {step < 3 ? (
-                <Button onClick={nextStep}>
+                <Button onClick={() => setStep(step + 1)}>
                   التالي
                 </Button>
               ) : (
@@ -394,7 +410,7 @@ const ApplyPersonal = () => {
                   onClick={submitApplication}
                   disabled={loading || !formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.addressLine1 || !formData.city || !documents.nationalId}
                 >
-                  {loading ? 'جاري التقديم...' : 'تقديم الطلب'}
+                  {loading ? 'جاري التقديم...' : 'تقديم الطلب مع التحقق من الهوية'}
                 </Button>
               )}
             </div>
