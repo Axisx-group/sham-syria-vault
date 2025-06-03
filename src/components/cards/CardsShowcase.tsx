@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Crown, Award, Star, CreditCard, Palette, Sparkles } from "lucide-react";
+import { Crown, Award, Star, CreditCard, Palette, Sparkles, User, Type } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -17,6 +17,9 @@ interface CardsShowcaseProps {
 
 const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
   const [selectedCard, setSelectedCard] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [customName, setCustomName] = useState('YOUR NAME');
+  const [isCustomizing, setIsCustomizing] = useState(false);
 
   const translations = {
     ar: {
@@ -34,7 +37,9 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
       customize: "تخصيص التصميم",
       chooseColor: "اختر اللون",
       addName: "أضف الاسم",
-      preview: "معاينة"
+      preview: "معاينة",
+      cardHolderName: "اسم حامل البطاقة",
+      enterName: "ادخل اسمك"
     },
     en: {
       title: "Choose your perfect card",
@@ -51,7 +56,9 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
       customize: "Customize Design",
       chooseColor: "Choose Color",
       addName: "Add Name",
-      preview: "Preview"
+      preview: "Preview",
+      cardHolderName: "Card Holder Name",
+      enterName: "Enter your name"
     }
   };
 
@@ -97,12 +104,25 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
   ];
 
   const designColors = [
-    { name: "Midnight", gradient: "from-slate-900 to-black" },
-    { name: "Ocean", gradient: "from-blue-600 to-cyan-500" },
-    { name: "Sunset", gradient: "from-orange-500 to-pink-500" },
-    { name: "Forest", gradient: "from-green-600 to-teal-500" },
-    { name: "Aurora", gradient: "from-purple-600 to-indigo-500" }
+    { name: "Midnight", gradient: "from-slate-900 to-black", bgClass: "bg-gradient-to-br from-slate-900 to-black" },
+    { name: "Ocean", gradient: "from-blue-600 to-cyan-500", bgClass: "bg-gradient-to-br from-blue-600 to-cyan-500" },
+    { name: "Sunset", gradient: "from-orange-500 to-pink-500", bgClass: "bg-gradient-to-br from-orange-500 to-pink-500" },
+    { name: "Forest", gradient: "from-green-600 to-teal-500", bgClass: "bg-gradient-to-br from-green-600 to-teal-500" },
+    { name: "Aurora", gradient: "from-purple-600 to-indigo-500", bgClass: "bg-gradient-to-br from-purple-600 to-indigo-500" },
+    { name: "Rose Gold", gradient: "from-pink-400 to-orange-400", bgClass: "bg-gradient-to-br from-pink-400 to-orange-400" }
   ];
+
+  const handleCustomize = () => {
+    setIsCustomizing(!isCustomizing);
+  };
+
+  const handleColorSelect = (index: number) => {
+    setSelectedColor(index);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomName(e.target.value.toUpperCase() || 'YOUR NAME');
+  };
 
   return (
     <section className="py-32 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
@@ -134,11 +154,15 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                 return (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                     <div className="group cursor-pointer p-4">
-                      {/* Realistic 3D Card */}
+                      {/* Realistic 3D Card - البطاقة الواقعية */}
                       <div 
-                        className={`relative w-full aspect-[1.6/1] bg-gradient-to-br ${card.gradient} rounded-2xl shadow-2xl text-white overflow-hidden transform transition-all duration-700 hover:scale-105 hover:rotate-1 hover:shadow-3xl group-hover:-translate-y-4 mb-6`}
+                        className={`relative w-full bg-gradient-to-br ${card.gradient} rounded-2xl shadow-2xl text-white overflow-hidden transform transition-all duration-700 hover:scale-105 hover:rotate-1 hover:shadow-3xl group-hover:-translate-y-4 mb-6 card-realistic`}
                         onClick={() => setSelectedCard(index)}
                         style={{
+                          aspectRatio: '1.586/1', // البعد الصحيح للبطاقة المصرفية
+                          width: '100%',
+                          maxWidth: '360px',
+                          height: '227px',
                           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)'
                         }}
                       >
@@ -148,24 +172,17 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
 
                         {/* Card Content */}
                         <div className="relative z-10 h-full p-6 flex flex-col justify-between">
-                          {/* Top Row */}
+                          {/* Top Row - Syria Vault & VISA */}
                           <div className="flex justify-between items-center">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                                <IconComponent className="w-3 h-3 text-white" />
-                              </div>
-                              <Badge variant="secondary" className="bg-white/20 text-white border-none backdrop-blur-sm text-xs px-2 py-1">
-                                {card.tier}
-                              </Badge>
-                            </div>
-                            <div className="text-lg font-bold italic tracking-wider">VISA</div>
+                            <div className="text-sm font-medium tracking-wider opacity-90">SYRIA VAULT</div>
+                            <div className="text-2xl font-bold italic tracking-wider">VISA</div>
                           </div>
 
-                          {/* Chip */}
-                          <div className="w-10 h-7 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative self-start">
+                          {/* Chip - رقاقة البطاقة */}
+                          <div className="w-12 h-9 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative self-start">
                             <div className="absolute inset-0.5 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-md">
                               <div className="w-full h-full bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-md border border-yellow-300">
-                                <div className="grid grid-cols-3 gap-px p-1 h-full">
+                                <div className="grid grid-cols-3 gap-0.5 p-1 h-full">
                                   {[...Array(9)].map((_, i) => (
                                     <div key={i} className="bg-yellow-400 rounded-sm opacity-60"></div>
                                   ))}
@@ -175,7 +192,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                           </div>
 
                           {/* Card Number */}
-                          <div className="font-mono text-lg tracking-widest font-light">
+                          <div className="font-mono text-xl tracking-widest font-light">
                             {card.number}
                           </div>
 
@@ -183,26 +200,26 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                           <div className="flex justify-between items-end">
                             <div>
                               <div className="text-xs opacity-70 tracking-widest mb-1">CARD HOLDER</div>
-                              <div className="font-semibold text-sm tracking-wide">{card.holder}</div>
+                              <div className="font-semibold tracking-wide">{card.holder}</div>
                             </div>
                             <div className="text-right">
                               <div className="text-xs opacity-70 tracking-widest mb-1">EXPIRES</div>
-                              <div className="font-semibold text-sm">{card.expiry}</div>
+                              <div className="font-semibold">{card.expiry}</div>
                             </div>
                           </div>
 
                           {/* Contactless symbol */}
-                          <div className="absolute top-6 right-16">
-                            <div className="relative w-5 h-5">
+                          <div className="absolute top-6 right-20">
+                            <div className="relative w-6 h-6">
                               <div className="absolute inset-0 border-2 border-white/40 rounded-full"></div>
-                              <div className="absolute inset-0.5 border-2 border-white/60 rounded-full"></div>
-                              <div className="absolute inset-1 border-2 border-white/80 rounded-full"></div>
+                              <div className="absolute inset-1 border-2 border-white/60 rounded-full"></div>
+                              <div className="absolute inset-2 border-2 border-white/80 rounded-full"></div>
                             </div>
                           </div>
 
-                          {/* Syria Vault branding */}
-                          <div className="absolute bottom-6 right-6 opacity-60">
-                            <div className="text-xs tracking-widest font-light">SYRIA VAULT</div>
+                          {/* Card tier badge */}
+                          <div className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                            <span className="text-xs font-medium tracking-wider">{card.tier}</span>
                           </div>
                         </div>
 
@@ -231,7 +248,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
           </Carousel>
         </div>
 
-        {/* Design Your Card Section */}
+        {/* Design Your Card Section - قسم تصميم البطاقة */}
         <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4 px-6 py-2 text-sm bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 border-indigo-200">
@@ -254,7 +271,10 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                   {designColors.map((color, index) => (
                     <button
                       key={index}
-                      className={`w-full h-20 bg-gradient-to-br ${color.gradient} rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-4 border-transparent hover:border-white`}
+                      onClick={() => handleColorSelect(index)}
+                      className={`w-full h-20 ${color.bgClass} rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-4 ${
+                        selectedColor === index ? 'border-purple-500 ring-4 ring-purple-200' : 'border-transparent hover:border-white'
+                      }`}
                     >
                       <span className="text-white text-sm font-medium opacity-0 hover:opacity-100 transition-opacity">
                         {color.name}
@@ -264,11 +284,37 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                 </div>
               </div>
 
+              {/* Name Input */}
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <User className="w-5 h-5 mr-2 text-purple-600" />
+                  {t.cardHolderName}
+                </h4>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder={t.enterName}
+                    value={customName === 'YOUR NAME' ? '' : customName}
+                    onChange={handleNameChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-medium uppercase tracking-wider"
+                    maxLength={26}
+                  />
+                  <Type className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+                </div>
+              </div>
+
               <div className="space-y-4">
-                <Button className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                <Button 
+                  onClick={handleCustomize}
+                  className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+                >
+                  <Palette className="w-5 h-5 mr-2" />
                   {t.customize}
                 </Button>
-                <Button variant="outline" className="w-full py-4 text-lg border-2 border-gray-200 hover:border-purple-300 text-gray-700 rounded-xl">
+                <Button 
+                  variant="outline" 
+                  className="w-full py-4 text-lg border-2 border-gray-200 hover:border-purple-300 text-gray-700 rounded-xl"
+                >
                   {t.preview}
                 </Button>
               </div>
@@ -277,27 +323,29 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
             {/* Realistic Preview Card */}
             <div className="relative">
               <div 
-                className="relative w-full aspect-[1.6/1] bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-2xl text-white overflow-hidden transform rotate-6 hover:rotate-3 transition-transform duration-500"
+                className={`relative w-full bg-gradient-to-br ${designColors[selectedColor].gradient} rounded-2xl shadow-2xl text-white overflow-hidden transform ${isCustomizing ? 'rotate-3 scale-105' : 'rotate-6'} hover:rotate-3 transition-all duration-500`}
                 style={{
+                  aspectRatio: '1.586/1',
+                  width: '100%',
+                  maxWidth: '400px',
+                  height: '252px',
                   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)'
                 }}
               >
                 {/* Card effects */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-60"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 animate-pulse"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 animate-shimmer"></div>
                 
                 <div className="relative z-10 h-full p-6 flex flex-col justify-between">
                   <div className="flex justify-between items-center">
-                    <Badge className="bg-white/20 text-white border-none backdrop-blur-sm text-xs px-2 py-1">
-                      CUSTOM DESIGN
-                    </Badge>
-                    <div className="text-lg font-bold italic">VISA</div>
+                    <div className="text-sm font-medium tracking-wider opacity-90">SYRIA VAULT</div>
+                    <div className="text-2xl font-bold italic">VISA</div>
                   </div>
 
-                  <div className="w-10 h-7 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative">
+                  <div className="w-12 h-9 bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 rounded-lg shadow-lg relative self-start">
                     <div className="absolute inset-0.5 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-md">
                       <div className="w-full h-full bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-md border border-yellow-300">
-                        <div className="grid grid-cols-3 gap-px p-1 h-full">
+                        <div className="grid grid-cols-3 gap-0.5 p-1 h-full">
                           {[...Array(9)].map((_, i) => (
                             <div key={i} className="bg-yellow-400 rounded-sm opacity-60"></div>
                           ))}
@@ -306,31 +354,31 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
                     </div>
                   </div>
                   
-                  <div className="font-mono text-lg tracking-widest font-light">
+                  <div className="font-mono text-xl tracking-widest font-light">
                     **** **** **** 1234
                   </div>
                   
                   <div className="flex justify-between items-end">
                     <div>
                       <div className="text-xs opacity-70 tracking-widest mb-1">CARD HOLDER</div>
-                      <div className="font-semibold text-sm tracking-wide">YOUR NAME</div>
+                      <div className="font-semibold tracking-wide text-lg">{customName}</div>
                     </div>
                     <div className="text-right">
                       <div className="text-xs opacity-70 tracking-widest mb-1">EXPIRES</div>
-                      <div className="font-semibold text-sm">12/28</div>
+                      <div className="font-semibold">12/28</div>
                     </div>
                   </div>
 
-                  <div className="absolute top-6 right-16">
-                    <div className="relative w-5 h-5">
+                  <div className="absolute top-6 right-20">
+                    <div className="relative w-6 h-6">
                       <div className="absolute inset-0 border-2 border-white/40 rounded-full"></div>
-                      <div className="absolute inset-0.5 border-2 border-white/60 rounded-full"></div>
-                      <div className="absolute inset-1 border-2 border-white/80 rounded-full"></div>
+                      <div className="absolute inset-1 border-2 border-white/60 rounded-full"></div>
+                      <div className="absolute inset-2 border-2 border-white/80 rounded-full"></div>
                     </div>
                   </div>
 
-                  <div className="absolute bottom-6 right-6 opacity-60">
-                    <div className="text-xs tracking-widest font-light">SYRIA VAULT</div>
+                  <div className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium tracking-wider">CUSTOM DESIGN</span>
                   </div>
                 </div>
 
