@@ -1,12 +1,15 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Calendar, Download, CreditCard } from "lucide-react";
+import { Calendar, Download, CreditCard, Shield } from "lucide-react";
 
 const AdminHeader = () => {
   const handleNetBankLogin = () => {
-    // يمكن إضافة منطق تسجيل الدخول هنا
     console.log('تسجيل الدخول عبر نت بنك');
+  };
+
+  const handleSecurePortalAccess = () => {
+    window.location.href = '/secure-admin-portal-nubarium-2024';
   };
 
   return (
@@ -18,6 +21,14 @@ const AdminHeader = () => {
             <p className="text-sm text-gray-600">إدارة كاملة وشاملة لجميع عمليات البنك</p>
           </div>
           <div className="flex items-center space-x-4 space-x-reverse">
+            <Button 
+              onClick={handleSecurePortalAccess}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              size="sm"
+            >
+              <Shield className="h-4 w-4 mr-2" />
+              البوابة الآمنة
+            </Button>
             <Button 
               onClick={handleNetBankLogin}
               className="bg-blue-600 hover:bg-blue-700 text-white"

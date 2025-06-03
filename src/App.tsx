@@ -8,6 +8,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import SecureAdminPortal from "./pages/SecureAdminPortal";
 import Cards from "./pages/Cards";
 import BankingServices from "./pages/BankingServices";
 import IbanSwiftServices from "./pages/IbanSwiftServices";
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/secure-admin-portal-nubarium-2024" element={<SecureAdminPortal />} />
             <Route path="/cards" element={<Cards />} />
             <Route path="/banking-services" element={<BankingServices />} />
             <Route path="/iban-swift" element={<IbanSwiftServices />} />
