@@ -68,14 +68,14 @@ const CountryCard: React.FC<{ country: Country }> = ({ country }) => {
 const CountriesManagement: React.FC = () => {
   const { countries, loading, stats } = useGeography();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedContinent, setSelectedContinent] = useState<string>('');
+  const [selectedContinent, setSelectedContinent] = useState<string>('all');
 
   const continents = Array.from(new Set(countries.map(c => c.continent_ar).filter(Boolean)));
 
   const filteredCountries = countries.filter(country => {
     const matchesSearch = country.name_ar.includes(searchTerm) || 
                          country.name_en.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesContinent = !selectedContinent || country.continent_ar === selectedContinent;
+    const matchesContinent = selectedContinent === 'all' || country.continent_ar === selectedContinent;
     return matchesSearch && matchesContinent;
   });
 
@@ -127,9 +127,9 @@ const CountriesManagement: React.FC = () => {
             <SelectValue placeholder="اختر القارة" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">جميع القارات</SelectItem>
+            <SelectItem value="all">جميع القارات</SelectItem>
             {continents.map((continent) => (
-              <SelectItem key={continent} value={continent || ''}>
+              <SelectItem key={continent} value={continent || 'unknown'}>
                 {continent}
               </SelectItem>
             ))}
