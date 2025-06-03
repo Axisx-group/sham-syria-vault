@@ -15,41 +15,41 @@ const StatsSection: React.FC<StatsSectionProps> = ({ language }) => {
       icon: Users, 
       number: "150K+", 
       label: t.customers,
-      gradient: "from-blue-500 to-cyan-500"
+      color: "from-blue-500 to-blue-600"
     },
     { 
       icon: TrendingUp, 
       number: "85K+", 
       label: t.transactions,
-      gradient: "from-green-500 to-emerald-500"
+      color: "from-green-500 to-green-600"
     },
     { 
       icon: Globe, 
       number: "40+", 
       label: t.countries,
-      gradient: "from-purple-500 to-pink-500"
+      color: "from-purple-500 to-purple-600"
     },
     { 
       icon: Star, 
       number: "4.9", 
       label: t.rating,
-      gradient: "from-yellow-500 to-orange-500"
+      color: "from-yellow-500 to-yellow-600"
     }
   ];
 
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               {language === 'ar' ? 'أرقامنا تتحدث' : 'Our Numbers Speak'}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               {language === 'ar' 
-                ? 'إنجازات استثنائية تعكس ثقة عملائنا'
-                : 'Exceptional achievements reflecting our customers\' trust'
+                ? 'إنجازات استثنائية تعكس ثقة عملائنا وتميز خدماتنا'
+                : 'Exceptional achievements reflecting our customers\' trust and service excellence'
               }
             </p>
           </div>
@@ -61,22 +61,21 @@ const StatsSection: React.FC<StatsSectionProps> = ({ language }) => {
               return (
                 <div 
                   key={index} 
-                  className="text-center group animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="text-center group hover:scale-105 transition-all duration-300"
                 >
-                  <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 border border-gray-100">
+                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
                     {/* Icon */}
-                    <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${stat.gradient} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${stat.color} rounded-xl mb-6 group-hover:scale-110 transition-transform`}>
                       <Icon className="h-8 w-8 text-white" />
                     </div>
                     
                     {/* Number */}
-                    <div className={`text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-2`}>
+                    <div className="text-4xl font-bold text-gray-900 mb-2">
                       {stat.number}
                     </div>
                     
                     {/* Label */}
-                    <div className="text-gray-600 font-medium text-lg">{stat.label}</div>
+                    <div className="text-gray-600 font-medium">{stat.label}</div>
                   </div>
                 </div>
               );
