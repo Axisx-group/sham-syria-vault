@@ -9,8 +9,8 @@ export interface Customer {
   last_name: string;
   email: string;
   phone: string;
-  account_type: 'personal' | 'business';
-  status: 'active' | 'suspended' | 'closed';
+  account_type: string;
+  status: string;
   join_date: string;
   last_login?: string;
   location?: string;
@@ -54,7 +54,7 @@ export const useCustomers = () => {
     }
   };
 
-  const updateCustomerStatus = async (customerId: string, status: 'active' | 'suspended' | 'closed') => {
+  const updateCustomerStatus = async (customerId: string, status: string) => {
     try {
       const { error } = await supabase
         .from('customers')

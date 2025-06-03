@@ -7,16 +7,16 @@ export interface BankTransaction {
   id: string;
   transaction_type: string;
   amount: number;
-  currency: 'SYP' | 'USD' | 'EUR' | 'TRY';
+  currency: string;
   from_account_id?: string;
   to_account_id?: string;
   from_customer_name?: string;
   to_customer_name?: string;
-  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  status: string;
   reference_number: string;
   description?: string;
   fee: number;
-  channel: 'mobile_app' | 'web' | 'atm' | 'branch';
+  channel: string;
   created_at: string;
   processed_at?: string;
   notes?: string;
@@ -75,7 +75,7 @@ export const useBankTransactions = () => {
     }
   };
 
-  const updateTransactionStatus = async (transactionId: string, status: 'pending' | 'completed' | 'failed' | 'cancelled') => {
+  const updateTransactionStatus = async (transactionId: string, status: string) => {
     try {
       const updateData: any = { 
         status,

@@ -22,7 +22,7 @@ import { Customer } from '@/hooks/useCustomers';
 
 interface RealCustomerCardProps {
   customer: Customer;
-  onStatusChange: (customerId: string, status: 'active' | 'suspended' | 'closed') => void;
+  onStatusChange: (customerId: string, status: string) => void;
 }
 
 const RealCustomerCard: React.FC<RealCustomerCardProps> = ({ customer, onStatusChange }) => {

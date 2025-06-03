@@ -8,10 +8,10 @@ export interface BankAccount {
   customer_id: string;
   account_number: string;
   iban: string;
-  account_type: 'checking' | 'savings' | 'business';
-  currency: 'SYP' | 'USD' | 'EUR' | 'TRY';
+  account_type: string;
+  currency: string;
   balance: number;
-  status: 'active' | 'suspended' | 'closed';
+  status: string;
   open_date: string;
   last_activity?: string;
   branch_code?: string;
@@ -66,7 +66,7 @@ export const useBankAccounts = () => {
     }
   };
 
-  const updateAccountStatus = async (accountId: string, status: 'active' | 'suspended' | 'closed') => {
+  const updateAccountStatus = async (accountId: string, status: string) => {
     try {
       const { error } = await supabase
         .from('bank_accounts')

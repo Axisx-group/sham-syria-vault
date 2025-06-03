@@ -8,10 +8,10 @@ export interface BankCard {
   customer_id: string;
   account_id: string;
   card_number: string;
-  card_type: 'debit' | 'credit';
-  card_brand: 'Visa' | 'Mastercard';
-  card_category: 'standard' | 'gold' | 'platinum';
-  status: 'active' | 'blocked' | 'expired';
+  card_type: string;
+  card_brand: string;
+  card_category: string;
+  status: string;
   expiry_date: string;
   issue_date: string;
   credit_limit?: number;
@@ -76,7 +76,7 @@ export const useBankCards = () => {
     }
   };
 
-  const updateCardStatus = async (cardId: string, status: 'active' | 'blocked' | 'expired') => {
+  const updateCardStatus = async (cardId: string, status: string) => {
     try {
       const { error } = await supabase
         .from('bank_cards')
