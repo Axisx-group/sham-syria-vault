@@ -341,7 +341,7 @@ const EnhancedAdminOverview = () => {
                 </Badge>
               </div>
             ))}
-          </Content>
+          </CardContent>
         </Card>
       </div>
     </div>
