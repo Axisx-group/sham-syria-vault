@@ -20,6 +20,7 @@ import ServicesGlobal from "./pages/ServicesGlobal";
 import BankingServices from "./pages/BankingServices";
 import AdminDashboard from "./pages/AdminDashboard";
 import Cards from "./pages/Cards";
+import NubariumService from "./pages/NubariumService";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/services/ai-banking" element={<ServicesAIBanking />} />
           <Route path="/services/security" element={<ServicesSecurity />} />
           <Route path="/services/global" element={<ServicesGlobal />} />
+          <Route path="/services/nubarium" element={<NubariumService />} />
           <Route path="/banking-services" element={<BankingServices />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
