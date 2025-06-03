@@ -86,7 +86,7 @@ const NewAccountDialog: React.FC<NewAccountDialogProps> = ({ language }) => {
               {t.cancel}
             </Button>
             <Button 
-              onClick={() => handleOpenAccount([])} 
+              onClick={handleOpenAccount} 
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-800"
             >
               {t.openAccount}
