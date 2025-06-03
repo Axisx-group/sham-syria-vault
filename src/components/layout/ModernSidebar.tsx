@@ -23,7 +23,7 @@ interface SidebarItem {
   label: string;
   icon: React.ComponentType<any>;
   href?: string;
-  badge?: number;
+  badge?: number | string;
   children?: SidebarItem[];
 }
 
