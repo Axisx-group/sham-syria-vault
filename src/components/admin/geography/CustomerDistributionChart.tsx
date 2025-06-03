@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { CustomerGeographyStats } from "@/hooks/useEnhancedGeographyStats";
+import { CustomerGeographyStats } from "@/types/geographyAnalytics";
 
 interface CustomerDistributionChartProps {
   data: CustomerGeographyStats[];

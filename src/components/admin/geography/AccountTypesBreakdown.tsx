@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis } from "recharts";
 import { Users, Building2, CreditCard, Wallet } from "lucide-react";
-import { GeographyAnalytics } from "@/hooks/useEnhancedGeographyStats";
+import { GeographyAnalytics } from "@/types/geographyAnalytics";
 
 interface AccountTypesBreakdownProps {
   analytics: GeographyAnalytics;

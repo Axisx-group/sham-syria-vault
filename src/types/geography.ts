@@ -52,3 +52,17 @@ export interface GeographyStats {
     count: number;
   }[];
 }
+
+export interface CustomerGeographyStats {
+  location: string;
+  customerCount: number;
+  personalAccounts: number;
+  businessAccounts: number;
+  activeAccounts: number;
+  suspendedAccounts: number;
+  closedAccounts: number;
+  debitCards: number;
+  creditCards: number;
+  averageBalance: number;
+  monthlyGrowth: number;
+}
