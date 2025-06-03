@@ -15,6 +15,7 @@ import AdminModeration from "@/components/admin/AdminModeration";
 import AdminPageManagement from "@/components/admin/AdminPageManagement";
 import AdminAdvancedAnalytics from "@/components/admin/AdminAdvancedAnalytics";
 import AdminRoleManagement from "@/components/admin/AdminRoleManagement";
+import AdminMobileAppControl from "@/components/admin/AdminMobileAppControl";
 import KYCDashboard from "@/components/kyc/KYCDashboard";
 import { 
   TrendingUp, 
@@ -27,7 +28,8 @@ import {
   BarChart3,
   Settings,
   UserCheck,
-  Activity
+  Activity,
+  Smartphone
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -57,6 +59,7 @@ const AdminDashboard = () => {
     },
     { id: 'transactions', label: 'المعاملات', icon: DollarSign },
     { id: 'kyc', label: 'التحقق من الهوية', icon: Shield, badge: 3 },
+    { id: 'app-control', label: 'التحكم بالتطبيق', icon: Smartphone, badge: 2 },
     { id: 'messaging', label: 'نظام المراسلة', icon: MessageSquare, badge: 5 },
     { id: 'moderation', label: 'الحظر والإشراف', icon: Shield },
     { id: 'page-management', label: 'إدارة الصفحات', icon: Globe },
@@ -81,6 +84,8 @@ const AdminDashboard = () => {
         return <AdminTransactions />;
       case 'kyc':
         return <KYCDashboard />;
+      case 'app-control':
+        return <AdminMobileAppControl />;
       case 'messaging':
         return <AdminMessaging />;
       case 'moderation':
