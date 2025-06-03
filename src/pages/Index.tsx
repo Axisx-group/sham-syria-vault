@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import Header from '@/components/landing/Header';
 import RevolutStyleSlider from '@/components/landing/RevolutStyleSlider';
 import AnimatedStatsSection from '@/components/landing/AnimatedStatsSection';
 import AdvancedServicesSection from '@/components/landing/AdvancedServicesSection';
@@ -20,10 +19,9 @@ const Index = () => {
   return (
     <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <NotificationBanner language={language} />
-      <Header language={language} onLanguageChange={setLanguage} />
       
       <section id="hero" className="relative">
-        <RevolutStyleSlider language={language} />
+        <RevolutStyleSlider language={language} onLanguageChange={setLanguage} />
       </section>
       
       <section id="stats" className="stats-section">
