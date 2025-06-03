@@ -16,6 +16,7 @@ import ServicesDigitalWallet from "./pages/ServicesDigitalWallet";
 import ServicesInvestment from "./pages/ServicesInvestment";
 import BankingServices from "./pages/BankingServices";
 import AdminDashboard from "./pages/AdminDashboard";
+import Cards from "./pages/Cards";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/cards" element={<Cards />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/contact" element={<Contact />} />

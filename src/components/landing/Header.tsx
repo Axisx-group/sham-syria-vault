@@ -39,6 +39,13 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
           <nav className="hidden lg:flex items-center space-x-8">
             <Button 
               variant="ghost" 
+              onClick={() => navigateTo('/cards')}
+              className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
+            >
+              البطاقات
+            </Button>
+            <Button 
+              variant="ghost" 
               onClick={() => navigateTo('/services/personal')}
               className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
             >
@@ -95,6 +102,13 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
       {isMenuOpen && (
         <div className="lg:hidden bg-black/95 backdrop-blur-md border-t border-gray-800/50 py-6">
           <div className="container mx-auto px-4 flex flex-col space-y-4">
+            <Button 
+              variant="ghost" 
+              className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
+              onClick={() => navigateTo('/cards')}
+            >
+              البطاقات
+            </Button>
             <Button 
               variant="ghost" 
               className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
