@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
@@ -38,21 +37,21 @@ const AdminAuthSetup = () => {
 
   const checkAdminExists = async () => {
     try {
-      const { data: { users }, error } = await supabase.auth.admin.listUsers();
-      if (error) {
-        console.error('Error checking admin:', error);
-        return;
-      }
+      // Check if admin profile exists in profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', ADMIN_EMAIL)
+        .single();
       
-      const adminUser = users?.find(user => user.email === ADMIN_EMAIL);
-      setAdminExists(!!adminUser);
+      setAdminExists(!!profile);
       
-      if (adminUser) {
+      if (profile) {
         setSetupStatus('success');
         setMessage('حساب المدير الرئيسي موجود بالفعل');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error checking admin:', error);
     }
   };
 
