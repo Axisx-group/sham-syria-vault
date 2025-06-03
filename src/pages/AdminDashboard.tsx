@@ -21,6 +21,7 @@ import AdminATMManagement from "@/components/admin/AdminATMManagement";
 import AdminSwiftManagement from "@/components/admin/AdminSwiftManagement";
 import KYCDashboard from "@/components/kyc/KYCDashboard";
 import NewCustomerApproval from "@/components/admin/notifications/NewCustomerApproval";
+import GeographyManagement from "@/components/admin/geography/GeographyManagement";
 import { 
   TrendingUp, 
   Users, 
@@ -34,7 +35,8 @@ import {
   UserCheck,
   Activity,
   Smartphone,
-  Bell
+  Bell,
+  MapPin
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -67,6 +69,7 @@ const AdminDashboard = () => {
     { id: 'swift', label: 'تحويلات SWIFT', icon: Globe, badge: 2 },
     { id: 'atm', label: 'أجهزة الصراف الآلي', icon: Smartphone, badge: 3 },
     { id: 'kyc', label: 'التحقق من الهوية', icon: Shield, badge: 3 },
+    { id: 'geography', label: 'الإدارة الجغرافية', icon: MapPin, badge: 'جديد' },
     { id: 'app-control', label: 'التحكم بالتطبيق', icon: Smartphone, badge: 2 },
     { id: 'messaging', label: 'نظام المراسلة', icon: MessageSquare, badge: 5 },
     { id: 'moderation', label: 'الحظر والإشراف', icon: Shield },
@@ -98,6 +101,8 @@ const AdminDashboard = () => {
         return <AdminATMManagement />;
       case 'kyc':
         return <KYCDashboard />;
+      case 'geography':
+        return <GeographyManagement />;
       case 'app-control':
         return <AdminMobileAppControl />;
       case 'messaging':

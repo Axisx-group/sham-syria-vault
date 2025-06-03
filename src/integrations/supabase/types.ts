@@ -390,6 +390,60 @@ export type Database = {
           },
         ]
       }
+      countries: {
+        Row: {
+          capital_ar: string | null
+          capital_en: string | null
+          continent_ar: string | null
+          continent_en: string | null
+          created_at: string
+          currency_code: string | null
+          currency_name_ar: string | null
+          currency_name_en: string | null
+          id: string
+          iso_code_2: string
+          iso_code_3: string
+          name_ar: string
+          name_en: string
+          timezone: string | null
+          updated_at: string
+        }
+        Insert: {
+          capital_ar?: string | null
+          capital_en?: string | null
+          continent_ar?: string | null
+          continent_en?: string | null
+          created_at?: string
+          currency_code?: string | null
+          currency_name_ar?: string | null
+          currency_name_en?: string | null
+          id?: string
+          iso_code_2: string
+          iso_code_3: string
+          name_ar: string
+          name_en: string
+          timezone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          capital_ar?: string | null
+          capital_en?: string | null
+          continent_ar?: string | null
+          continent_en?: string | null
+          created_at?: string
+          currency_code?: string | null
+          currency_name_ar?: string | null
+          currency_name_en?: string | null
+          id?: string
+          iso_code_2?: string
+          iso_code_3?: string
+          name_ar?: string
+          name_en?: string
+          timezone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           account_type: string
@@ -440,6 +494,64 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      geographic_regions: {
+        Row: {
+          country_id: string | null
+          created_at: string
+          governorate_id: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          parent_region_id: string | null
+          region_type: string
+          updated_at: string
+        }
+        Insert: {
+          country_id?: string | null
+          created_at?: string
+          governorate_id?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          parent_region_id?: string | null
+          region_type: string
+          updated_at?: string
+        }
+        Update: {
+          country_id?: string | null
+          created_at?: string
+          governorate_id?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          parent_region_id?: string | null
+          region_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "geographic_regions_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "geographic_regions_governorate_id_fkey"
+            columns: ["governorate_id"]
+            isOneToOne: false
+            referencedRelation: "syrian_governorates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "geographic_regions_parent_region_id_fkey"
+            columns: ["parent_region_id"]
+            isOneToOne: false
+            referencedRelation: "geographic_regions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kyc_applications: {
         Row: {
@@ -645,6 +757,51 @@ export type Database = {
           id?: string
           role?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      syrian_governorates: {
+        Row: {
+          area_km2: number | null
+          capital_ar: string | null
+          capital_en: string | null
+          code: string
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          population: number | null
+          updated_at: string
+        }
+        Insert: {
+          area_km2?: number | null
+          capital_ar?: string | null
+          capital_en?: string | null
+          code: string
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          population?: number | null
+          updated_at?: string
+        }
+        Update: {
+          area_km2?: number | null
+          capital_ar?: string | null
+          capital_en?: string | null
+          code?: string
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          population?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
