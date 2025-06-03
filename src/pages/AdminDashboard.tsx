@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import AdminHeader from "@/components/admin/dashboard/AdminHeader";
-import AdminNavigation from "@/components/admin/dashboard/AdminNavigation";
-import AdminOverview from "@/components/admin/dashboard/AdminOverview";
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import ModernSidebar from '@/components/layout/ModernSidebar';
+import EnhancedAdminOverview from '@/components/admin/dashboard/EnhancedAdminOverview';
 import AdminSystemStatus from "@/components/admin/AdminSystemStatus";
 import AdminCustomersList from "@/components/admin/AdminCustomersList";
 import AdminAccountsManagement from "@/components/admin/AdminAccountsManagement";
@@ -16,9 +16,54 @@ import AdminPageManagement from "@/components/admin/AdminPageManagement";
 import AdminAdvancedAnalytics from "@/components/admin/AdminAdvancedAnalytics";
 import AdminRoleManagement from "@/components/admin/AdminRoleManagement";
 import KYCDashboard from "@/components/kyc/KYCDashboard";
+import { 
+  TrendingUp, 
+  Users, 
+  CreditCard, 
+  DollarSign, 
+  MessageSquare,
+  Shield,
+  Globe,
+  BarChart3,
+  Settings,
+  UserCheck,
+  Activity
+} from "lucide-react";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const sidebarItems = [
+    { id: 'overview', label: 'نظرة عامة', icon: TrendingUp },
+    { id: 'system-status', label: 'حالة النظام', icon: Activity },
+    { 
+      id: 'customers', 
+      label: 'إدارة العملاء', 
+      icon: Users,
+      children: [
+        { id: 'customers', label: 'قائمة العملاء', icon: Users },
+        { id: 'customer-control', label: 'التحكم بالعملاء', icon: UserCheck }
+      ]
+    },
+    { 
+      id: 'accounts', 
+      label: 'الحسابات والبطاقات', 
+      icon: CreditCard,
+      children: [
+        { id: 'accounts', label: 'إدارة الحسابات', icon: CreditCard },
+        { id: 'cards', label: 'إدارة البطاقات', icon: CreditCard }
+      ]
+    },
+    { id: 'transactions', label: 'المعاملات', icon: DollarSign },
+    { id: 'kyc', label: 'التحقق من الهوية', icon: Shield, badge: 3 },
+    { id: 'messaging', label: 'نظام المراسلة', icon: MessageSquare, badge: 5 },
+    { id: 'moderation', label: 'الحظر والإشراف', icon: Shield },
+    { id: 'page-management', label: 'إدارة الصفحات', icon: Globe },
+    { id: 'analytics', label: 'التحليلات المتقدمة', icon: BarChart3 },
+    { id: 'role-management', label: 'إدارة الأدوار', icon: Settings },
+    { id: 'reports', label: 'التقارير', icon: TrendingUp }
+  ];
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -49,19 +94,28 @@ const AdminDashboard = () => {
       case 'reports':
         return <AdminReportsStats />;
       default:
-        return <AdminOverview />;
+        return <EnhancedAdminOverview />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      <AdminHeader />
-      <AdminNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {renderTabContent()}
+    <ThemeProvider>
+      <div className="min-h-screen bg-background flex w-full">
+        <ModernSidebar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          items={sidebarItems}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
+        
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto p-8">
+            {renderTabContent()}
+          </div>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 
