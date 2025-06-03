@@ -22,6 +22,7 @@ import AdminSwiftManagement from "@/components/admin/AdminSwiftManagement";
 import KYCDashboard from "@/components/kyc/KYCDashboard";
 import NewCustomerApproval from "@/components/admin/notifications/NewCustomerApproval";
 import GeographyManagement from "@/components/admin/geography/GeographyManagement";
+import { useIntegratedNotifications } from '@/hooks/useIntegratedNotifications';
 import { 
   TrendingUp, 
   Users, 
@@ -42,6 +43,7 @@ import {
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { addNotification } = useIntegratedNotifications();
 
   const sidebarItems = [
     { id: 'overview', label: 'نظرة عامة', icon: TrendingUp },
@@ -78,6 +80,35 @@ const AdminDashboard = () => {
     { id: 'role-management', label: 'إدارة الأدوار', icon: Settings },
     { id: 'reports', label: 'التقارير', icon: TrendingUp }
   ];
+
+  const handleNavigateToSection = (section: string, subSection?: string) => {
+    console.log('التنقل إلى القسم من لوحة التحكم:', section, subSection);
+    setActiveTab(section);
+    
+    // إضافة إشعار بالتنقل
+    addNotification({
+      title: 'تم التنقل',
+      message: `تم الانتقال إلى قسم ${getSectionLabel(section)}`,
+      type: 'info',
+      section: section as any,
+      priority: 'low'
+    });
+  };
+
+  const getSectionLabel = (sectionId: string) => {
+    const item = sidebarItems.find(item => 
+      item.id === sectionId || 
+      (item.children && item.children.find(child => child.id === sectionId))
+    );
+    
+    if (item) {
+      if (item.id === sectionId) return item.label;
+      const child = item.children?.find(child => child.id === sectionId);
+      return child?.label || item.label;
+    }
+    
+    return sectionId;
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -118,7 +149,7 @@ const AdminDashboard = () => {
       case 'reports':
         return <AdminReportsStats />;
       default:
-        return <EnhancedAdminOverview />;
+        return <EnhancedAdminOverview onNavigateToSection={handleNavigateToSection} />;
     }
   };
 
@@ -134,7 +165,7 @@ const AdminDashboard = () => {
         />
         
         <div className="flex-1 flex flex-col overflow-hidden">
-          <AdminHeader />
+          <AdminHeader currentSection={activeTab} />
           <div className="flex-1 overflow-y-auto p-8">
             {renderTabContent()}
           </div>
