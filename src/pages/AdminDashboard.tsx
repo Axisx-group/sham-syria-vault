@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import AdminHeader from "@/components/admin/dashboard/AdminHeader";
 import AdminNavigation from "@/components/admin/dashboard/AdminNavigation";
 import AdminOverview from "@/components/admin/dashboard/AdminOverview";
+import AdminSystemStatus from "@/components/admin/AdminSystemStatus";
 import AdminCustomersList from "@/components/admin/AdminCustomersList";
 import AdminAccountsManagement from "@/components/admin/AdminAccountsManagement";
 import AdminCardsManagement from "@/components/admin/AdminCardsManagement";
@@ -21,6 +22,8 @@ const AdminDashboard = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'system-status':
+        return <AdminSystemStatus />;
       case 'customers':
         return <AdminCustomersList />;
       case 'customer-control':

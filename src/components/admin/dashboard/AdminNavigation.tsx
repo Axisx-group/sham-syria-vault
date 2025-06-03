@@ -10,7 +10,8 @@ import {
   Globe,
   BarChart3,
   Settings,
-  UserCheck
+  UserCheck,
+  Activity
 } from "lucide-react";
 
 interface NavigationTab {
@@ -27,6 +28,7 @@ interface AdminNavigationProps {
 const AdminNavigation = ({ activeTab, setActiveTab }: AdminNavigationProps) => {
   const navigationTabs: NavigationTab[] = [
     { id: 'overview', label: 'نظرة عامة', icon: TrendingUp },
+    { id: 'system-status', label: 'حالة النظام', icon: Activity },
     { id: 'customers', label: 'إدارة العملاء', icon: Users },
     { id: 'customer-control', label: 'التحكم بالعملاء', icon: UserCheck },
     { id: 'accounts', label: 'إدارة الحسابات', icon: CreditCard },
