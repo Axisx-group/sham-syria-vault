@@ -14,6 +14,9 @@ import ServicesPersonal from "./pages/ServicesPersonal";
 import ServicesBusiness from "./pages/ServicesBusiness";
 import ServicesDigitalWallet from "./pages/ServicesDigitalWallet";
 import ServicesInvestment from "./pages/ServicesInvestment";
+import ServicesAIBanking from "./pages/ServicesAIBanking";
+import ServicesSecurity from "./pages/ServicesSecurity";
+import ServicesGlobal from "./pages/ServicesGlobal";
 import BankingServices from "./pages/BankingServices";
 import AdminDashboard from "./pages/AdminDashboard";
 import Cards from "./pages/Cards";
@@ -37,6 +40,9 @@ function App() {
           <Route path="/services/business" element={<ServicesBusiness />} />
           <Route path="/services/digital-wallet" element={<ServicesDigitalWallet />} />
           <Route path="/services/investment" element={<ServicesInvestment />} />
+          <Route path="/services/ai-banking" element={<ServicesAIBanking />} />
+          <Route path="/services/security" element={<ServicesSecurity />} />
+          <Route path="/services/global" element={<ServicesGlobal />} />
           <Route path="/banking-services" element={<BankingServices />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
