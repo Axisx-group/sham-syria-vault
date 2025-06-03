@@ -19,9 +19,9 @@ const Index = () => {
     <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <Header language={language} onLanguageChange={setLanguage} />
       <HeroSection language={language} />
+      <BankCardsSection language={language} />
       <ModernFeaturesShowcase language={language} />
       <StatsSection language={language} />
-      <BankCardsSection language={language} />
       <WhyChooseUsSection language={language} />
       <FeaturesSection language={language} />
       <ServicesSection language={language} />

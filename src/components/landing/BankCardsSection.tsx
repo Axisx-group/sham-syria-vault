@@ -9,6 +9,8 @@ interface BankCardsSectionProps {
 }
 
 const BankCardsSection: React.FC<BankCardsSectionProps> = ({ language }) => {
+  console.log('BankCardsSection rendering with language:', language);
+  
   const translations = {
     ar: {
       title: "بطاقاتنا المصرفية الحصرية",
@@ -104,7 +106,7 @@ const BankCardsSection: React.FC<BankCardsSectionProps> = ({ language }) => {
   );
 
   return (
-    <section className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+    <section id="bank-cards" className="py-32 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
@@ -112,6 +114,13 @@ const BankCardsSection: React.FC<BankCardsSectionProps> = ({ language }) => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
+        {/* Debug indicator */}
+        <div className="text-center mb-4">
+          <div className="inline-block px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
+            قسم البطاقات المصرفية - Bank Cards Section
+          </div>
+        </div>
+
         <div className="text-center mb-20">
           <Badge variant="secondary" className="mb-6 px-6 py-2 text-sm bg-gradient-to-r from-purple-100 to-blue-100 text-purple-800 border-purple-200 hover:scale-105 transition-transform">
             <Crown className="w-4 h-4 mr-2" />
