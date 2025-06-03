@@ -1,33 +1,11 @@
+
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Search,
-  Filter,
-  MoreVertical,
-  Eye,
-  Download,
-  ArrowUpRight,
-  ArrowDownRight,
-  RefreshCw,
-  Calendar,
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  XCircle
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import TransactionsHeader from './transactions/TransactionsHeader';
+import TransactionsSummaryCards from './transactions/TransactionsSummaryCards';
+import TransactionsFilters from './transactions/TransactionsFilters';
+import TransactionsList from './transactions/TransactionsList';
+import TransactionsPagination from './transactions/TransactionsPagination';
 
 const AdminTransactions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -176,298 +154,31 @@ const AdminTransactions = () => {
     });
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'مكتمل':
-        return 'bg-green-100 text-green-800';
-      case 'قيد المعالجة':
-        return 'bg-blue-100 text-blue-800';
-      case 'قيد المراجعة':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'فشل':
-      case 'مرفوض':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'مكتمل':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'قيد المعالجة':
-        return <Clock className="h-4 w-4 text-blue-600" />;
-      case 'قيد المراجعة':
-        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
-      case 'فشل':
-      case 'مرفوض':
-        return <XCircle className="h-4 w-4 text-red-600" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-600" />;
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    if (type.includes('صادر') || type.includes('سحب') || type.includes('دفع')) {
-      return <ArrowUpRight className="h-4 w-4 text-red-600" />;
-    } else {
-      return <ArrowDownRight className="h-4 w-4 text-green-600" />;
-    }
-  };
-
-  const getCurrencySymbol = (currency: string) => {
-    const symbols = { SYP: '₺', USD: '$', EUR: '€', TRY: '₺' };
-    return symbols[currency as keyof typeof symbols] || currency;
-  };
-
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">إدارة المعاملات المصرفية</h2>
-          <p className="text-gray-600">مراقبة ومراجعة جميع المعاملات المصرفية</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleRefresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            تحديث
-          </Button>
-          <Button onClick={handleExport}>
-            <Download className="h-4 w-4 mr-2" />
-            تصدير
-          </Button>
-        </div>
-      </div>
+      <TransactionsHeader 
+        onRefresh={handleRefresh}
+        onExport={handleExport}
+      />
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">معاملات اليوم</p>
-                <p className="text-2xl font-bold text-gray-900">1,234</p>
-                <p className="text-xs text-green-600">+12.5% من الأمس</p>
-              </div>
-              <div className="bg-blue-500 p-3 rounded-full">
-                <RefreshCw className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">المعاملات المكتملة</p>
-                <p className="text-2xl font-bold text-green-600">1,156</p>
-                <p className="text-xs text-green-600">93.7% معدل النجاح</p>
-              </div>
-              <div className="bg-green-500 p-3 rounded-full">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">قيد المراجعة</p>
-                <p className="text-2xl font-bold text-yellow-600">45</p>
-                <p className="text-xs text-yellow-600">تحتاج مراجعة</p>
-              </div>
-              <div className="bg-yellow-500 p-3 rounded-full">
-                <AlertCircle className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">إجمالي المبلغ</p>
-                <p className="text-2xl font-bold text-purple-600">₺15.7M</p>
-                <p className="text-xs text-purple-600">معاملات اليوم</p>
-              </div>
-              <div className="bg-purple-500 p-3 rounded-full">
-                <DollarSign className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <TransactionsSummaryCards />
 
-      {/* Search and Filters */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="البحث برقم المعاملة، رقم الحساب أو اسم العميل..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                فلترة متقدمة
-              </Button>
-              <select 
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm"
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-              >
-                <option value="all">جميع الأنواع</option>
-                <option value="transfer">تحويلات</option>
-                <option value="deposit">إيداعات</option>
-                <option value="withdrawal">سحوبات</option>
-                <option value="payment">دفعات</option>
-              </select>
-              <select className="px-3 py-2 border border-gray-300 rounded-md text-sm">
-                <option>جميع الحالات</option>
-                <option>مكتمل</option>
-                <option>قيد المعالجة</option>
-                <option>قيد المراجعة</option>
-                <option>فشل</option>
-              </select>
-              <Button variant="outline" size="sm">
-                <Calendar className="h-4 w-4 mr-2" />
-                اليوم
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <TransactionsFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filterType={filterType}
+        setFilterType={setFilterType}
+      />
 
-      {/* Transactions List */}
-      <div className="space-y-3">
-        {transactions.map((transaction) => (
-          <Card key={transaction.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-                {/* Transaction Type and Amount */}
-                <div className="lg:col-span-3">
-                  <div className="flex items-center space-x-3 space-x-reverse">
-                    {getTypeIcon(transaction.type)}
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{transaction.type}</h3>
-                      <p className="text-lg font-bold text-gray-900">
-                        {getCurrencySymbol(transaction.currency)}{transaction.amount}
-                      </p>
-                      <p className="text-xs text-gray-500">رسوم: {getCurrencySymbol(transaction.currency)}{transaction.fee}</p>
-                    </div>
-                  </div>
-                </div>
+      <TransactionsList
+        transactions={transactions}
+        onViewDetails={handleViewDetails}
+        onDownloadReceipt={handleDownloadReceipt}
+        onApprove={handleApproveTransaction}
+        onReject={handleRejectTransaction}
+      />
 
-                {/* Transaction Details */}
-                <div className="lg:col-span-4">
-                  <div className="space-y-1">
-                    <div className="text-sm">
-                      <span className="text-gray-600">من: </span>
-                      <span className="font-medium">{transaction.fromCustomer}</span>
-                      <span className="text-gray-400 text-xs"> ({transaction.fromAccount})</span>
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-gray-600">إلى: </span>
-                      <span className="font-medium">{transaction.toCustomer}</span>
-                      <span className="text-gray-400 text-xs"> ({transaction.toAccount})</span>
-                    </div>
-                    <p className="text-xs text-gray-500">{transaction.description}</p>
-                  </div>
-                </div>
-
-                {/* Status and Reference */}
-                <div className="lg:col-span-2">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(transaction.status)}
-                      <Badge className={getStatusColor(transaction.status)}>
-                        {transaction.status}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-gray-500 font-mono">{transaction.reference}</p>
-                    <p className="text-xs text-gray-500">{transaction.channel}</p>
-                  </div>
-                </div>
-
-                {/* Timestamp */}
-                <div className="lg:col-span-2">
-                  <div className="text-sm text-gray-600">
-                    <div className="flex items-center gap-1 mb-1">
-                      <Calendar className="h-3 w-3" />
-                      <span>{transaction.timestamp.split(' ')[0]}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      <span>{transaction.timestamp.split(' ')[1]}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="lg:col-span-1">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleViewDetails(transaction.id)}>
-                        <Eye className="h-4 w-4 mr-2" />
-                        عرض التفاصيل
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleDownloadReceipt(transaction.id)}>
-                        <Download className="h-4 w-4 mr-2" />
-                        تحميل الإيصال
-                      </DropdownMenuItem>
-                      {transaction.status === 'قيد المراجعة' && (
-                        <>
-                          <DropdownMenuItem 
-                            className="text-green-600"
-                            onClick={() => handleApproveTransaction(transaction.id)}
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            الموافقة
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-red-600"
-                            onClick={() => handleRejectTransaction(transaction.id)}
-                          >
-                            <XCircle className="h-4 w-4 mr-2" />
-                            الرفض
-                          </DropdownMenuItem>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Pagination */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-600">
-          عرض 1 إلى 5 من أصل 15,847 معاملة
-        </p>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">السابق</Button>
-          <Button variant="outline" size="sm">1</Button>
-          <Button variant="outline" size="sm">2</Button>
-          <Button variant="outline" size="sm">3</Button>
-          <Button variant="outline" size="sm">التالي</Button>
-        </div>
-      </div>
+      <TransactionsPagination />
     </div>
   );
 };
