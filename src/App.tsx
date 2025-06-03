@@ -42,7 +42,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            {/* البوابة الآمنة للإدارة - مسارات متعددة للوصول */}
             <Route path="/secure-admin-portal-nubarium-2024" element={<SecureAdminPortal />} />
+            <Route path="/souripay.com/secure-admin-portal-nubarium-2024" element={<SecureAdminPortal />} />
             <Route path="/cards" element={<Cards />} />
             <Route path="/banking-services" element={<BankingServices />} />
             <Route path="/iban-swift" element={<IbanSwiftServices />} />
