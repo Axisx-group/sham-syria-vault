@@ -33,16 +33,16 @@ const StatsSection: React.FC<StatsSectionProps> = ({ language }) => {
   ];
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           
           {/* Header */}
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black text-gray-900 mb-6">
+            <h2 className="text-5xl font-black text-white mb-6">
               {language === 'ar' ? 'الأرقام تتحدث عن نفسها' : 'Numbers That Speak Volumes'}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               {language === 'ar' 
                 ? 'ثقة الملايين من العملاء حول العالم في منصتنا المصرفية الرقمية المتطورة'
                 : 'Millions of customers worldwide trust our advanced digital banking platform'
@@ -57,14 +57,14 @@ const StatsSection: React.FC<StatsSectionProps> = ({ language }) => {
                 key={index} 
                 className="text-center group"
               >
-                <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-                  <div className="text-5xl font-black text-gray-900 mb-4 group-hover:scale-110 transition-transform">
+                <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:bg-white/15">
+                  <div className="text-5xl font-black text-white mb-4 group-hover:scale-110 transition-transform">
                     {stat.number}
                   </div>
-                  <div className="text-lg font-semibold text-gray-900 mb-2">
+                  <div className="text-lg font-semibold text-gray-200 mb-2">
                     {stat.label}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-400">
                     {stat.subtext}
                   </div>
                 </div>
