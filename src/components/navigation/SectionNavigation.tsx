@@ -9,6 +9,7 @@ interface SectionNavigationProps {
 
 const SectionNavigation: React.FC<SectionNavigationProps> = ({ language }) => {
   const [activeSection, setActiveSection] = useState('hero');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const sections = [
     { 
@@ -60,6 +61,7 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({ language }) => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setActiveSection(sectionId);
+      setIsExpanded(false);
     }
   };
 
@@ -86,78 +88,117 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({ language }) => {
   }, [sections]);
 
   return (
-    <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
-      <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300">
-        <div className="space-y-4">
-          {sections.map((section, index) => {
-            const IconComponent = section.icon;
-            const isActive = activeSection === section.id;
-            
-            return (
-              <div key={section.id} className="relative group">
-                {/* Active Indicator */}
-                {isActive && (
-                  <div className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-gradient-to-b ${section.color} rounded-full animate-pulse`}></div>
-                )}
-                
-                {/* Button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => scrollToSection(section.id)}
-                  className={`w-full text-white hover:bg-white/20 text-sm justify-start px-4 py-3 rounded-2xl transition-all duration-300 group-hover:scale-105 relative overflow-hidden ${
-                    isActive ? 'bg-white/20 shadow-lg' : ''
-                  }`}
-                >
-                  {/* Background Gradient on Hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-r ${section.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl`}></div>
+    <>
+      {/* Desktop Version - Positioned at right edge */}
+      <div className="fixed right-2 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-3 shadow-2xl border border-white/10 hover:bg-white/10 transition-all duration-300">
+          <div className="space-y-2">
+            {sections.map((section, index) => {
+              const IconComponent = section.icon;
+              const isActive = activeSection === section.id;
+              
+              return (
+                <div key={section.id} className="relative group">
+                  {/* Active Indicator */}
+                  {isActive && (
+                    <div className={`absolute -left-1 top-1/2 transform -translate-y-1/2 w-0.5 h-6 bg-gradient-to-b ${section.color} rounded-full`}></div>
+                  )}
                   
-                  <div className="flex items-center gap-3 relative z-10">
-                    {/* Icon with Gradient Background */}
-                    <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${section.color} flex items-center justify-center shadow-lg ${
+                  {/* Tooltip */}
+                  <div className={`absolute -left-32 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${language === 'ar' ? 'text-right' : ''}`}>
+                    <div className="bg-black/90 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-xl">
+                      {section.label}
+                    </div>
+                  </div>
+                  
+                  {/* Icon Button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => scrollToSection(section.id)}
+                    className={`w-10 h-10 text-white hover:bg-white/20 rounded-xl transition-all duration-300 group-hover:scale-110 relative overflow-hidden ${
+                      isActive ? 'bg-white/20 shadow-lg scale-110' : ''
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-lg bg-gradient-to-br ${section.color} flex items-center justify-center shadow-lg ${
                       isActive ? 'scale-110' : 'group-hover:scale-105'
                     } transition-transform duration-300`}>
-                      <IconComponent className="w-4 h-4 text-white" />
+                      <IconComponent className="w-3 h-3 text-white" />
                     </div>
-                    
-                    <span className={`font-medium ${isActive ? 'text-white' : 'text-white/80'} group-hover:text-white transition-colors`}>
-                      {section.label}
-                    </span>
-                  </div>
-                </Button>
-
-                {/* Tooltip for section number */}
-                <div className="absolute -right-12 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-black/80 text-white text-xs px-2 py-1 rounded-lg whitespace-nowrap">
-                    {index + 1}
-                  </div>
+                  </Button>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Progress Indicator */}
-        <div className="mt-6 pt-4 border-t border-white/20">
-          <div className="text-center">
-            <div className="text-white/60 text-xs mb-2">
-              {language === 'ar' ? 'التقدم' : 'Progress'}
-            </div>
-            <div className="w-full bg-white/20 rounded-full h-2">
+          {/* Compact Progress Indicator */}
+          <div className="mt-3 pt-3 border-t border-white/10">
+            <div className="w-full bg-white/20 rounded-full h-1">
               <div 
-                className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-blue-500 to-purple-500 h-1 rounded-full transition-all duration-500"
                 style={{ 
                   width: `${((sections.findIndex(s => s.id === activeSection) + 1) / sections.length) * 100}%` 
                 }}
               ></div>
             </div>
-            <div className="text-white/60 text-xs mt-1">
-              {sections.findIndex(s => s.id === activeSection) + 1} / {sections.length}
+            <div className="text-white/60 text-xs mt-1 text-center">
+              {sections.findIndex(s => s.id === activeSection) + 1}/{sections.length}
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Mobile Version - Collapsible at bottom */}
+      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40 lg:hidden">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20">
+          {/* Toggle Button */}
+          <Button
+            variant="ghost"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full px-4 py-3 text-white hover:bg-white/20 rounded-2xl"
+          >
+            <div className="flex items-center gap-2">
+              <div className={`w-6 h-6 rounded-lg bg-gradient-to-br ${sections.find(s => s.id === activeSection)?.color || 'from-blue-500 to-purple-500'} flex items-center justify-center`}>
+                {React.createElement(sections.find(s => s.id === activeSection)?.icon || Home, { className: "w-3 h-3 text-white" })}
+              </div>
+              <span className="text-sm font-medium">
+                {sections.find(s => s.id === activeSection)?.label}
+              </span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+            </div>
+          </Button>
+
+          {/* Expanded Menu */}
+          {isExpanded && (
+            <div className="p-2 border-t border-white/10">
+              <div className="grid grid-cols-4 gap-2">
+                {sections.map((section) => {
+                  const IconComponent = section.icon;
+                  const isActive = activeSection === section.id;
+                  
+                  return (
+                    <Button
+                      key={section.id}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => scrollToSection(section.id)}
+                      className={`flex flex-col items-center gap-1 p-2 h-auto text-white hover:bg-white/20 rounded-xl ${
+                        isActive ? 'bg-white/20' : ''
+                      }`}
+                    >
+                      <div className={`w-6 h-6 rounded-lg bg-gradient-to-br ${section.color} flex items-center justify-center`}>
+                        <IconComponent className="w-3 h-3 text-white" />
+                      </div>
+                      <span className="text-xs">{section.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 
