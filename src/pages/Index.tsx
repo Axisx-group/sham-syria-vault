@@ -5,6 +5,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import StatsSection from '@/components/landing/StatsSection';
 import WhyChooseUsSection from '@/components/landing/WhyChooseUsSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
+import InteractiveFeatures from '@/components/landing/InteractiveFeatures';
 import BankCardsSection from '@/components/landing/BankCardsSection';
 import ServicesSection from '@/components/landing/ServicesSection';
 import TestimonialsSection from '@/components/landing/TestimonialsSection';
@@ -15,9 +16,10 @@ const Index = () => {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 ${language === 'ar' ? 'rtl' : 'ltr'}`}>
+    <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <Header language={language} onLanguageChange={setLanguage} />
       <HeroSection language={language} />
+      <InteractiveFeatures language={language} />
       <StatsSection language={language} />
       <BankCardsSection language={language} />
       <WhyChooseUsSection language={language} />
