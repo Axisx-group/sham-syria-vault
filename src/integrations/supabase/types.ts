@@ -119,6 +119,39 @@ export type Database = {
           },
         ]
       }
+      admin_access_logs: {
+        Row: {
+          access_type: string
+          additional_data: Json | null
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_type: string
+          additional_data?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_type?: string
+          additional_data?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       application_documents: {
         Row: {
           application_id: string | null

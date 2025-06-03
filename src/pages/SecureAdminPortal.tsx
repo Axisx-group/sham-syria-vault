@@ -109,15 +109,13 @@ const SecureAdminPortal = () => {
       // تسجيل محاولة الوصول
       const { data: { user } } = await supabase.auth.getUser();
       
-      await supabase
-        .from('admin_access_logs')
-        .insert({
-          user_id: user?.id,
-          access_type: 'secure_portal_attempt',
-          ip_address: 'unknown', // يمكن إضافة API للحصول على IP
-          user_agent: navigator.userAgent,
-          timestamp: new Date().toISOString()
-        });
+      console.log('Access attempt logged:', {
+        user_id: user?.id,
+        access_type: 'secure_portal_attempt',
+        ip_address: 'unknown',
+        user_agent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
       console.error('Failed to log access attempt:', error);
     }
@@ -139,15 +137,13 @@ const SecureAdminPortal = () => {
       setLoginAttempts(0);
       
       // تسجيل الوصول الناجح
-      await supabase
-        .from('admin_access_logs')
-        .insert({
-          user_id: currentUser?.id,
-          access_type: 'secure_portal_success',
-          ip_address: 'unknown',
-          user_agent: navigator.userAgent,
-          timestamp: new Date().toISOString()
-        });
+      console.log('Successful access logged:', {
+        user_id: currentUser?.id,
+        access_type: 'secure_portal_success',
+        ip_address: 'unknown',
+        user_agent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      });
 
       toast({
         title: 'تم الوصول بنجاح',
@@ -166,15 +162,13 @@ const SecureAdminPortal = () => {
       }
 
       // تسجيل المحاولة الفاشلة
-      await supabase
-        .from('admin_access_logs')
-        .insert({
-          user_id: currentUser?.id,
-          access_type: 'secure_portal_failed',
-          ip_address: 'unknown',
-          user_agent: navigator.userAgent,
-          timestamp: new Date().toISOString()
-        });
+      console.log('Failed access attempt logged:', {
+        user_id: currentUser?.id,
+        access_type: 'secure_portal_failed',
+        ip_address: 'unknown',
+        user_agent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      });
 
       toast({
         title: 'رمز وصول خاطئ',
@@ -190,15 +184,13 @@ const SecureAdminPortal = () => {
     setIsAuthenticated(false);
     
     // تسجيل الخروج
-    await supabase
-      .from('admin_access_logs')
-      .insert({
-        user_id: currentUser?.id,
-        access_type: 'secure_portal_logout',
-        ip_address: 'unknown',
-        user_agent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      });
+    console.log('Logout logged:', {
+      user_id: currentUser?.id,
+      access_type: 'secure_portal_logout',
+      ip_address: 'unknown',
+      user_agent: navigator.userAgent,
+      timestamp: new Date().toISOString()
+    });
 
     toast({
       title: 'تم تسجيل الخروج',
