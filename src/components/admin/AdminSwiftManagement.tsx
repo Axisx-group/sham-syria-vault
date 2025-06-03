@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +17,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import SwiftTransferDetailModal from './swift/SwiftTransferDetailModal';
 
 interface SwiftTransfer {
   id: string;
@@ -40,6 +40,9 @@ interface SwiftTransfer {
 const AdminSwiftManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedTransfer, setSelectedTransfer] = useState<SwiftTransfer | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  
   const [transfers, setTransfers] = useState<SwiftTransfer[]>([
     {
       id: 'SWIFT001',
@@ -121,10 +124,8 @@ const AdminSwiftManagement = () => {
   const handleViewDetails = (transferId: string) => {
     const transfer = transfers.find(t => t.id === transferId);
     if (transfer) {
-      toast({
-        title: "تفاصيل التحويل",
-        description: `عرض تفاصيل التحويل ${transfer.referenceNumber} للمستفيد ${transfer.beneficiaryName}`,
-      });
+      setSelectedTransfer(transfer);
+      setIsDetailModalOpen(true);
       console.log('عرض تفاصيل التحويل:', transfer);
     }
   };
@@ -368,6 +369,16 @@ const AdminSwiftManagement = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Detail Modal */}
+      <SwiftTransferDetailModal
+        transfer={selectedTransfer}
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setSelectedTransfer(null);
+        }}
+      />
     </div>
   );
 };
