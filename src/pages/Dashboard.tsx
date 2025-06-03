@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/landing/Header';
 import AccountOverview from '@/components/dashboard/AccountOverview';
@@ -7,6 +6,7 @@ import TransactionHistory from '@/components/dashboard/TransactionHistory';
 import CardsSection from '@/components/dashboard/CardsSection';
 import PaymentMethods from '@/components/banking/PaymentMethods';
 import MobilePaymentIntegration from '@/components/dashboard/MobilePaymentIntegration';
+import KYCDashboard from '@/components/dashboard/KYCDashboard';
 
 const Dashboard = () => {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -22,7 +22,8 @@ const Dashboard = () => {
     { id: 'transactions', label: 'المعاملات', icon: '💳' },
     { id: 'cards', label: 'البطاقات', icon: '🏦' },
     { id: 'payments', label: 'طرق الدفع', icon: '💰' },
-    { id: 'mobile-pay', label: 'الدفع المحمول', icon: '📱' }
+    { id: 'mobile-pay', label: 'الدفع المحمول', icon: '📱' },
+    { id: 'kyc', label: 'التحقق من الهوية', icon: '🛡️' }
   ];
 
   const renderTabContent = () => {
@@ -35,6 +36,12 @@ const Dashboard = () => {
         return <PaymentMethods />;
       case 'mobile-pay':
         return <MobilePaymentIntegration />;
+      case 'kyc':
+        return (
+          <div className="max-w-4xl mx-auto">
+            <KYCDashboard />
+          </div>
+        );
       default:
         return (
           <div className="space-y-8">

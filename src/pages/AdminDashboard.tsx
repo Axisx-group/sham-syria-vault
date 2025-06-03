@@ -14,6 +14,7 @@ import AdminModeration from "@/components/admin/AdminModeration";
 import AdminPageManagement from "@/components/admin/AdminPageManagement";
 import AdminAdvancedAnalytics from "@/components/admin/AdminAdvancedAnalytics";
 import AdminRoleManagement from "@/components/admin/AdminRoleManagement";
+import KYCDashboard from "@/components/kyc/KYCDashboard";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -30,6 +31,8 @@ const AdminDashboard = () => {
         return <AdminCardsManagement />;
       case 'transactions':
         return <AdminTransactions />;
+      case 'kyc':
+        return <KYCDashboard />;
       case 'messaging':
         return <AdminMessaging />;
       case 'moderation':
