@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import BankLogo from './BankLogo';
 import { translations } from '@/utils/translations';
-import { Menu, X, Globe, Search } from "lucide-react";
+import { Menu, X, Globe, Search, CreditCard } from "lucide-react";
 import SearchOverlay from '@/components/features/SearchOverlay';
 
 interface HeaderProps {
@@ -26,6 +26,12 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
   const navigateTo = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
+  };
+
+  const handleNetBankLogin = () => {
+    // يمكن إضافة منطق تسجيل الدخول هنا
+    console.log('تسجيل الدخول عبر نت بنك');
+    navigate('/dashboard'); // توجيه إلى لوحة التحكم
   };
 
   return (
@@ -77,8 +83,17 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
               </Button>
             </nav>
 
-            {/* Search, Language Toggle & Mobile Menu Button */}
+            {/* NetBank, Search, Language Toggle & Mobile Menu Button */}
             <div className="flex items-center space-x-4">
+              {/* NetBank Button */}
+              <Button 
+                onClick={handleNetBankLogin}
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-blue-500/25 hidden md:flex items-center"
+              >
+                <CreditCard className="h-5 w-5 mr-2" />
+                نت بنك
+              </Button>
+
               {/* Search Button */}
               <Button 
                 variant="ghost" 
@@ -121,6 +136,15 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
         {isMenuOpen && (
           <div className="lg:hidden bg-black/95 backdrop-blur-md border-t border-gray-800/50 py-6">
             <div className="container mx-auto px-4 flex flex-col space-y-4">
+              {/* NetBank Button for Mobile */}
+              <Button 
+                onClick={handleNetBankLogin}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center"
+              >
+                <CreditCard className="h-5 w-5 mr-2" />
+                نت بنك
+              </Button>
+
               <Button 
                 variant="ghost" 
                 className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
