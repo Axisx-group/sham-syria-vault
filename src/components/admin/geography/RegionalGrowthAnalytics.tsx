@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { TrendingUp, TrendingDown, Users, CreditCard } from "lucide-react";
-import { GeographyAnalytics } from "@/hooks/useEnhancedGeographyStats";
+import { GeographyAnalytics } from "@/types/geographyAnalytics";
 
 interface RegionalGrowthAnalyticsProps {
   analytics: GeographyAnalytics;

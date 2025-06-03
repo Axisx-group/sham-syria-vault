@@ -118,6 +118,17 @@ const AdminSwiftManagement = () => {
     }
   };
 
+  const handleViewDetails = (transferId: string) => {
+    const transfer = transfers.find(t => t.id === transferId);
+    if (transfer) {
+      toast({
+        title: "تفاصيل التحويل",
+        description: `عرض تفاصيل التحويل ${transfer.referenceNumber} للمستفيد ${transfer.beneficiaryName}`,
+      });
+      console.log('عرض تفاصيل التحويل:', transfer);
+    }
+  };
+
   const handleApprove = (transferId: string) => {
     setTransfers(prev => prev.map(t => 
       t.id === transferId ? { ...t, status: 'approved' as const } : t
@@ -314,7 +325,11 @@ const AdminSwiftManagement = () => {
 
                 <div className="lg:col-span-1">
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleViewDetails(transfer.id)}
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
                     {transfer.status === 'pending' && (
