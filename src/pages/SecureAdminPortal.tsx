@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useToast } from "@/hooks/use-toast";
@@ -52,6 +51,7 @@ const SecureAdminPortal = () => {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const [requiresLogin, setRequiresLogin] = useState(false);
   const { toast } = useToast();
 
   // رمز الوصول الآمن (يمكن تغييره حسب الحاجة)
@@ -70,13 +70,17 @@ const SecureAdminPortal = () => {
       
       if (userError) {
         console.error('خطأ في الحصول على المستخدم:', userError);
-        redirectToLogin('حدث خطأ في التحقق من الهوية');
+        setRequiresLogin(true);
+        setIsLoading(false);
+        setAuthChecked(true);
         return;
       }
 
       if (!user) {
-        console.log('لا يوجد مستخدم مسجل دخول');
-        redirectToLogin('يجب تسجيل الدخول أولاً للوصول لهذه البوابة الآمنة');
+        console.log('لا يوجد مستخدم مسجل دخول - يتطلب تسجيل الدخول');
+        setRequiresLogin(true);
+        setIsLoading(false);
+        setAuthChecked(true);
         return;
       }
 
@@ -92,13 +96,17 @@ const SecureAdminPortal = () => {
 
       if (profileError) {
         console.error('خطأ في الحصول على الملف الشخصي:', profileError);
-        redirectToLogin('حدث خطأ في التحقق من الصلاحيات');
+        setRequiresLogin(true);
+        setIsLoading(false);
+        setAuthChecked(true);
         return;
       }
 
       if (!profile) {
         console.log('لا يوجد ملف شخصي للمستخدم');
-        redirectToLogin('ملف المستخدم غير موجود');
+        setRequiresLogin(true);
+        setIsLoading(false);
+        setAuthChecked(true);
         return;
       }
 
@@ -106,13 +114,17 @@ const SecureAdminPortal = () => {
 
       if (profile.role !== 'admin') {
         console.log('المستخدم ليس مدير');
-        redirectToLogin('ليس لديك صلاحية المدير للوصول لهذه البوابة');
+        setRequiresLogin(true);
+        setIsLoading(false);
+        setAuthChecked(true);
         return;
       }
 
       if (profile.email !== 'admin@souripay.com') {
         console.log('المستخدم ليس المدير الأساسي');
-        redirectToLogin('هذه البوابة مخصصة للمدير الأساسي فقط');
+        setRequiresLogin(true);
+        setIsLoading(false);
+        setAuthChecked(true);
         return;
       }
 
@@ -133,25 +145,12 @@ const SecureAdminPortal = () => {
       
     } catch (error) {
       console.error('خطأ في فحص المصادقة:', error);
-      redirectToLogin('حدث خطأ أثناء التحقق من الصلاحيات');
+      setRequiresLogin(true);
+      setIsLoading(false);
+      setAuthChecked(true);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const redirectToLogin = (message: string) => {
-    toast({
-      title: 'وصول غير مخول',
-      description: message,
-      variant: 'destructive'
-    });
-    
-    setTimeout(() => {
-      window.location.href = '/admin';
-    }, 2000);
-    
-    setIsLoading(false);
-    setAuthChecked(true);
   };
 
   const logAccessAttempt = async (userId?: string, accessType: string = 'secure_portal_attempt') => {
@@ -222,6 +221,10 @@ const SecureAdminPortal = () => {
       title: 'تم تسجيل الخروج',
       description: 'تم الخروج من البوابة الآمنة بنجاح',
     });
+  };
+
+  const handleLoginRedirect = () => {
+    window.location.href = '/admin';
   };
 
   // ... keep existing code (sidebarItems array)
@@ -310,8 +313,62 @@ const SecureAdminPortal = () => {
     );
   }
 
-  // إذا لم يكن مسجل دخول أو ليس مدير صالح أو فشل في التحقق
-  if (!authChecked || !currentUser || !isValidAdmin) {
+  // إذا تطلب تسجيل الدخول
+  if (requiresLogin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="h-8 w-8 text-red-600" />
+            </div>
+            <CardTitle className="text-2xl text-red-600">يتطلب تسجيل دخول</CardTitle>
+            <p className="text-gray-600">يجب تسجيل الدخول كمدير أولاً للوصول للبوابة الآمنة</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="border-yellow-200 bg-yellow-50">
+              <AlertTriangle className="h-4 w-4 text-yellow-600" />
+              <AlertDescription className="text-yellow-800">
+                هذه البوابة تتطلب:
+                <br />• تسجيل دخول كمدير (admin@souripay.com)
+                <br />• رمز وصول آمن خاص
+                <br />• صلاحيات إدارية متقدمة
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-3">
+              <Button 
+                onClick={handleLoginRedirect}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                الذهاب لتسجيل الدخول
+              </Button>
+              
+              <Button 
+                onClick={() => window.location.href = '/'}
+                variant="outline"
+                className="w-full"
+              >
+                العودة للصفحة الرئيسية
+              </Button>
+            </div>
+
+            <div className="pt-4 border-t">
+              <div className="text-xs text-gray-500 space-y-1">
+                <p>• جميع المحاولات مسجلة ومراقبة</p>
+                <p>• الوصول محدود للمدير الأساسي فقط</p>
+                <p>• نظام حماية متعدد الطبقات نشط</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // إذا لم يكن مدير صالح
+  if (!isValidAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
         <Card className="w-full max-w-md">
