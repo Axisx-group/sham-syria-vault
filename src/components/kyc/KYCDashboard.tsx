@@ -17,15 +17,15 @@ const KYCDashboard = () => {
   const [showApplicationDialog, setShowApplicationDialog] = useState(false);
 
   // Mock data for demonstration
-  const kycStats = {
+  const [kycStats, setKycStats] = useState({
     total: 1247,
     pending: 89,
     approved: 1089,
     rejected: 47,
     underReview: 22
-  };
+  });
 
-  const recentApplications = [
+  const [recentApplications, setRecentApplications] = useState([
     {
       id: 'KYC001',
       customerName: 'أحمد محمد علي',
@@ -59,11 +59,64 @@ const KYCDashboard = () => {
       phone: '+963 555 123 456',
       address: 'حمص، سوريا'
     }
-  ];
+  ]);
 
   const handleViewApplication = (application) => {
     setSelectedApplication(application);
     setShowApplicationDialog(true);
+  };
+
+  const handleStatusUpdate = (applicationId: string, newStatus: string) => {
+    // تحديث حالة الطلب
+    setRecentApplications(prev => 
+      prev.map(app => 
+        app.id === applicationId 
+          ? { ...app, status: newStatus, progress: newStatus === 'approved' ? 100 : app.progress }
+          : app
+      )
+    );
+
+    // تحديث الإحصائيات
+    setKycStats(prev => {
+      const updatedStats = { ...prev };
+      const oldApplication = recentApplications.find(app => app.id === applicationId);
+      
+      if (oldApplication) {
+        // تقليل العدد من الحالة القديمة
+        switch (oldApplication.status) {
+          case 'pending':
+            updatedStats.pending = Math.max(0, updatedStats.pending - 1);
+            break;
+          case 'under_review':
+            updatedStats.underReview = Math.max(0, updatedStats.underReview - 1);
+            break;
+          case 'approved':
+            updatedStats.approved = Math.max(0, updatedStats.approved - 1);
+            break;
+          case 'rejected':
+            updatedStats.rejected = Math.max(0, updatedStats.rejected - 1);
+            break;
+        }
+
+        // زيادة العدد للحالة الجديدة
+        switch (newStatus) {
+          case 'pending':
+            updatedStats.pending += 1;
+            break;
+          case 'under_review':
+            updatedStats.underReview += 1;
+            break;
+          case 'approved':
+            updatedStats.approved += 1;
+            break;
+          case 'rejected':
+            updatedStats.rejected += 1;
+            break;
+        }
+      }
+
+      return updatedStats;
+    });
   };
 
   if (showForm) {
@@ -141,6 +194,7 @@ const KYCDashboard = () => {
         open={showApplicationDialog}
         onOpenChange={setShowApplicationDialog}
         application={selectedApplication}
+        onStatusUpdate={handleStatusUpdate}
       />
     </div>
   );

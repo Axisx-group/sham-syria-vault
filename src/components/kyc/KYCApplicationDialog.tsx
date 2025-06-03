@@ -1,10 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 import { 
   User, 
   Calendar, 
@@ -37,14 +39,100 @@ interface KYCApplicationDialogProps {
       uploadedAt: string;
     }>;
   } | null;
+  onStatusUpdate?: (applicationId: string, newStatus: string) => void;
 }
 
 const KYCApplicationDialog: React.FC<KYCApplicationDialogProps> = ({
   open,
   onOpenChange,
-  application
+  application,
+  onStatusUpdate
 }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
   if (!application) return null;
+
+  const handleApprove = async () => {
+    setIsProcessing(true);
+    try {
+      // محاكاة API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (onStatusUpdate) {
+        onStatusUpdate(application.id, 'approved');
+      }
+      
+      toast({
+        title: "تم الموافقة على الطلب",
+        description: `تم الموافقة على طلب التحقق ${application.id} بنجاح`,
+      });
+      
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: "خطأ في الموافقة",
+        description: "حدث خطأ أثناء الموافقة على الطلب",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleReject = async () => {
+    setIsProcessing(true);
+    try {
+      // محاكاة API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (onStatusUpdate) {
+        onStatusUpdate(application.id, 'rejected');
+      }
+      
+      toast({
+        title: "تم رفض الطلب",
+        description: `تم رفض طلب التحقق ${application.id}`,
+      });
+      
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: "خطأ في الرفض",
+        description: "حدث خطأ أثناء رفض الطلب",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleStartReview = async () => {
+    setIsProcessing(true);
+    try {
+      // محاكاة API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (onStatusUpdate) {
+        onStatusUpdate(application.id, 'under_review');
+      }
+      
+      toast({
+        title: "تم بدء المراجعة",
+        description: `تم نقل الطلب ${application.id} إلى مرحلة المراجعة`,
+      });
+      
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: "خطأ في بدء المراجعة",
+        description: "حدث خطأ أثناء بدء مراجعة الطلب",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -226,18 +314,73 @@ const KYCApplicationDialog: React.FC<KYCApplicationDialogProps> = ({
             </Button>
             {application.status === 'under_review' && (
               <>
-                <Button variant="destructive">
-                  رفض الطلب
-                </Button>
-                <Button className="bg-green-600 hover:bg-green-700">
-                  الموافقة على الطلب
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={isProcessing}>
+                      رفض الطلب
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent dir="rtl">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>تأكيد رفض الطلب</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        هل أنت متأكد من رفض طلب التحقق #{application.id}؟ لا يمكن التراجع عن هذا الإجراء.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleReject} className="bg-red-600 hover:bg-red-700">
+                        {isProcessing ? "جاري الرفض..." : "تأكيد الرفض"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="bg-green-600 hover:bg-green-700" disabled={isProcessing}>
+                      الموافقة على الطلب
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent dir="rtl">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>تأكيد الموافقة على الطلب</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        هل أنت متأكد من الموافقة على طلب التحقق #{application.id}؟ سيتم تفعيل الحساب فوراً.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleApprove} className="bg-green-600 hover:bg-green-700">
+                        {isProcessing ? "جاري الموافقة..." : "تأكيد الموافقة"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             )}
             {application.status === 'pending' && (
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                بدء المراجعة
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="bg-blue-600 hover:bg-blue-700" disabled={isProcessing}>
+                    بدء المراجعة
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent dir="rtl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>بدء مراجعة الطلب</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      هل تريد نقل طلب التحقق #{application.id} إلى مرحلة المراجعة؟
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleStartReview} className="bg-blue-600 hover:bg-blue-700">
+                      {isProcessing ? "جاري البدء..." : "بدء المراجعة"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
         </div>
