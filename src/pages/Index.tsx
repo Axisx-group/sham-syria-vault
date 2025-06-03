@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import Header from '@/components/landing/Header';
-import HeroSection from '@/components/landing/HeroSection';
-import StatsSection from '@/components/landing/StatsSection';
+import EnhancedHeroSection from '@/components/landing/EnhancedHeroSection';
+import AnimatedStatsSection from '@/components/landing/AnimatedStatsSection';
+import AdvancedServicesSection from '@/components/landing/AdvancedServicesSection';
 import ModernFeaturesShowcase from '@/components/landing/ModernFeaturesShowcase';
 import ModernCardsSection from '@/components/cards/ModernCardsSection';
 import TestimonialsSection from '@/components/landing/TestimonialsSection';
@@ -15,8 +16,9 @@ const Index = () => {
   return (
     <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
       <Header language={language} onLanguageChange={setLanguage} />
-      <HeroSection language={language} />
-      <StatsSection language={language} />
+      <EnhancedHeroSection language={language} />
+      <AnimatedStatsSection language={language} />
+      <AdvancedServicesSection language={language} />
       <ModernFeaturesShowcase language={language} />
       <ModernCardsSection language={language} />
       <TestimonialsSection language={language} />
