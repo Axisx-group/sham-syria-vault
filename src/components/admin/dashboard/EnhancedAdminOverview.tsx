@@ -15,10 +15,13 @@ import {
   ArrowUp,
   ArrowDown,
   Eye,
-  Download
+  Download,
+  UserPlus
 } from 'lucide-react';
 import InteractiveChart from '@/components/charts/InteractiveChart';
 import NotificationCenter from '@/components/notifications/NotificationCenter';
+import NewCustomerApproval from '@/components/admin/notifications/NewCustomerApproval';
+import { supabase } from "@/integrations/supabase/client";
 
 interface StatCard {
   title: string;
@@ -57,30 +60,77 @@ const EnhancedAdminOverview = () => {
     }
   ]);
 
+  const [realStats, setRealStats] = useState({
+    totalCustomers: 0,
+    pendingApplications: 0,
+    totalApplications: 0,
+    approvedApplications: 0
+  });
+
+  // جلب الإحصائيات الحقيقية من قاعدة البيانات
+  useEffect(() => {
+    const fetchRealStats = async () => {
+      try {
+        // جلب عدد الطلبات المعلقة
+        const { count: pendingCount } = await supabase
+          .from('account_applications')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending');
+
+        // جلب العدد الإجمالي للطلبات
+        const { count: totalCount } = await supabase
+          .from('account_applications')
+          .select('*', { count: 'exact', head: true });
+
+        // جلب عدد الطلبات المعتمدة
+        const { count: approvedCount } = await supabase
+          .from('account_applications')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'approved');
+
+        setRealStats({
+          totalCustomers: totalCount || 0,
+          pendingApplications: pendingCount || 0,
+          totalApplications: totalCount || 0,
+          approvedApplications: approvedCount || 0
+        });
+
+      } catch (error) {
+        console.error('خطأ في جلب الإحصائيات:', error);
+      }
+    };
+
+    fetchRealStats();
+
+    // تحديث الإحصائيات كل 30 ثانية
+    const interval = setInterval(fetchRealStats, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const statCards: StatCard[] = [
     {
-      title: 'إجمالي العملاء',
-      value: '12,453',
+      title: 'إجمالي طلبات العملاء',
+      value: realStats.totalApplications.toString(),
       change: 12.5,
       changeType: 'increase',
       icon: Users,
       color: 'bg-blue-500'
     },
     {
-      title: 'البطاقات النشطة',
-      value: '8,932',
-      change: 8.2,
-      changeType: 'increase',
-      icon: CreditCard,
-      color: 'bg-green-500'
+      title: 'طلبات في الانتظار',
+      value: realStats.pendingApplications.toString(),
+      change: realStats.pendingApplications > 0 ? 100 : 0,
+      changeType: realStats.pendingApplications > 0 ? 'increase' : 'decrease',
+      icon: UserPlus,
+      color: 'bg-orange-500'
     },
     {
-      title: 'المعاملات اليومية',
-      value: '2,341',
-      change: -3.1,
-      changeType: 'decrease',
-      icon: TrendingUp,
-      color: 'bg-purple-500'
+      title: 'طلبات معتمدة',
+      value: realStats.approvedApplications.toString(),
+      change: 8.2,
+      changeType: 'increase',
+      icon: CheckCircle,
+      color: 'bg-green-500'
     },
     {
       title: 'إجمالي الإيرادات',
@@ -88,7 +138,7 @@ const EnhancedAdminOverview = () => {
       change: 15.8,
       changeType: 'increase',
       icon: DollarSign,
-      color: 'bg-orange-500'
+      color: 'bg-purple-500'
     }
   ];
 
@@ -178,6 +228,9 @@ const EnhancedAdminOverview = () => {
           </Card>
         ))}
       </div>
+
+      {/* طلبات العملاء الجدد - في المقدمة */}
+      <NewCustomerApproval />
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -288,7 +341,7 @@ const EnhancedAdminOverview = () => {
                 </Badge>
               </div>
             ))}
-          </CardContent>
+          </Content>
         </Card>
       </div>
     </div>
