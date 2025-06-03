@@ -45,16 +45,13 @@ const SecureAdminPortal = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [accessCode, setAccessCode] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isValidAdmin, setIsValidAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [requiresLogin, setRequiresLogin] = useState(false);
   const { toast } = useToast();
 
-  // رمز الوصول الآمن (يمكن تغييره حسب الحاجة)
+  // رمز الوصول الآمن
   const SECURE_ACCESS_CODE = 'NUBARIUM_ADMIN_2024_SECURE';
   const MAX_LOGIN_ATTEMPTS = 3;
 
@@ -64,90 +61,53 @@ const SecureAdminPortal = () => {
 
   const checkAuthentication = async () => {
     try {
-      console.log('بدء فحص المصادقة...');
+      console.log('فحص المصادقة...');
       
+      // التحقق من المستخدم المسجل
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
-      if (userError) {
-        console.error('خطأ في الحصول على المستخدم:', userError);
-        setRequiresLogin(true);
+      if (userError || !user) {
+        console.log('لا يوجد مستخدم مسجل دخول');
         setIsLoading(false);
-        setAuthChecked(true);
         return;
       }
 
-      if (!user) {
-        console.log('لا يوجد مستخدم مسجل دخول - يتطلب تسجيل الدخول');
-        setRequiresLogin(true);
-        setIsLoading(false);
-        setAuthChecked(true);
-        return;
-      }
-
-      console.log('تم العثور على مستخدم:', user.email);
+      console.log('المستخدم:', user.email);
       setCurrentUser(user);
 
-      // التحقق من دور المدير
+      // التحقق من الملف الشخصي والدور
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role, email')
         .eq('id', user.id)
         .single();
 
-      if (profileError) {
-        console.error('خطأ في الحصول على الملف الشخصي:', profileError);
-        setRequiresLogin(true);
+      if (profileError || !profile) {
+        console.log('خطأ في الحصول على الملف الشخصي');
         setIsLoading(false);
-        setAuthChecked(true);
-        return;
-      }
-
-      if (!profile) {
-        console.log('لا يوجد ملف شخصي للمستخدم');
-        setRequiresLogin(true);
-        setIsLoading(false);
-        setAuthChecked(true);
         return;
       }
 
       console.log('دور المستخدم:', profile.role, 'الإيميل:', profile.email);
 
-      if (profile.role !== 'admin') {
-        console.log('المستخدم ليس مدير');
-        setRequiresLogin(true);
+      // التحقق من أن المستخدم مدير وله الإيميل الصحيح
+      if (profile.role !== 'admin' || profile.email !== 'admin@souripay.com') {
+        console.log('المستخدم ليس مدير مصرح');
         setIsLoading(false);
-        setAuthChecked(true);
         return;
       }
 
-      if (profile.email !== 'admin@souripay.com') {
-        console.log('المستخدم ليس المدير الأساسي');
-        setRequiresLogin(true);
-        setIsLoading(false);
-        setAuthChecked(true);
-        return;
-      }
-
-      console.log('تم التحقق من صلاحية المدير بنجاح');
-      setIsValidAdmin(true);
-      setAuthChecked(true);
-      
-      // التحقق من رمز الوصول المحفوظ محلياً
+      // التحقق من رمز الوصول المحفوظ
       const savedCode = localStorage.getItem('secure_admin_access');
       if (savedCode === SECURE_ACCESS_CODE) {
-        console.log('تم العثور على رمز وصول محفوظ صحيح');
+        console.log('رمز وصول صحيح محفوظ');
         setIsAuthenticated(true);
-      } else {
-        console.log('لا يوجد رمز وصول محفوظ أو رمز خاطئ');
       }
 
-      logAccessAttempt(user.id, 'secure_portal_attempt');
+      logAccessAttempt(user.id, 'secure_portal_check');
       
     } catch (error) {
       console.error('خطأ في فحص المصادقة:', error);
-      setRequiresLogin(true);
-      setIsLoading(false);
-      setAuthChecked(true);
     } finally {
       setIsLoading(false);
     }
@@ -155,13 +115,15 @@ const SecureAdminPortal = () => {
 
   const logAccessAttempt = async (userId?: string, accessType: string = 'secure_portal_attempt') => {
     try {
-      console.log('تسجيل محاولة الوصول:', {
-        user_id: userId,
-        access_type: accessType,
-        ip_address: 'unknown',
-        user_agent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      });
+      await supabase
+        .from('admin_access_logs')
+        .insert({
+          user_id: userId,
+          access_type: accessType,
+          ip_address: 'unknown',
+          user_agent: navigator.userAgent,
+          additional_data: { timestamp: new Date().toISOString() }
+        });
     } catch (error) {
       console.error('فشل في تسجيل محاولة الوصول:', error);
     }
@@ -197,7 +159,7 @@ const SecureAdminPortal = () => {
         setTimeout(() => {
           setIsBlocked(false);
           setLoginAttempts(0);
-        }, 15 * 60 * 1000); // حظر لمدة 15 دقيقة
+        }, 15 * 60 * 1000);
       }
 
       logAccessAttempt(currentUser?.id, 'secure_portal_failed');
@@ -227,7 +189,6 @@ const SecureAdminPortal = () => {
     window.location.href = '/admin';
   };
 
-  // ... keep existing code (sidebarItems array)
   const sidebarItems = [
     { id: 'overview', label: 'نظرة عامة شاملة', icon: Monitor },
     { id: 'system-status', label: 'مراقبة النظام', icon: Activity },
@@ -262,7 +223,6 @@ const SecureAdminPortal = () => {
     { id: 'reports', label: 'التقارير التنفيذية', icon: Activity }
   ];
 
-  // ... keep existing code (renderTabContent function)
   const renderTabContent = () => {
     switch (activeTab) {
       case 'system-status':
@@ -302,6 +262,7 @@ const SecureAdminPortal = () => {
     }
   };
 
+  // شاشة التحميل
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -313,8 +274,8 @@ const SecureAdminPortal = () => {
     );
   }
 
-  // إذا تطلب تسجيل الدخول
-  if (requiresLogin) {
+  // إذا لم يكن هناك مستخدم مسجل أو ليس مدير
+  if (!currentUser) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -322,17 +283,14 @@ const SecureAdminPortal = () => {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="h-8 w-8 text-red-600" />
             </div>
-            <CardTitle className="text-2xl text-red-600">يتطلب تسجيل دخول</CardTitle>
-            <p className="text-gray-600">يجب تسجيل الدخول كمدير أولاً للوصول للبوابة الآمنة</p>
+            <CardTitle className="text-2xl text-red-600">وصول مرفوض</CardTitle>
+            <p className="text-gray-600">يتطلب تسجيل دخول كمدير مصرح</p>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Alert className="border-yellow-200 bg-yellow-50">
-              <AlertTriangle className="h-4 w-4 text-yellow-600" />
-              <AlertDescription className="text-yellow-800">
-                هذه البوابة تتطلب:
-                <br />• تسجيل دخول كمدير (admin@souripay.com)
-                <br />• رمز وصول آمن خاص
-                <br />• صلاحيات إدارية متقدمة
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                هذه البوابة مخصصة للمدير الأساسي (admin@souripay.com) فقط
               </AlertDescription>
             </Alert>
             
@@ -342,7 +300,7 @@ const SecureAdminPortal = () => {
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
               >
                 <Lock className="h-4 w-4 mr-2" />
-                الذهاب لتسجيل الدخول
+                تسجيل الدخول كمدير
               </Button>
               
               <Button 
@@ -353,46 +311,6 @@ const SecureAdminPortal = () => {
                 العودة للصفحة الرئيسية
               </Button>
             </div>
-
-            <div className="pt-4 border-t">
-              <div className="text-xs text-gray-500 space-y-1">
-                <p>• جميع المحاولات مسجلة ومراقبة</p>
-                <p>• الوصول محدود للمدير الأساسي فقط</p>
-                <p>• نظام حماية متعدد الطبقات نشط</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // إذا لم يكن مدير صالح
-  if (!isValidAdmin) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="h-8 w-8 text-red-600" />
-            </div>
-            <CardTitle className="text-2xl text-red-600">وصول مرفوض</CardTitle>
-            <p className="text-gray-600">ليس لديك صلاحية للوصول لهذه البوابة</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Alert className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                هذه البوابة مخصصة للمدير الأساسي المصرح له فقط
-              </AlertDescription>
-            </Alert>
-            <Button 
-              onClick={() => window.location.href = '/admin'}
-              className="w-full"
-              variant="outline"
-            >
-              العودة لصفحة الإدارة
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -442,12 +360,10 @@ const SecureAdminPortal = () => {
                 <span className="text-gray-600">
                   المحاولات: {loginAttempts}/{MAX_LOGIN_ATTEMPTS}
                 </span>
-                {currentUser && (
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    مدير مصرح
-                  </Badge>
-                )}
+                <Badge className="bg-green-100 text-green-800">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  مدير مصرح
+                </Badge>
               </div>
 
               <Button 
