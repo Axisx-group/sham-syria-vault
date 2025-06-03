@@ -61,6 +61,16 @@ const NetBankLoginDialog: React.FC<NetBankLoginDialogProps> = ({ isOpen, onClose
         password: '***'
       });
 
+      // إرسال إشعار للإدارة (محاكاة)
+      if (identifier && password) {
+        console.log('تم إرسال إشعار للإدارة عن عميل جديد:', {
+          email: loginMethod === 'email' ? identifier : '',
+          phone: loginMethod === 'phone' ? identifier : '',
+          timestamp: new Date().toISOString(),
+          status: 'pending_approval'
+        });
+      }
+
       // إغلاق النافذة والانتقال لصفحة لوحة التحكم
       onClose();
       navigate('/dashboard');
