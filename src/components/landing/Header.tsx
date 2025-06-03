@@ -40,35 +40,35 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
             <Button 
               variant="ghost" 
               onClick={() => navigateTo('/cards')}
-              className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
+              className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
             >
               البطاقات
             </Button>
             <Button 
               variant="ghost" 
               onClick={() => navigateTo('/services/personal')}
-              className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
+              className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
             >
               {t.personal}
             </Button>
             <Button 
               variant="ghost" 
               onClick={() => navigateTo('/services/business')}
-              className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
+              className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
             >
               {t.business}
             </Button>
             <Button 
               variant="ghost" 
               onClick={() => navigateTo('/contact')}
-              className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
+              className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
             >
               {t.contact}
             </Button>
             <Button 
               variant="ghost" 
               onClick={() => navigateTo('/support/faq')}
-              className="text-gray-300 hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all"
+              className="text-white hover:text-white hover:bg-white/10 px-6 py-3 rounded-xl transition-all font-medium"
             >
               {t.support}
             </Button>
@@ -80,11 +80,11 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
               variant="outline" 
               size="sm" 
               onClick={toggleLanguage}
-              className="group relative overflow-hidden border-purple-400/50 text-white hover:bg-purple-600/20 hover:border-purple-400 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+              className="group relative overflow-hidden border-purple-400/50 text-white bg-transparent hover:bg-purple-600/20 hover:border-purple-400 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
             >
               <div className="flex items-center space-x-2 space-x-reverse">
                 <Globe className="h-4 w-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                <span className="font-medium text-sm">
+                <span className="font-medium text-sm text-white">
                   {language === 'ar' ? 'English' : 'العربية'}
                 </span>
               </div>
@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
               className="lg:hidden text-white hover:bg-white/10 w-10 h-10 rounded-xl" 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
             </Button>
           </div>
         </div>
@@ -111,35 +111,35 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
           <div className="container mx-auto px-4 flex flex-col space-y-4">
             <Button 
               variant="ghost" 
-              className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
+              className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
               onClick={() => navigateTo('/cards')}
             >
               البطاقات
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
+              className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
               onClick={() => navigateTo('/services/personal')}
             >
               {t.personal}
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
+              className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
               onClick={() => navigateTo('/services/business')}
             >
               {t.business}
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
+              className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
               onClick={() => navigateTo('/contact')}
             >
               {t.contact}
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full text-left text-gray-300 hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start" 
+              className="w-full text-left text-white hover:text-white hover:bg-white/10 py-3 rounded-xl justify-start font-medium" 
               onClick={() => navigateTo('/support/faq')}
             >
               {t.support}
@@ -150,11 +150,11 @@ const Header: React.FC<HeaderProps> = ({ language, onLanguageChange }) => {
               <Button 
                 variant="outline" 
                 onClick={toggleLanguage}
-                className="w-full group relative overflow-hidden border-purple-400/50 text-white hover:bg-purple-600/20 hover:border-purple-400 py-3 rounded-xl backdrop-blur-sm transition-all duration-300"
+                className="w-full group relative overflow-hidden border-purple-400/50 text-white bg-transparent hover:bg-purple-600/20 hover:border-purple-400 py-3 rounded-xl backdrop-blur-sm transition-all duration-300"
               >
                 <div className="flex items-center justify-center space-x-2 space-x-reverse">
                   <Globe className="h-4 w-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                  <span className="font-medium">
+                  <span className="font-medium text-white">
                     {language === 'ar' ? 'English' : 'العربية'}
                   </span>
                 </div>
