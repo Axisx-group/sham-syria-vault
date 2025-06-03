@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Circle, Car, Send } from "lucide-react";
+import { Circle, Car, Send, Image, Plane, Star } from "lucide-react";
 
 interface CardPreviewProps {
   selectedColor: number;
@@ -8,6 +8,7 @@ interface CardPreviewProps {
   customSignature: string;
   selectedIcon: string | null;
   uploadedImage: string | null;
+  imageDisplayMode: 'corner' | 'fullscreen';
   isCustomizing: boolean;
 }
 
@@ -17,6 +18,7 @@ const CardPreview: React.FC<CardPreviewProps> = ({
   customSignature,
   selectedIcon,
   uploadedImage,
+  imageDisplayMode,
   isCustomizing
 }) => {
   const designColors = [
@@ -31,7 +33,10 @@ const CardPreview: React.FC<CardPreviewProps> = ({
   const iconOptions = [
     { name: 'circle', icon: Circle },
     { name: 'car', icon: Car },
-    { name: 'send', icon: Send }
+    { name: 'send', icon: Send },
+    { name: 'plane', icon: Plane },
+    { name: 'image', icon: Image },
+    { name: 'star', icon: Star }
   ];
 
   return (
@@ -46,6 +51,18 @@ const CardPreview: React.FC<CardPreviewProps> = ({
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)'
         }}
       >
+        {/* Full Screen Background Image */}
+        {uploadedImage && imageDisplayMode === 'fullscreen' && (
+          <div className="absolute inset-0">
+            <img 
+              src={uploadedImage} 
+              alt="Card Background" 
+              className="w-full h-full object-cover opacity-40"
+            />
+            <div className={`absolute inset-0 bg-gradient-to-br ${designColors[selectedColor].gradient} opacity-70`}></div>
+          </div>
+        )}
+
         {/* Card effects */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-60"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 animate-shimmer"></div>
@@ -86,18 +103,20 @@ const CardPreview: React.FC<CardPreviewProps> = ({
             </div>
           </div>
 
-          {/* Icon Display */}
+          {/* Icon Display - Centered */}
           {selectedIcon && (
-            <div className="absolute top-6 right-6">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               {(() => {
                 const IconComponent = iconOptions.find(opt => opt.name === selectedIcon)?.icon;
-                return IconComponent ? <IconComponent className="w-6 h-6 text-white/80" /> : null;
+                return IconComponent ? (
+                  <IconComponent className="w-12 h-12 text-white/30 drop-shadow-lg" />
+                ) : null;
               })()}
             </div>
           )}
 
-          {/* Image Display */}
-          {uploadedImage && (
+          {/* Corner Image Display */}
+          {uploadedImage && imageDisplayMode === 'corner' && (
             <div className="absolute bottom-6 right-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
               <img src={uploadedImage} alt="Custom" className="w-full h-full object-cover" />
             </div>

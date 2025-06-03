@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, User, Type, Upload, Signature, Star, Palette } from "lucide-react";
-import { Circle, Car, Send } from "lucide-react";
+import { Circle, Car, Send, Image, Plane } from "lucide-react";
 
 interface CardDesignOptionsProps {
   language: 'ar' | 'en';
@@ -13,11 +13,13 @@ interface CardDesignOptionsProps {
   customSignature: string;
   selectedIcon: string | null;
   uploadedImage: string | null;
+  imageDisplayMode: 'corner' | 'fullscreen';
   onColorSelect: (index: number) => void;
   onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSignatureChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onIconSelect: (iconName: string) => void;
   onImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onImageDisplayModeChange: (mode: 'corner' | 'fullscreen') => void;
   onCustomize: () => void;
   onPreview: () => void;
 }
@@ -29,11 +31,13 @@ const CardDesignOptions: React.FC<CardDesignOptionsProps> = ({
   customSignature,
   selectedIcon,
   uploadedImage,
+  imageDisplayMode,
   onColorSelect,
   onNameChange,
   onSignatureChange,
   onIconSelect,
   onImageUpload,
+  onImageDisplayModeChange,
   onCustomize,
   onPreview
 }) => {
@@ -46,6 +50,9 @@ const CardDesignOptions: React.FC<CardDesignOptionsProps> = ({
       addSignature: "أضف التوقيع",
       addIcon: "أضف أيقونة",
       addImage: "أضف صورة",
+      imageMode: "نمط عرض الصورة",
+      corner: "في الزاوية",
+      fullscreen: "على كامل البطاقة",
       preview: "معاينة",
       cardHolderName: "اسم حامل البطاقة",
       signature: "التوقيع",
@@ -61,6 +68,9 @@ const CardDesignOptions: React.FC<CardDesignOptionsProps> = ({
       addSignature: "Add Signature",
       addIcon: "Add Icon",
       addImage: "Add Image",
+      imageMode: "Image Display Mode",
+      corner: "Corner",
+      fullscreen: "Full Card",
       preview: "Preview",
       cardHolderName: "Card Holder Name",
       signature: "Signature",
@@ -84,7 +94,10 @@ const CardDesignOptions: React.FC<CardDesignOptionsProps> = ({
   const iconOptions = [
     { name: 'circle', icon: Circle, label: 'دائرة / Circle' },
     { name: 'car', icon: Car, label: 'سيارة / Car' },
-    { name: 'send', icon: Send, label: 'طائرة / Plane' }
+    { name: 'send', icon: Send, label: 'طائرة / Plane' },
+    { name: 'plane', icon: Plane, label: 'طائرة كبيرة / Large Plane' },
+    { name: 'image', icon: Image, label: 'صورة / Image' },
+    { name: 'star', icon: Star, label: 'نجمة / Star' }
   ];
 
   return (
@@ -205,6 +218,35 @@ const CardDesignOptions: React.FC<CardDesignOptionsProps> = ({
             )}
           </label>
         </div>
+        
+        {/* Image Display Mode */}
+        {uploadedImage && (
+          <div className="mt-4">
+            <h5 className="text-lg font-medium text-gray-800 mb-2">{t.imageMode}</h5>
+            <div className="flex gap-3">
+              <button
+                onClick={() => onImageDisplayModeChange('corner')}
+                className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                  imageDisplayMode === 'corner'
+                    ? 'border-purple-500 bg-purple-50 text-purple-700'
+                    : 'border-gray-200 text-gray-600 hover:border-purple-300'
+                }`}
+              >
+                {t.corner}
+              </button>
+              <button
+                onClick={() => onImageDisplayModeChange('fullscreen')}
+                className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                  imageDisplayMode === 'fullscreen'
+                    ? 'border-purple-500 bg-purple-50 text-purple-700'
+                    : 'border-gray-200 text-gray-600 hover:border-purple-300'
+                }`}
+              >
+                {t.fullscreen}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">

@@ -17,6 +17,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
   const [customSignature, setCustomSignature] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [imageDisplayMode, setImageDisplayMode] = useState<'corner' | 'fullscreen'>('corner');
   const [isCustomizing, setIsCustomizing] = useState(false);
 
   const translations = {
@@ -74,13 +75,19 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
     }
   };
 
+  const handleImageDisplayModeChange = (mode: 'corner' | 'fullscreen') => {
+    setImageDisplayMode(mode);
+    console.log('Image display mode changed to:', mode);
+  };
+
   const handlePreview = () => {
     console.log('Preview card with:', {
       color: selectedColor,
       name: customName,
       signature: customSignature,
       icon: selectedIcon,
-      hasImage: !!uploadedImage
+      hasImage: !!uploadedImage,
+      imageMode: imageDisplayMode
     });
   };
 
@@ -132,11 +139,13 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
               customSignature={customSignature}
               selectedIcon={selectedIcon}
               uploadedImage={uploadedImage}
+              imageDisplayMode={imageDisplayMode}
               onColorSelect={handleColorSelect}
               onNameChange={handleNameChange}
               onSignatureChange={handleSignatureChange}
               onIconSelect={handleIconSelect}
               onImageUpload={handleImageUpload}
+              onImageDisplayModeChange={handleImageDisplayModeChange}
               onCustomize={handleCustomize}
               onPreview={handlePreview}
             />
@@ -148,6 +157,7 @@ const CardsShowcase: React.FC<CardsShowcaseProps> = ({ language }) => {
               customSignature={customSignature}
               selectedIcon={selectedIcon}
               uploadedImage={uploadedImage}
+              imageDisplayMode={imageDisplayMode}
               isCustomizing={isCustomizing}
             />
           </div>
