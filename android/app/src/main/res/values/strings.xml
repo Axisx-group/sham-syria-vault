@@ -1,8 +1,8 @@
 
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sham Syria Vault</string>
-    <string name="title_activity_main">Sham Syria Vault</string>
-    <string name="package_name">app.lovable.a1478c5364e54b7fbe8553fd8af9c225</string>
-    <string name="custom_url_scheme">app.lovable.a1478c5364e54b7fbe8553fd8af9c225</string>
+    <string name="app_name">SouriPay Client Dashboard</string>
+    <string name="title_activity_main">SouriPay Client Dashboard</string>
+    <string name="package_name">com.souripay.client.dashboard</string>
+    <string name="custom_url_scheme">com.souripay.client.dashboard</string>
 </resources>

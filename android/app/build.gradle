@@ -2,10 +2,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "app.lovable.a1478c5364e54b7fbe8553fd8af9c225"
+    namespace "com.souripay.client.dashboard"
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "app.lovable.a1478c5364e54b7fbe8553fd8af9c225"
+        applicationId "com.souripay.client.dashboard"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

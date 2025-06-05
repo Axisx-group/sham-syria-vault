@@ -5,10 +5,13 @@
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">a1478c53-64e5-4b7f-be85-53fd8af9c225.lovableproject.com</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">192.168.1.1</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
     </domain-config>
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system"/>
+            <certificates src="user"/>
         </trust-anchors>
     </base-config>
 </network-security-config>
