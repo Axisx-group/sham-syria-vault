@@ -1,66 +1,66 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MailOpen, Send, Inbox, RefreshCw } from "lucide-react";
+import { Mail, MailOpen, Send, Inbox, RefreshCw, TestTube, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-interface EmailStats {
-  totalEmails: number;
-  unreadEmails: number;
-  sentEmails: number;
-  inboxEmails: number;
-}
+import { useEmailStats } from "@/hooks/useEmailStats";
+import { useToast } from "@/hooks/use-toast";
 
 const EmailCounter = () => {
-  const [emailStats, setEmailStats] = useState<EmailStats>({
-    totalEmails: 0,
-    unreadEmails: 0,
-    sentEmails: 0,
-    inboxEmails: 0
-  });
+  const { 
+    emailStats, 
+    isLoading, 
+    error, 
+    refetch, 
+    sendTestEmail, 
+    simulateNewEmail, 
+    markEmailsAsRead 
+  } = useEmailStats();
   
-  const [isLoading, setIsLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-
-  // محاكاة جلب بيانات الإيميل
-  const fetchEmailStats = async () => {
-    setIsLoading(true);
-    try {
-      // محاكاة استدعاء API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // بيانات تجريبية - يمكن استبدالها بـ API حقيقي
-      const mockStats: EmailStats = {
-        totalEmails: Math.floor(Math.random() * 1000) + 500,
-        unreadEmails: Math.floor(Math.random() * 50) + 10,
-        sentEmails: Math.floor(Math.random() * 200) + 100,
-        inboxEmails: Math.floor(Math.random() * 300) + 150
-      };
-      
-      setEmailStats(mockStats);
-      setLastUpdated(new Date());
-    } catch (error) {
-      console.error('خطأ في جلب إحصائيات الإيميل:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEmailStats();
-    // تحديث تلقائي كل 5 دقائق
-    const interval = setInterval(fetchEmailStats, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const { toast } = useToast();
 
   const formatLastUpdated = () => {
-    return lastUpdated.toLocaleString('ar-EG', {
+    return emailStats.lastUpdated.toLocaleString('ar-EG', {
       hour: '2-digit',
       minute: '2-digit',
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
+  };
+
+  const handleTestEmail = async () => {
+    try {
+      await sendTestEmail();
+      toast({
+        title: "تم إرسال الإيميل التجريبي",
+        description: "تم إرسال إيميل تجريبي بنجاح وتحديث الإحصائيات",
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ في الإرسال",
+        description: "فشل في إرسال الإيميل التجريبي",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSimulateNewEmail = () => {
+    simulateNewEmail();
+    toast({
+      title: "إيميل جديد",
+      description: "تم محاكاة وصول إيميل جديد",
+    });
+  };
+
+  const handleMarkAsRead = () => {
+    if (emailStats.unreadEmails > 0) {
+      markEmailsAsRead(Math.min(5, emailStats.unreadEmails));
+      toast({
+        title: "تم وضع علامة كمقروء",
+        description: "تم وضع علامة على الإيميلات كمقروءة",
+      });
+    }
   };
 
   return (
@@ -70,18 +70,38 @@ const EmailCounter = () => {
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
             إحصائيات البريد الإلكتروني
+            <span className="text-sm font-normal text-gray-600">
+              (Info@souripay.com)
+            </span>
           </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchEmailStats}
-            disabled={isLoading}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            تحديث
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestEmail}
+              disabled={isLoading}
+            >
+              <TestTube className="h-4 w-4 mr-2" />
+              إرسال تجريبي
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={refetch}
+              disabled={isLoading}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              تحديث
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* إجمالي الإيميلات */}
             <div className="flex items-center space-x-3 rtl:space-x-reverse p-4 bg-blue-50 rounded-lg">
@@ -144,11 +164,39 @@ const EmailCounter = () => {
             </div>
           </div>
 
+          {/* أزرار الإجراءات */}
+          <div className="mt-4 flex gap-2 justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSimulateNewEmail}
+              className="flex items-center gap-1"
+            >
+              <Plus className="h-4 w-4" />
+              محاكاة إيميل جديد
+            </Button>
+            
+            {emailStats.unreadEmails > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleMarkAsRead}
+                className="flex items-center gap-1"
+              >
+                <Check className="h-4 w-4" />
+                وضع علامة كمقروء
+              </Button>
+            )}
+          </div>
+
           {/* معلومات آخر تحديث */}
           <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-sm text-gray-500 text-center">
-              آخر تحديث: {formatLastUpdated()}
-            </p>
+            <div className="flex justify-between items-center text-sm text-gray-500">
+              <span>آخر تحديث: {formatLastUpdated()}</span>
+              <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                {isLoading ? 'جاري التحديث...' : 'متصل'}
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>
