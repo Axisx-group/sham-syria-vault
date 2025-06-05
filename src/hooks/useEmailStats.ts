@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -14,6 +15,7 @@ export const useEmailStats = () => {
     totalEmails: 0,
     unreadEmails: 0,
     sentEmails: 0,
+    inboxEmails: 0,
     lastUpdated: new Date()
   });
   
