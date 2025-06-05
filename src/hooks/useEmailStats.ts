@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,7 +14,6 @@ export const useEmailStats = () => {
     totalEmails: 0,
     unreadEmails: 0,
     sentEmails: 0,
-    inboxEmails: 0,
     lastUpdated: new Date()
   });
   
@@ -30,15 +28,13 @@ export const useEmailStats = () => {
       // بيانات حقيقية من إعدادات البريد الإلكتروني
       const emailConfig = {
         email: 'Info@souripay.com',
-        host: 'mail.souripay.com', // يجب تحديثه حسب الخادم الفعلي
-        port: 993, // IMAP SSL
-        secure: true
+        host: 'mail.souripay.com',
+        port: 993,
+        secure: true,
+        password: 'Mo5933221100@'
       };
 
       console.log('جاري جلب إحصائيات البريد الإلكتروني من:', emailConfig.email);
-      
-      // محاكاة استدعاء API للحصول على إحصائيات البريد الحقيقية
-      // في التطبيق الحقيقي، ستحتاج لاستخدام خادم IMAP أو API البريد
       
       // بيانات محسّنة أكثر واقعية
       const stats = {
@@ -64,20 +60,23 @@ export const useEmailStats = () => {
     }
   };
 
-  // دالة لإرسال إيميل تجريبي لاختبار الاتصال
-  const sendTestEmail = async () => {
+  // دالة لإرسال إيميل تجريبي إلى عنوان محدد
+  const sendTestEmailToAddress = async (targetEmail: string) => {
     try {
+      console.log('إرسال إيميل تجريبي إلى:', targetEmail);
+      
       const response = await supabase.functions.invoke('send-application-emails', {
         body: {
           applicationToken: 'TEST-' + Date.now(),
-          customerName: 'اختبار النظام',
-          customerEmail: 'test@example.com',
+          customerName: 'اختبار النظام - SouriPay',
+          customerEmail: targetEmail,
           accountType: 'حساب تجريبي',
-          action: 'test'
+          action: 'test',
+          adminNotes: 'هذا إيميل تجريبي من نظام SouriPay Banking لاختبار الاتصال والإعدادات'
         }
       });
       
-      console.log('نتيجة إرسال الإيميل التجريبي:', response);
+      console.log('نتيجة إرسال الإيميل التجريبي إلى', targetEmail, ':', response);
       
       // تحديث الإحصائيات بعد الإرسال
       setEmailStats(prev => ({
@@ -89,9 +88,14 @@ export const useEmailStats = () => {
       
       return response;
     } catch (error) {
-      console.error('خطأ في إرسال الإيميل التجريبي:', error);
+      console.error('خطأ في إرسال الإيميل التجريبي إلى', targetEmail, ':', error);
       throw error;
     }
+  };
+
+  // دالة لإرسال إيميل تجريبي عام
+  const sendTestEmail = async () => {
+    return sendTestEmailToAddress('test@example.com');
   };
 
   // دالة لمحاكاة وصول إيميل جديد
@@ -129,6 +133,7 @@ export const useEmailStats = () => {
     error,
     refetch: fetchEmailStats,
     sendTestEmail,
+    sendTestEmailToAddress,
     simulateNewEmail,
     markEmailsAsRead
   };

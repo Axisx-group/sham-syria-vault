@@ -1,8 +1,8 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, MailOpen, Send, Inbox, RefreshCw, TestTube, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useEmailStats } from "@/hooks/useEmailStats";
 import { useToast } from "@/hooks/use-toast";
 
@@ -13,10 +13,13 @@ const EmailCounter = () => {
     error, 
     refetch, 
     sendTestEmail, 
+    sendTestEmailToAddress,
     simulateNewEmail, 
     markEmailsAsRead 
   } = useEmailStats();
   
+  const [customEmail, setCustomEmail] = useState('mohmmad5921@gmail.com');
+  const [sendingToCustom, setSendingToCustom] = useState(false);
   const { toast } = useToast();
 
   const formatLastUpdated = () => {
@@ -42,6 +45,34 @@ const EmailCounter = () => {
         description: "فشل في إرسال الإيميل التجريبي",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleSendToCustomEmail = async () => {
+    if (!customEmail || !customEmail.includes('@')) {
+      toast({
+        title: "خطأ في البريد الإلكتروني",
+        description: "يرجى إدخال عنوان بريد إلكتروني صحيح",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSendingToCustom(true);
+    try {
+      await sendTestEmailToAddress(customEmail);
+      toast({
+        title: "تم إرسال الإيميل",
+        description: `تم إرسال إيميل تجريبي بنجاح إلى ${customEmail}`,
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ في الإرسال",
+        description: `فشل في إرسال الإيميل إلى ${customEmail}`,
+        variant: "destructive",
+      });
+    } finally {
+      setSendingToCustom(false);
     }
   };
 
@@ -101,6 +132,35 @@ const EmailCounter = () => {
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
+
+          {/* إرسال إيميل مخصص */}
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="text-sm font-medium text-blue-900 mb-3">إرسال إيميل تجريبي مخصص</h3>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="أدخل البريد الإلكتروني"
+                value={customEmail}
+                onChange={(e) => setCustomEmail(e.target.value)}
+                className="flex-1"
+                dir="ltr"
+              />
+              <Button
+                onClick={handleSendToCustomEmail}
+                disabled={sendingToCustom || isLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {sendingToCustom ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    إرسال
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* إجمالي الإيميلات */}
