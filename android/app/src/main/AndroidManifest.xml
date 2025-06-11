@@ -15,7 +15,7 @@
         <activity
             android:exported="true"
             android:launchMode="singleTask"
-            android:name="com.souripay.client.dashboard.MainActivity"
+            android:name="com.souripay.banking.MainActivity"
             android:theme="@style/AppTheme.NoActionBarLaunch">
 
             <intent-filter>

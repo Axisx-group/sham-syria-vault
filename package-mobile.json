@@ -1,6 +1,6 @@
 
 {
-  "name": "souripay-client-mobile",
+  "name": "souripay-banking-mobile",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -14,6 +14,7 @@
     "cap:run:android": "npx cap run android --config capacitor-mobile.config.ts",
     "cap:run:ios": "npx cap run ios --config capacitor-mobile.config.ts",
     "cap:build:android": "npm run build:mobile && npx cap sync android --config capacitor-mobile.config.ts && npx cap run android --config capacitor-mobile.config.ts",
-    "cap:build:ios": "npm run build:mobile && npx cap sync ios --config capacitor-mobile.config.ts && npx cap run ios --config capacitor-mobile.config.ts"
+    "cap:build:ios": "npm run build:mobile && npx cap sync ios --config capacitor-mobile.config.ts && npx cap run ios --config capacitor-mobile.config.ts",
+    "build:full-apk": "npm run build:mobile && npx cap sync --config capacitor-mobile.config.ts && npx cap open android --config capacitor-mobile.config.ts"
   }
 }

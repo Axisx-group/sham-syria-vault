@@ -2,8 +2,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.souripay.client',
-  appName: 'SouriPay Client',
+  appId: 'com.souripay.banking',
+  appName: 'SouriPay Banking',
   webDir: 'dist-mobile',
   server: {
     url: "https://a1478c53-64e5-4b7f-be85-53fd8af9c225.lovableproject.com?forceHideBadge=true",
