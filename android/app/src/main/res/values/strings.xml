@@ -1,8 +1,0 @@
-
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">SouriPay Client Dashboard</string>
-    <string name="title_activity_main">SouriPay Client Dashboard</string>
-    <string name="package_name">com.souripay.client.dashboard</string>
-    <string name="custom_url_scheme">com.souripay.client.dashboard</string>
-</resources>
