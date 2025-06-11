@@ -1,0 +1,20 @@
+
+{
+  "name": "souripay-client-mobile",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev:client-mobile": "vite --config vite.client-mobile.config.ts",
+    "build:client-mobile": "tsc && vite build --config vite.client-mobile.config.ts",
+    "preview:client-mobile": "vite preview --config vite.client-mobile.config.ts",
+    "cap:sync:client-mobile": "npx cap sync --config capacitor-client-mobile.config.ts",
+    "cap:add:android:client-mobile": "npx cap add android --config capacitor-client-mobile.config.ts",
+    "cap:add:ios:client-mobile": "npx cap add ios --config capacitor-client-mobile.config.ts",
+    "cap:run:android:client-mobile": "npx cap run android --config capacitor-client-mobile.config.ts",
+    "cap:run:ios:client-mobile": "npx cap run ios --config capacitor-client-mobile.config.ts",
+    "cap:build:android:client-mobile": "npm run build:client-mobile && npx cap sync android --config capacitor-client-mobile.config.ts && npx cap run android --config capacitor-client-mobile.config.ts",
+    "cap:build:ios:client-mobile": "npm run build:client-mobile && npx cap sync ios --config capacitor-client-mobile.config.ts && npx cap run ios --config capacitor-client-mobile.config.ts",
+    "build:full-client-apk": "npm run build:client-mobile && npx cap sync --config capacitor-client-mobile.config.ts && npx cap open android --config capacitor-client-mobile.config.ts"
+  }
+}
